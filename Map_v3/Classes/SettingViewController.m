@@ -159,8 +159,8 @@
                         
                         NSNumberFormatter * numFormatter = [[NSNumberFormatter alloc] init];
                         [numFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                        aPlace.latitude =[numFormatter numberFromString:[array objectAtIndex:0]];
-                        aPlace.longitude = [numFormatter numberFromString:[array objectAtIndex:1] ];
+                        aPlace.longitude =[numFormatter numberFromString:[array objectAtIndex:0]];
+                        aPlace.latitude = [numFormatter numberFromString:[array objectAtIndex:1] ];
                     }
                     
                 }
@@ -208,6 +208,11 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

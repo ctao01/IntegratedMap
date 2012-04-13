@@ -111,7 +111,6 @@
         myMap.myPlaces = myPlaces;
         
         [myMaps addObject:[myMap dictionaryWithValuesForKeys:[MyMap keys]]];
-
     }
     
     NSString * plist = [myMaps description];

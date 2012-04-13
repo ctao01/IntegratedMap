@@ -11,6 +11,7 @@
 #import "MapViewController.h"
 #import "MyMap.h"
 #import "SettingViewController.h"
+#import "RootViewController.h"
 
 @implementation SavedMapsTableViewController
 @synthesize googleMaps;
@@ -32,7 +33,24 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void) dealloc
+{
+    [googleMaps release];
+    [super dealloc];
+}
+
 #pragma mark -
+
+- (void) refresh
+{
+    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
+    [rvc updateSavedData];
+    
+    [self.tableView reloadData];
+
+}
+
 
 - (void) sync
 {
@@ -50,7 +68,8 @@
 
     [delegate.savedMaps addObjectsFromArray:googleMaps];
     NSLog(@"%i",[delegate.savedMaps count]);
-    [self.tableView reloadData];
+    
+    [self refresh];
 }
 
 #pragma mark - View lifecycle
@@ -70,6 +89,7 @@
     UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
     self.navigationItem.rightBarButtonItem = syncBtn;
     [syncBtn release];
+    
 }
 
 - (void)viewDidUnload
@@ -81,13 +101,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-
     [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear");
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    [super viewDidAppear:animated];    
+    NSLog(@"viewDidAppear");
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -154,14 +176,23 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell...
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+    NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"mapCreatedTime" ascending:NO];
+    [delegate.savedMaps sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
     MyMap * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
     
     cell.textLabel.text = aMap.mapTitle;
+    
+    NSDateFormatter * dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    cell.detailTextLabel.text = [dateFormatter stringFromDate:aMap.mapCreatedTime];
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }

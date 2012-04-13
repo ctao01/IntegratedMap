@@ -40,10 +40,10 @@
 - (void) dealloc
 {
     [toolBar release];
-    [mapView release];
-    [locationManager release];
+    [mapView release]; mapView = nil;
+    [locationManager release]; locationManager = nil;
 
-//    [self.placeMarks release];
+    NSLog(@"dealloc");
     [super dealloc];
 }
 #pragma mark -
@@ -87,46 +87,31 @@
     mapView.scrollEnabled = YES;
     mapView.zoomEnabled = YES;
     mapView.delegate = self;
-    
     [self.view addSubview:mapView];
+
     
     if ([self isNotEditable])
     {
         mapView.showsUserLocation = NO;
-        [locationManager stopUpdatingLocation];
-        
-        if ([self.placeMarks count] > 0)
+        if (locationManager)
         {
-            NSMutableArray * latArray = [[NSMutableArray alloc]init];
-            NSMutableArray * lngArray = [[NSMutableArray alloc]init];
+            [locationManager release]; locationManager = nil;
+        } 
+//        
+//        if ([self.placeMarks count] > 0)
+//        {
+//            double maxLat = [[self.placeMarks valueForKeyPath:@"@max.latitude"] doubleValue];
+//            double minLat = [[self.placeMarks valueForKeyPath:@"@min.latitude"] doubleValue];
+//            double avgLat = [[self.placeMarks valueForKeyPath:@"@avg.latitude"] doubleValue];
 //
-            latArray = [self.placeMarks valueForKeyPath:@"latitude"];
-            lngArray = [self.placeMarks valueForKeyPath:@"longitude"];
-            
-            double max = [[latArray valueForKeyPath:@"@count"] doubleValue];
-            
-            NSLog(@"%@",latArray);
-            NSLog(@"@count:%f",max);
-
-
-
-//            for (MyPlace * thePlace in self.placeMarks) 
-//            {
-//                NSNumber * latNum = thePlace.latitude;
-//                NSNumber * lngNum = thePlace.longitude;
-//                
-//                [latArray addObject:latNum];
-//                [lngArray addObject:lngNum];
-//                
-//            }
-//            double maxLat = [[latArray valueForKeyPath:@"maxLat.doubleValue"] doubleValue];
-//            double minLat = [[latArray valueForKeyPath:@"minLat.doubleValue"] doubleValue];
-//            
-//            NSLog(@"%f",maxLat);
-//            NSLog(@"%f",minLat);
-        }
-
+//
+//            double maxLng = [[self.placeMarks valueForKeyPath:@"@max.longitude"] doubleValue];
+//            double minLng = [[self.placeMarks valueForKeyPath:@"@min.longitude"] doubleValue];
+//            double avgLng = [[self.placeMarks valueForKeyPath:@"@avg.longitude"] doubleValue];
+//        } 
     }
+    [self updateMap:mapView];
+
 
     // Initialize ToolBar
     toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
@@ -157,6 +142,18 @@
 {
     [super viewWillAppear:animated];
     [self updateMap:mapView];
+
+}
+
+- (void) viewDidDisappear:(BOOL)animated
+{
+    if (locationManager)
+    {
+        [locationManager stopUpdatingLocation];
+        locationManager = nil;
+        
+    }
+    [super viewDidDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -176,6 +173,11 @@
         [dict addObject:[Obj dictionaryWithValuesForKeys:[MyPlace keys]]];
     }
     NSLog(@"updateMapsPlacemarks:%i",[self.placeMarks count]);
+    
+//    for (id<MKAnnotation> annotation in mapView.annotations) {
+//        [mapView removeAnnotation:annotation];
+//    }
+    
     // Set up pins
     NSMutableArray * annotations = [[NSMutableArray alloc]init];
     for (int i = 0; i < [self.placeMarks count]; i++) 
@@ -210,6 +212,11 @@
     [annotations release];
 }
 
+- (void) addAnnotationsToMap:(MKMapView*)theMap
+{
+    
+}
+
 #pragma mark - Button Actions
 
 - (void) addNewPlace
@@ -236,6 +243,7 @@
     
     aMap.mapTitle = self.navigationItem.title;
     aMap.myPlaces = self.placeMarks;
+    aMap.mapCreatedTime = [NSDate date];
     
     [delegate.savedMaps addObject:aMap];
     [aMap release];
@@ -254,6 +262,15 @@
     UIBarButtonItem * doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
     self.navigationItem.rightBarButtonItem = doneBtn;
     [doneBtn release];
+    
+    if (!locationManager) 
+    {
+        locationManager = [[CLLocationManager alloc]init];
+        locationManager.delegate = self;
+        locationManager.distanceFilter = 50.0f;
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        [locationManager startUpdatingLocation];
+    }
     
 }
 
