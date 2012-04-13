@@ -7,14 +7,22 @@
 //
 
 #import "AppDelegate.h"
+#import "RootViewController.h"
 
 @implementation AppDelegate
-
+@synthesize navigationController = _navigationController;
+@synthesize rootViewController = _rootViewController;
 @synthesize window = _window;
+@synthesize path = _path;
+@synthesize savedMaps = _savedMaps;
 
 - (void)dealloc
 {
+    [_rootViewController release];
+    [_navigationController release];
     [_window release];
+    
+    [_savedMaps release];
     [super dealloc];
 }
 
@@ -24,6 +32,45 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    self.rootViewController = [[RootViewController alloc]init];
+    self.navigationController = [[UINavigationController alloc]initWithRootViewController:self.rootViewController];
+    [self.window addSubview:self.navigationController.view];
+
+    // Initialize plist data
+    NSError * error;
+    NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString * documentDirectory = [paths objectAtIndex:0];
+    self.path = [documentDirectory stringByAppendingPathComponent:@"SavedData.plist"];
+    NSFileManager * fileManager = [NSFileManager defaultManager];
+    
+    if (![fileManager fileExistsAtPath:self.path])
+    {
+        NSString * bundle = [[NSBundle mainBundle]pathForResource:@"SavedMaps" ofType:@"plist"];
+        [fileManager copyItemAtPath:bundle toPath:self.path error:&error];
+        //        path = [documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"SavedData.plist"]];
+        NSLog(@"file doesn't exist, create a new path:%@", self.path);
+    }
+    
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:self.path forKey:@"path"];
+    [defaults synchronize];
+    NSLog(@"%@", defaults);
+    
+    if (self.savedMaps == nil) 
+    {
+        NSArray * mapDicts = [NSMutableArray arrayWithContentsOfFile:self.path];
+        if (mapDicts == nil)
+        {
+            NSLog(@"Unable to read plist file at path: %@", self.path);
+            self.path = [[NSBundle mainBundle] pathForResource:@"SavedMaps"
+                                                   ofType:@"plist"];
+            mapDicts = [NSMutableArray arrayWithContentsOfFile:self.path];
+        }
+        
+        self.savedMaps = [[NSMutableArray alloc] initWithCapacity:[mapDicts count]];
+    }
+    
     return YES;
 }
 

@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MyMap.h"
 
-@interface RootViewController : UIViewController
+@interface RootViewController : UIViewController < UIAlertViewDelegate >
+
+//@property (nonatomic , assign) MyMap * currentMap;
+
+- (void) updateSavedData;
 
 @end

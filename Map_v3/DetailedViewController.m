@@ -10,11 +10,11 @@
 #import "AppDelegate.h"
 #import "RootViewController.h"
 #import "EditableCell.h"
-#import "Annotation.h"
+#import "MyPlace.h"
 #import "MapViewController.h"
 
 @implementation DetailedViewController
-@synthesize annotation ;
+@synthesize thePlace ;
 @synthesize nameCell , noteCell;
 @synthesize address1Cell, address2Cell, cityCell, stateCell, zipCodeCell, countryCell;
 @synthesize parentViewController;
@@ -38,18 +38,19 @@
 
 - (void) dealloc
 {
-    [annotation release];
+    [thePlace release];
     
     [nameCell release];
-    
     [address1Cell release];
     [address2Cell release];
     [cityCell release];
     [stateCell release];
     [zipCodeCell release];
     [countryCell release];
-    
     [noteCell release];
+    
+    NSLog(@"detailedViewController - dealloc");
+    [super dealloc];
 }
 
 #pragma mark - 
@@ -73,7 +74,8 @@
     
     return cell;
 }
-
+// TODO: modify saved data
+/*
 - (void) update
 {
     NSArray *viewControllers = [[self navigationController] viewControllers];
@@ -84,7 +86,9 @@
     
     NSDate * timestamp = [NSDate date];
     [annotation setTimestamp:timestamp];
-}
+}*/
+
+#pragma mark - UIButton Action
 
 - (void) save 
 {
@@ -92,23 +96,21 @@
     {
         AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         MapViewController * vcMap = (MapViewController *)delegate.navigationController.topViewController;
-        [annotation setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
-        [annotation setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
+        [thePlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
+        [thePlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
         
         NSDate * timestamp = [NSDate date];
-        [annotation setTimestamp:timestamp];
+        [thePlace setTimestamp:timestamp];
         
-        [vcMap addAnnotation:annotation toAnnotations:vcMap.annotations];
-        NSLog(@"vcMap:%@", [vcMap description]);
+        [vcMap.placeMarks addObject:thePlace];
         [self.navigationController dismissModalViewControllerAnimated:YES];
     }
-            
+    /*        
     else
     {
         [self update];
         [[self navigationController] popViewControllerAnimated:YES];
-
-    }
+    }*/
     
 }
 
@@ -117,9 +119,6 @@
     [self.navigationController dismissModalViewControllerAnimated:YES];
 
 }
-
-
-
 
 #pragma mark - View lifecycle
 
@@ -150,11 +149,7 @@
         
         [[self navigationItem] setRightBarButtonItem:saveButton];
         [saveButton release];
-        
-        
-    
-    
-    
+  
     [self setNameCell: [self newDetailCellWithTag:locationName]];
     [self setAddress1Cell: [self newDetailCellWithTag:locationAddress_1]];
     [self setAddress2Cell: [self newDetailCellWithTag:locationAddress_1]];
@@ -254,14 +249,14 @@
     
     switch ([textField tag])
     {
-        case locationName:          [annotation setName:text];                  break;
-        case locationAddress_1:     [annotation setStreetAddress:text];         break;
-        case locationAddress_2:     [annotation setSubStreetAddress:text];      break;
-        case locationCity:          [annotation setCity:text];                  break;
-        case locationState:         [annotation setState:text];                 break;
-        case locationZipCode:       [annotation setZipCode:text];               break;
-        case locationCountry:       [annotation setCountry:text];               break;
-        case locationNote:          [annotation setComment:text];               break;
+        case locationName:          [thePlace setLocationName:text];                  break;
+        case locationAddress_1:     [thePlace setStreetAddress:text];         break;
+        case locationAddress_2:     [thePlace setSubStreetAddress:text];      break;
+        case locationCity:          [thePlace setCity:text];                  break;
+        case locationState:         [thePlace setState:text];                 break;
+        case locationZipCode:       [thePlace setZipCode:text];               break;
+        case locationCountry:       [thePlace setCountry:text];               break;
+        case locationNote:          [thePlace setComment:text];               break;
 
     }
 }
@@ -300,8 +295,7 @@
     }
     else
     {
-    
-        [self update];      
+//        [self update];      
         [[self navigationController] popViewControllerAnimated:YES];
     }
 
@@ -357,7 +351,7 @@
         case NameSection:
         {
             cell = [self nameCell];
-            text = [annotation name];
+            text = [thePlace locationName];
             tag = locationName;
             placeholder = @"Location Name";
             break;
@@ -367,7 +361,7 @@
             if ([indexPath row] == 0)
             {
                 cell = [self address1Cell];
-                text = [annotation streetAddress];
+                text = [thePlace streetAddress];
                 tag = locationAddress_1;
                 placeholder = @"Address 1";
             }
@@ -375,7 +369,7 @@
             {
                 
                 cell = [self address2Cell];
-                text = [annotation subStreetAddress];
+                text = [thePlace subStreetAddress];
                 tag = locationAddress_2;
                 placeholder = @"Address 2";
             }
@@ -383,7 +377,7 @@
             else if ([indexPath row] == 2)
             {
                 cell = [self cityCell];
-                text = [annotation city];
+                text = [thePlace city];
                 tag = locationCity;
                 placeholder = @"City";
             }
@@ -391,7 +385,7 @@
             else if ([indexPath row] == 3)
             {
                 cell = [self stateCell];
-                text = [annotation state];
+                text = [thePlace state];
                 tag = locationState;
                 placeholder = @"State";
             }
@@ -399,14 +393,14 @@
             else if ([indexPath row] == 4)
             {
                 cell = [self zipCodeCell];
-                text = [annotation zipCode];
+                text = [thePlace zipCode];
                 tag = locationZipCode;
                 placeholder = @"Zipcode";
             }
             else
             {
                 cell = [self countryCell];
-                text = [annotation country];
+                text = [thePlace country];
                 tag = locationCountry;
                 placeholder = @"Country";
             }
@@ -417,7 +411,7 @@
         case CommentSection:
         {
             cell = [self noteCell];
-            text = [annotation comment];
+            text = [thePlace comment];
             tag = locationNote;
             placeholder = @"Comment";
             break;

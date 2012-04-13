@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "PlacedPin.h"
+#import "Annotation.h"
 
-@implementation PlacedPin
+@implementation Annotation
 
 @synthesize coordinate;
 @synthesize title;
@@ -34,9 +34,6 @@
 
 - (void)dealloc
 {
-	[title release];
-	[subtitle release];
-	
 	[super dealloc];
 }
 

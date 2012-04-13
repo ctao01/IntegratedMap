@@ -9,8 +9,11 @@
 #import "SavedMapsTableViewController.h"
 #import "AppDelegate.h"
 #import "MapViewController.h"
+#import "MyMap.h"
+#import "SettingViewController.h"
 
 @implementation SavedMapsTableViewController
+@synthesize googleMaps;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -29,6 +32,27 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+#pragma mark -
+
+- (void) sync
+{
+    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+
+    if (googleMaps) {
+        [delegate.savedMaps removeObjectsInArray:googleMaps];
+        [googleMaps release]; googleMaps = nil;
+    }
+    googleMaps = [[NSMutableArray alloc]init];
+    SettingViewController * vcSetting = [[SettingViewController alloc]init];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
+    [vcSetting retrieveMapsWithAuth:authStr];
+
+    [delegate.savedMaps addObjectsFromArray:googleMaps];
+    NSLog(@"%i",[delegate.savedMaps count]);
+    [self.tableView reloadData];
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -42,6 +66,10 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.title = @"Saved Maps";
+    
+    UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
+    self.navigationItem.rightBarButtonItem = syncBtn;
+    [syncBtn release];
 }
 
 - (void)viewDidUnload
@@ -80,6 +108,24 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+#pragma mark - UIButton Actions
+
+- (void) SyncOrNot
+{
+    // Check and retrieve authorization information
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (! [defaults objectForKey:@"AuthorizationToken"]) 
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Notice" message:@"You haven't connected to Google account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Connect Now", nil];
+        [alert setAlertViewStyle:UIAlertViewStyleDefault];
+        alert.delegate = self;
+        [alert show];
+        [alert release];    
+    }
+    else
+        [self sync];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -113,8 +159,9 @@
     
     // Configure the cell...
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
-
-    cell.textLabel.text = [[delegate.savedMaps objectAtIndex:indexPath.row] lastObject];
+    MyMap * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = aMap.mapTitle;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
@@ -164,20 +211,17 @@
 {
     
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
-    
-    NSMutableArray * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
+    MyMap * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
     
     MapViewController * vcContinuedMap = [[MapViewController alloc]init];
-    [vcContinuedMap setTitle:aMap.lastObject];
-    [vcContinuedMap setSelectedRow:indexPath.row];
-    
-    // refresh 
-    NSMutableArray * array = [[NSMutableArray alloc]initWithArray:aMap];
-    [array removeLastObject];
-    vcContinuedMap.annotations = array;
-    [array release];
+    [vcContinuedMap setTitle:aMap.mapTitle];
+    [vcContinuedMap setPlaceMarks:aMap.myPlaces];
     
     [self.navigationController pushViewController:vcContinuedMap animated:YES];
+    vcContinuedMap.toolBar.hidden = YES;
+    UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
+    vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;
+    [editBtn release];
     [vcContinuedMap release];
     
     [delegate.savedMaps removeObjectAtIndex:indexPath.row];
@@ -185,4 +229,17 @@
 
 }
 
+#pragma mark - UIAlertViewDelegate
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) return;
+    if (buttonIndex == 1) 
+    {
+        SettingViewController * vcSetting = [[SettingViewController alloc]init];
+        UINavigationController * ncSetting = [[UINavigationController alloc]initWithRootViewController:vcSetting];
+        [vcSetting release];
+        [self.navigationController presentModalViewController:ncSetting animated:YES];
+        [ncSetting release];
+    }
+}
 @end

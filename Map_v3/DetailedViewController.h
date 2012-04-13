@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Annotation.h"
+#import "MyPlace.h"
 
 @class EditableCell;
 
@@ -36,7 +36,7 @@ typedef NSUInteger AnnotationAttribute;
 
 @interface DetailedViewController : UITableViewController < UITextFieldDelegate >
 {
-    Annotation * annotation;
+    MyPlace * thePlace;
     
     EditableCell * nameCell;
     EditableCell * address1Cell;
@@ -49,7 +49,7 @@ typedef NSUInteger AnnotationAttribute;
     
 }
 
-@property (nonatomic , retain) Annotation * annotation;
+@property (nonatomic , retain) MyPlace * thePlace;
 
 @property (nonatomic , retain) EditableCell * nameCell;
 @property (nonatomic , retain) EditableCell * address1Cell;

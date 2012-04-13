@@ -9,5 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface SettingViewController : UIViewController
+{
+    UITextField * usernameField;
+    UITextField * passwordField;
+}
+
+- (void) retrieveMapsWithAuth:(NSString*)clientAuth;
+//- (void) retrievePlacemakrsWithContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
+- (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
 
 @end

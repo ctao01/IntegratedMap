@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MKAnnotation.h>
 
-@interface PlacedPin : NSObject < MKAnnotation , NSCoding >
+@interface Annotation : NSObject < MKAnnotation , NSCoding >
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, copy) NSString *title;

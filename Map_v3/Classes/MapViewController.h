@@ -7,7 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 
-@interface MapViewController : UIViewController
+@interface MapViewController : UIViewController <CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate>
+{
+    CLLocationManager * locationManager;
+    CLLocationDegrees  lat;
+    CLLocationDegrees  lng;
+    
+    MKMapView * mapView;
+}
+@property (nonatomic , assign) CLLocationDegrees lat;
+@property (nonatomic , assign) CLLocationDegrees lng;
+
+@property (nonatomic , retain) NSMutableArray * placeMarks;
+@property (nonatomic , retain) UIToolbar * toolBar;
+
+- (void)setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 
+- (void) updateMap: (MKMapView *) theMap;
 
 @end
