@@ -82,8 +82,6 @@
         for (GDataXMLElement * mapContent in mapContents) 
         {
             NSString * src = [[mapContent attributeForName:@"src"] stringValue];
-//            aMap.mapContent = src;
-//            [self retrievePlacemakrsWithContentURL:src andAuthToken:clientAuth];
             aMap.myPlaces = [self retrievePlacemakrsFromContentURL:src andAuthToken:clientAuth];
         }
         
@@ -172,6 +170,69 @@
     return myPlaces;
 }
 
+#pragma mark - Uploading XML 
+
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap
+{
+    NSURL * url =[NSURL URLWithString:@"http://maps.google.com/maps/feeds/maps/default/full"];
+    ASIFormDataRequest * updateRequest = [ASIFormDataRequest requestWithURL:url];
+    NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
+    [updateRequest addRequestHeader:@"Authorization" value:authString];
+    [updateRequest addRequestHeader:@"Content-type" value:@"application/atom+xml"];
+    
+    NSMutableString * bodyString = [[NSMutableString alloc]initWithCapacity:50];
+    
+    [bodyString appendString:@"<entry xmlns=\"http://www.w3.org/2005/Atom\">\n"];
+    NSDateFormatter * inputFormatter = [[NSDateFormatter alloc]init];
+    [inputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
+    [bodyString appendFormat:@"\t<published>%@</published>\n", [inputFormatter stringFromDate:theMap.mapCreatedTime]];
+    
+    [bodyString appendFormat:@"\t<title>%@</title>\n", [theMap mapTitle]];
+    [bodyString appendFormat:@"\t<summary>%@</summary>\n", nil];
+
+    [bodyString appendString:@"</entry>\n"];
+    
+    NSMutableData * bodyData = [[NSMutableData alloc]initWithData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
+    [updateRequest setPostBody:bodyData];
+    [updateRequest startSynchronous];
+    
+    NSString * updateResponse = [updateRequest responseString];
+    NSLog(@"%@", updateResponse);
+}
+
+- (void) updateMapsWithAuth:(NSString*)clientAuth andContentString:(NSString*)theContentString
+{
+   /*
+    NSURL * url =[NSURL URLWithString:@"http://maps.google.com/maps/feeds/maps/userID/full"];
+    ASIFormDataRequest * updateRequest = [ASIFormDataRequest requestWithURL:url];
+    NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
+    [updateRequest addRequestHeader:@"Authorization" value:authString];
+    [updateRequest addRequestHeader:@"Content-type" value:@"application/atom+xml"];
+
+    NSMutableString * bodyString = [[NSMutableString alloc]initWithCapacity:50];
+    [bodyString appendString:@"<entry xmlns=\"http://www.w3.org/2005/Atom\">\n"];
+    [bodyString appendFormat:@"\t<title>%@<title>", [theContentString ]]
+    [bodyString appendString:@"</entry>\n"];
+
+    NSMutableData * bodyData = [[NSMutableData alloc]initWithData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
+    [updateRequest setPostBody:bodyData];
+    [updateRequest startSynchronous];
+    
+    NSString * updateResponse = [updateRequest responseString];
+    NSLog(@"%@", updateResponse);*/
+}
+
+
+- (void) updateMapsWithAuth:(NSString*)clientAuth andFilePath:(NSString*)theFilePath
+{
+//    NSData * xmlData =[[NSMutableData alloc]initWithContentsOfFile:theFilePath];
+//    NSError *error;
+//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:xmlData 
+//                                                           options:0 error:&error];
+//    if (doc == nil) return;
+//    NSLog(@"%@", doc.rootElement);
+
+}
 
 #pragma mark - View lifecycle
 
@@ -232,10 +293,9 @@
     [loginRequest setPostValue:@"GOOGLE" forKey:@"accountType"];
     [loginRequest setPostValue:@"local" forKey:@"service"];
     [loginRequest setPostValue:@"scroll" forKey:@"source"];
-    
+
     [loginRequest setPostValue:usernameField.text forKey:@"Email"];
     [loginRequest setPostValue:passwordField.text forKey:@"Passwd"];
-    
     [loginRequest startSynchronous];
     
     NSString * loginResponse = [loginRequest responseString];

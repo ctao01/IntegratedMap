@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MyMap.h"
 
 @interface SettingViewController : UIViewController
 {
@@ -14,8 +15,17 @@
     UITextField * passwordField;
 }
 
+#pragma mark - Retrieving a List of Maps
 - (void) retrieveMapsWithAuth:(NSString*)clientAuth;
-//- (void) retrievePlacemakrsWithContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
+
+#pragma mark - Retrieving a List of Placemarks
 - (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
+
+#pragma mark - Uploading XML 
+- (void) updateMapsWithAuth:(NSString*)clientAuth andContentString:(NSString*)theContentString;
+- (void) updateMapsWithAuth:(NSString*)clientAuth andFilePath:(NSString*)theFilePath;
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
+
+
 
 @end
