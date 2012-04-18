@@ -12,8 +12,8 @@
 #import "GDataXMLNode.h"
 #import "AppDelegate.h"
 #import "SavedMapsTableViewController.h"
-#import "MyMap.h"
-#import "MyPlace.h"
+#import <KML/KML.h>
+
 @implementation SettingViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -48,8 +48,6 @@
     
     GDataXMLDocument * xmlDocument = [[GDataXMLDocument alloc]initWithXMLString:listResponse options:0 error:nil];
     GDataXMLElement * rootElement = [xmlDocument rootElement];
-    
-    
     NSArray * mapsEntries = [rootElement elementsForName:@"entry"];
     NSMutableArray * array = [[NSMutableArray alloc]init];
     
@@ -197,42 +195,98 @@
     [updateRequest startSynchronous];
     
     NSString * updateResponse = [updateRequest responseString];
-    NSLog(@"%@", updateResponse);
+    [self updateMapsWithAuth:clientAuth andAMap:theMap andResponse:updateResponse];
 }
 
-- (void) updateMapsWithAuth:(NSString*)clientAuth andContentString:(NSString*)theContentString
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andResponse:(NSString*)theResponseStr
 {
-   /*
-    NSURL * url =[NSURL URLWithString:@"http://maps.google.com/maps/feeds/maps/userID/full"];
+    for (int index = 0; index < [theMap.myPlaces count]; index ++) 
+    {
+        NSDictionary * thePlaceDict = [theMap.myPlaces objectAtIndex:index];
+        [self generatingKMLFileWithPlace:thePlaceDict];
+    }
+//    NSMutableDictionary * thePlace = [theMap.myPlaces objectAtIndex:2];
+//    NSLog(@"locationName:%@",[thePlace objectForKey:@"locationName"]);
+
+    /*GDataXMLDocument * xmlDocument = [[GDataXMLDocument alloc]initWithXMLString:theResponseStr options:0 error:nil];
+    GDataXMLElement * rootElement = [xmlDocument rootElement];
+    NSArray * mapContents = [rootElement elementsForName:@"content"];    
+    NSString * mapURLStr;
+    
+    for (GDataXMLElement * mapContent in mapContents) 
+    {
+        mapURLStr = [[mapContent attributeForName:@"src"] stringValue];
+    }
+
+    NSURL * url =[NSURL URLWithString:mapURLStr];
     ASIFormDataRequest * updateRequest = [ASIFormDataRequest requestWithURL:url];
     NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
     [updateRequest addRequestHeader:@"Authorization" value:authString];
     [updateRequest addRequestHeader:@"Content-type" value:@"application/atom+xml"];
 
-    NSMutableString * bodyString = [[NSMutableString alloc]initWithCapacity:50];
-    [bodyString appendString:@"<entry xmlns=\"http://www.w3.org/2005/Atom\">\n"];
-    [bodyString appendFormat:@"\t<title>%@<title>", [theContentString ]]
-    [bodyString appendString:@"</entry>\n"];
+
+    NSMutableString * bodyString = [[NSMutableString alloc]initWithCapacity:100];
+
+    [bodyString appendString:@"<atom:entry xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:atom =\"http://www.w3.org/2005/Atom\">\n"];
+//    [bodyString appendString:@"<xmlns:atom =\"http://www.w3.org/2005/Atom\">\n"];
+    [bodyString appendFormat:@"\t<atom:title>%@</atom:title>\n", [theMap mapTitle]];
+    [bodyString appendFormat:@"\t<atom:content>\n"];    
+    
+    for (int i = 0 ; i < [theMap.myPlaces count]; i++)
+    {
+        MyPlace * thePlace = [theMap.myPlaces objectAtIndex:i];
+        
+        [bodyString appendFormat:@"\t\t<Placemark>\n"];
+        [bodyString appendFormat:@"\t\t\t<name>:%@</name>\n",theMap.mapTitle];
+        [bodyString appendFormat:@"\t\t\t<description>:%@</description>\n",theMap.mapAuthor];
+        [bodyString appendFormat:@"\t\t\t<Point>\n"];
+//        [bodyString appendFormat:@"\t\t\t\t<coordinates>:%@,%@</coordinates>\n",[thePlace.longitude stringValue], [thePlace.latitude stringValue]];
+    NSNumber * test1 = [NSNumber numberWithFloat:122.5674];
+    NSNumber * test2 = [NSNumber numberWithFloat:23.5674];
+
+        [bodyString appendFormat:@"\t\t\t\t<coordinates>:%@,%@</coordinates>\n",[test1 stringValue],[test2 stringValue]];
+//
+        [bodyString appendFormat:@"\t\t\t</Point>\n"];
+        [bodyString appendFormat:@"\t\t</Placemark>\n"];
+    }
+     
+     
+    [bodyString appendString:@"</atom:content>\n"];
+    [bodyString appendString:@"</atom:entry>\n"];
 
     NSMutableData * bodyData = [[NSMutableData alloc]initWithData:[bodyString dataUsingEncoding:NSUTF8StringEncoding]];
     [updateRequest setPostBody:bodyData];
     [updateRequest startSynchronous];
     
     NSString * updateResponse = [updateRequest responseString];
-    NSLog(@"%@", updateResponse);*/
+    NSLog(@"updateresponse:%@",updateResponse);*/
 }
 
-
-- (void) updateMapsWithAuth:(NSString*)clientAuth andFilePath:(NSString*)theFilePath
+- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace
 {
-//    NSData * xmlData =[[NSMutableData alloc]initWithContentsOfFile:theFilePath];
-//    NSError *error;
-//    GDataXMLDocument *doc = [[GDataXMLDocument alloc] initWithData:xmlData 
-//                                                           options:0 error:&error];
-//    if (doc == nil) return;
-//    NSLog(@"%@", doc.rootElement);
-
+    
+    KMLRoot *root = [KMLRoot new];
+    
+    KMLDocument *doc = [KMLDocument new];
+    root.feature = doc;
+    
+    KMLPlacemark *placemark = [KMLPlacemark new];
+    placemark.name = [thePlace objectForKey:@"locationName"];
+    NSString * description = [thePlace objectForKey:@"comment"];
+    placemark.descriptionValue = [description isKindOfClass:[NSNull class]]? @"no comment": description;    
+    [doc addFeature:placemark];
+    
+    KMLPoint *point = [KMLPoint new];
+    placemark.geometry = point;
+    
+    KMLCoordinate *coordinate = [KMLCoordinate new];
+    coordinate.latitude = [[thePlace objectForKey:@"latitude"] doubleValue];
+    coordinate.longitude = [[thePlace objectForKey:@"longitude"] doubleValue];
+    point.coordinate = coordinate;
+    
+    NSLog(@"kml, %@", root.kml);
 }
+
 
 #pragma mark - View lifecycle
 

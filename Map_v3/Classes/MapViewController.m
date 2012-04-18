@@ -197,8 +197,8 @@
         NSString * subtitle = [dateFromatter stringFromDate:timestamp];		
         
         Annotation * annotation = [[Annotation alloc]initWithCoordinate:pinCenter];
-        annotation.title = annotation.title ? title : @"(no title)";
-        annotation.subtitle = annotation.subtitle ? subtitle : @"(no subtitle)";
+        annotation.title = title ? title : @"(no title)";
+        annotation.subtitle = subtitle ? subtitle : @"(no subtitle)";
         
         [annotations addObject:annotation];
        
@@ -322,6 +322,7 @@
             
             [aPlace setLatitude:[NSNumber numberWithDouble:lat]];
             [aPlace setLongitude:[NSNumber numberWithDouble:lng]];
+
             NSDate * timestamp = [NSDate date];
             [aPlace setTimestamp:timestamp];
             

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MyMap.h"
-
+#import "MyPlace.h"
 @interface SettingViewController : UIViewController
 {
     UITextField * usernameField;
@@ -22,10 +22,9 @@
 - (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
 
 #pragma mark - Uploading XML 
-- (void) updateMapsWithAuth:(NSString*)clientAuth andContentString:(NSString*)theContentString;
-- (void) updateMapsWithAuth:(NSString*)clientAuth andFilePath:(NSString*)theFilePath;
 - (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andResponse:(NSString*)theResponseStr;
 
-
+- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
 
 @end
