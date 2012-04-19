@@ -195,10 +195,21 @@
     [updateRequest startSynchronous];
     
     NSString * updateResponse = [updateRequest responseString];
-    [self updateMapsWithAuth:clientAuth andAMap:theMap andResponse:updateResponse];
+    GDataXMLDocument * xmlDocument = [[GDataXMLDocument alloc]initWithXMLString:updateResponse options:0 error:nil];
+    GDataXMLElement * rootElement = [xmlDocument rootElement];
+    NSArray * mapContents = [rootElement elementsForName:@"content"];
+   
+    NSString * src ; 
+    for (GDataXMLElement * mapContent in mapContents) 
+    {
+        src = [[mapContent attributeForName:@"src"] stringValue];
+    }
+    NSLog(@"SRC:%@",src);
+    
+    [self updateMapsWithAuth:clientAuth andAMap:theMap andContentURL:src];
 }
 
-- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andResponse:(NSString*)theResponseStr
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andContentURL:(NSString*)theContentURL
 {
     NSMutableString * placemarkStr = [[NSMutableString alloc]init];
     for (int index = 0; index < [theMap.myPlaces count]; index ++) 

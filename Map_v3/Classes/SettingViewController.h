@@ -23,7 +23,7 @@
 
 #pragma mark - Uploading XML 
 - (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
-- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andResponse:(NSString*)theResponseStr;
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andContentURL:(NSString*)theContentURL;
 
 //- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
 //- (NSString *)KMLString:generatingKMLFileWithPlace:(NSDictionary*)thePlace;
