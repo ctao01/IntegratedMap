@@ -25,6 +25,8 @@
 - (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
 - (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andResponse:(NSString*)theResponseStr;
 
-- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
+//- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
+//- (NSString *)KMLString:generatingKMLFileWithPlace:(NSDictionary*)thePlace;
+- (NSString *) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
 
 @end

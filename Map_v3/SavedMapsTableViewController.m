@@ -90,7 +90,6 @@
     UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
     self.navigationItem.rightBarButtonItem = syncBtn;
     [syncBtn release];
-    
 }
 
 - (void)viewDidUnload
