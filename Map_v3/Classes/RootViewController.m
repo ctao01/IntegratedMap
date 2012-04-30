@@ -142,6 +142,7 @@
     [alert release];
 }
 
+/*
 - (void) continuedMap
 {
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
@@ -175,6 +176,7 @@
         [alertView release];
     }
 }
+*/
 
 - (void) savedMaps
 {

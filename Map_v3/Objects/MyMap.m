@@ -14,15 +14,15 @@
 @synthesize mapCreatedTime = _mapCreatedTime;
 //@synthesize mapContent = _mapContent;
 @synthesize myPlaces = _myPlaces;
+@synthesize update, upload;
 
 - (void) dealloc
 {
     [_mapTitle release];
     [_mapAuthor release];
     [_mapCreatedTime release];
-//    [_mapContent release];
     [_myPlaces release];
-    
+        
     [super dealloc];
 }
 
@@ -33,6 +33,8 @@
 			@"mapAuthor",
 			@"mapCreatedTime",
 			@"myPlaces",
+            @"upload",
+            @"update",
 			nil];
 }
 

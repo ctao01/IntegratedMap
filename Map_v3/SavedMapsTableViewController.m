@@ -13,6 +13,10 @@
 #import "SettingViewController.h"
 #import "RootViewController.h"
 
+@interface SavedMapsTableViewController() 
+
+@end
+
 @implementation SavedMapsTableViewController
 @synthesize googleMaps;
 
@@ -250,12 +254,15 @@
     
     [self.navigationController pushViewController:vcContinuedMap animated:YES];
     vcContinuedMap.toolBar.hidden = YES;
+    vcContinuedMap.currentMap = aMap;
     UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
     vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;
     [editBtn release];
     [vcContinuedMap release];
+
     
-    [delegate.savedMaps removeObjectAtIndex:indexPath.row];
+    
+//    [delegate.savedMaps removeObjectAtIndex:indexPath.row];
     NSLog(@"tableview:%i",[delegate.savedMaps count]);
 
 }
@@ -273,4 +280,6 @@
         [ncSetting release];
     }
 }
+
+
 @end

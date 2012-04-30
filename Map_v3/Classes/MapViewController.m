@@ -19,6 +19,7 @@
 @synthesize placeMarks = _placeMarks;
 @synthesize lat, lng;
 @synthesize toolBar;
+@synthesize currentMap;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -40,6 +41,7 @@
 - (void) dealloc
 {
     [toolBar release];
+    [uploadButton release];
     [mapView release]; mapView = nil;
     [locationManager release]; locationManager = nil;
 
@@ -55,6 +57,41 @@
     
     return [rootViewController class] == [SavedMapsTableViewController class];
 }
+
+- (MyMap *) completeTheMap
+{
+    
+    NSLog(@"savedTheCurrentStatus");
+    
+    MyMap * aMap = [[MyMap alloc]init];
+    
+    aMap.mapTitle = self.navigationItem.title;
+    aMap.myPlaces = self.placeMarks;
+    aMap.mapCreatedTime = [NSDate date];
+    aMap.upload = YES;
+    if (! self.isNotEditable) 
+    {
+        aMap.upload = YES;  // no choose upload action
+
+    }
+    
+    else
+    {
+        if (aMap.upload == YES)
+            aMap.upload = YES;
+        else
+            aMap.upload = NO;
+    }
+    
+    
+    if (uploaded) {
+        aMap.upload = NO;
+    }
+    
+    return aMap;
+}
+
+
 
 #pragma mark - View lifecycle
 
@@ -117,7 +154,9 @@
     toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewPlace)];
     UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [toolBar setItems:[NSArray arrayWithObjects:fixed, addButton , nil] animated:NO];
+    uploadButton = [[UIBarButtonItem alloc]initWithTitle:@"|" style:UIBarButtonItemStyleBordered target:self action:@selector(upload)];
+
+    [toolBar setItems:[NSArray arrayWithObjects:uploadButton, fixed, addButton , nil] animated:NO];
     [self.view addSubview:toolBar];
     [fixed release];
     [addButton release];
@@ -174,10 +213,6 @@
     }
     NSLog(@"updateMapsPlacemarks:%i",[self.placeMarks count]);
     
-//    for (id<MKAnnotation> annotation in mapView.annotations) {
-//        [mapView removeAnnotation:annotation];
-//    }
-    
     // Set up pins
     NSMutableArray * annotations = [[NSMutableArray alloc]init];
     for (int i = 0; i < [self.placeMarks count]; i++) 
@@ -188,24 +223,21 @@
         NSNumber * longitudeNum = [[dict objectAtIndex:i] objectForKey:@"longitude"];
         pinCenter.longitude =[longitudeNum doubleValue];
         
-        NSString * title = [[dict objectAtIndex:i] objectForKey:@"name"];
-        NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
+        NSString * title = [[dict objectAtIndex:i] objectForKey:@"locationName"];
+        NSLog(@"title:%@",title);
         
+        NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
         NSDateFormatter* dateFromatter = [[NSDateFormatter alloc]init];
         [dateFromatter setDateStyle:NSDateFormatterLongStyle];
         [dateFromatter setTimeStyle:NSDateFormatterShortStyle];
         NSString * subtitle = [dateFromatter stringFromDate:timestamp];		
-        
+        NSLog(@"%@",subtitle);
+
         Annotation * annotation = [[Annotation alloc]initWithCoordinate:pinCenter];
-        annotation.title = annotation.title ? title : @"(no title)";
-        annotation.subtitle = annotation.subtitle ? subtitle : @"(no subtitle)";
+        annotation.title = [title isKindOfClass:[NSNull class]]? @"(no title)" : title;    
+        annotation.subtitle = [subtitle isKindOfClass:[NSNull class]] ? @"(no subtitle)" : subtitle;
         
-        [annotations addObject:annotation];
-       
-//        for (annotation in mapView.annotations)
-//        {
-//            [annotation removeObserver:self]; // NOTE: remove ALL observer!
-//        }        
+        [annotations addObject:annotation];     
         [annotation release];
     }
     [theMap addAnnotations:annotations];
@@ -239,12 +271,22 @@
 - (void) done
 {
     AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-    MyMap * aMap = [[MyMap alloc]init];
+//    MyMap * aMap = [[MyMap alloc]init];
+//    aMap.mapTitle = self.navigationItem.title;
+//    aMap.myPlaces = self.placeMarks;
+//    aMap.mapCreatedTime = [NSDate date];
+//    
+//    if (! self.isNotEditable) 
+//        aMap.upload = YES;
+//    else
+//    {
+//        if (aMap.upload == YES)
+//            aMap.upload = YES;
+//        else
+//            aMap.upload = NO;
+//    }
     
-    aMap.mapTitle = self.navigationItem.title;
-    aMap.myPlaces = self.placeMarks;
-    aMap.mapCreatedTime = [NSDate date];
-    
+    MyMap * aMap = [self completeTheMap];
     [delegate.savedMaps addObject:aMap];
     [aMap release];
     
@@ -255,8 +297,14 @@
 
 }
 
+
 - (void) edit
 {
+    if (self.isNotEditable) {
+        AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        [delegate.savedMaps removeObject:currentMap];
+    }
+    
     self.toolBar.hidden = NO;
     
     UIBarButtonItem * doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
@@ -272,6 +320,19 @@
         [locationManager startUpdatingLocation];
     }
     
+}
+
+- (void) upload
+{
+    [uploadButton setTitle:@"-"];
+    [uploadButton setAction:@selector(update)];
+    
+    uploaded = YES; 
+}
+
+- (void) update
+{
+    NSLog(@"update!");
 }
 
 #pragma mark - Core Location Delegate
@@ -307,6 +368,55 @@
     
     [mapView setRegion:mapRegion];
     [mapView regionThatFits:mapRegion];
+}
+
+
+- (MKAnnotationView *) mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation
+{
+    if ([annotation isKindOfClass:[MKUserLocation class]]) 
+    {
+        return nil;
+    }    
+    MKPinAnnotationView * annotationView = [[[MKPinAnnotationView alloc]initWithAnnotation:annotation reuseIdentifier:nil]autorelease];
+    annotationView.canShowCallout = YES;
+    UIButton * detailBtn = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    annotationView.rightCalloutAccessoryView = detailBtn;
+    annotationView.animatesDrop = NO ;
+    return annotationView;
+    
+}
+
+- (void) mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    
+    DetailedViewController * vcDetail = [[DetailedViewController alloc]initWithStyle:UITableViewStyleGrouped];
+    
+    NSMutableArray * dict = [NSMutableArray arrayWithCapacity:[self.placeMarks count]];
+    for (id Obj in [self placeMarks])
+    {
+        [dict addObject:[Obj dictionaryWithValuesForKeys:[MyPlace keys]]];
+    }
+    for (int i = 0; i < [self.placeMarks count]; i++) 
+    {
+        NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
+        NSDateFormatter* dateFromatter = [[NSDateFormatter alloc]init];
+        [dateFromatter setDateStyle:NSDateFormatterLongStyle];
+        [dateFromatter setTimeStyle:NSDateFormatterShortStyle];
+        NSString * subtitle = [dateFromatter stringFromDate:timestamp];		        
+        
+        if ([subtitle isEqualToString:view.annotation.subtitle]) 
+        {
+            MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
+            [vcDetail setThePlace:thePlace];
+            vcDetail.title = [[[dict objectAtIndex:i]objectForKey:@"locationName"] isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"name"];
+                
+        }
+    }
+    [self.navigationController pushViewController:vcDetail animated:YES];
+    
+    [vcDetail release];
+    
+    
 }
 
 #pragma mark - Alert View
@@ -352,6 +462,7 @@
             break;
     }
     [locationManager startUpdatingLocation];
+    [self performSelector:@selector(completeTheMap) withObject:nil afterDelay:5.0f];
 }
 
 

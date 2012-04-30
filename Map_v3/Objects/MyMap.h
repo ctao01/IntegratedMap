@@ -13,16 +13,19 @@
     NSString * _mapTitle;
     NSString * _mapAuthor;
     NSDate * _mapCreatedTime;
-//    NSString * _mapContent;
     NSMutableArray * _myPlaces;
+    
+    BOOL update;
+    BOOL upload;
 }
 
 @property (nonatomic , retain) NSString * mapTitle;
 @property (nonatomic , retain) NSString * mapAuthor;
 @property (nonatomic , retain) NSDate * mapCreatedTime;
-//@property (nonatomic , retain) NSString * mapContent;
 @property (nonatomic , retain) NSMutableArray * myPlaces;
 
+@property (nonatomic , assign) BOOL update;
+@property (nonatomic , assign) BOOL upload;
 
 +(NSArray *)keys;
 -(id)initWithDictionary: (NSDictionary*)dictionary;

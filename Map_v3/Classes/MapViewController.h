@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
+#import "MyMap.h"
 
 @interface MapViewController : UIViewController <CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate>
 {
@@ -17,14 +18,19 @@
     CLLocationDegrees  lng;
     
     MKMapView * mapView;
+    UIBarButtonItem * uploadButton;
+    
+    BOOL uploaded;
 }
 @property (nonatomic , assign) CLLocationDegrees lat;
 @property (nonatomic , assign) CLLocationDegrees lng;
-
 @property (nonatomic , retain) NSMutableArray * placeMarks;
 @property (nonatomic , retain) UIToolbar * toolBar;
 
+@property (nonatomic , assign) MyMap * currentMap;
+
 - (void)setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 
 - (void) updateMap: (MKMapView *) theMap;
+
 
 @end
