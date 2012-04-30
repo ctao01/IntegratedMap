@@ -7,15 +7,27 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "MyMap.h"
+#import "MyPlace.h"
 @interface SettingViewController : UIViewController
 {
     UITextField * usernameField;
     UITextField * passwordField;
 }
 
+#pragma mark - Retrieving a List of Maps
 - (void) retrieveMapsWithAuth:(NSString*)clientAuth;
-//- (void) retrievePlacemakrsWithContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
+
+#pragma mark - Retrieving a List of Placemarks
 - (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
 
+#pragma mark - Uploading XML 
+- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
+- (void) updateMapFeaturesWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andContentURL:(NSString*)theContentURL;
+
+//- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
+//- (NSString *)KMLString:generatingKMLFileWithPlace:(NSDictionary*)thePlace;
+- (NSString *) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
+- (NSString *) creatingKMLFileWithMap:(MyMap *)theMap;
+- (NSString *) creatingCSVFileWithMap:(MyMap *)theMap;
 @end

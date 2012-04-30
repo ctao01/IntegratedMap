@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E71CD52153CC410003121EA /* UploadedMap.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7E71CD51153CC410003121EA /* UploadedMap.xml */; };
 		7E82DC66152FE57E00583074 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC65152FE57E00583074 /* UIKit.framework */; };
 		7E82DC68152FE57E00583074 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC67152FE57E00583074 /* Foundation.framework */; };
 		7E82DC6A152FE57E00583074 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC69152FE57E00583074 /* CoreGraphics.framework */; };
@@ -21,6 +22,7 @@
 		7E82DC9D15308B7900583074 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC9C15308B7900583074 /* CoreLocation.framework */; };
 		7E82DC9F15308B7F00583074 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC9E15308B7F00583074 /* MapKit.framework */; };
 		7E82DCA2153092ED00583074 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82DCA1153092ED00583074 /* Annotation.m */; };
+		7E9CC044153F04AC00DEC3A7 /* KML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9CC043153F04AC00DEC3A7 /* KML.framework */; };
 		7EA70E2315322B1D00DC3D91 /* EditableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2215322B1D00DC3D91 /* EditableCell.m */; };
 		7EA70E2615322B3100DC3D91 /* DetailedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2515322B3100DC3D91 /* DetailedViewController.m */; };
 		7EA70E2915328EAE00DC3D91 /* SavedMapsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2815328EAE00DC3D91 /* SavedMapsTableViewController.m */; };
@@ -43,14 +45,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E71CD51153CC410003121EA /* UploadedMap.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = UploadedMap.xml; sourceTree = "<group>"; };
 		7E82DC61152FE57E00583074 /* Map_v3.7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Map_v3.7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E82DC65152FE57E00583074 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		7E82DC67152FE57E00583074 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7E82DC69152FE57E00583074 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		7E82DC6D152FE57E00583074 /* Map_v3.7-Info.plist */ = {isa = PBXFileReference; path = "Map_v3.7-Info.plist"; sourceTree = "<group>"; };
+		7E82DC6D152FE57E00583074 /* Map_v3.7-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Map_v3.7-Info.plist"; sourceTree = "<group>"; };
 		7E82DC6F152FE57E00583074 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7E82DC71152FE57E00583074 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		7E82DC73152FE57E00583074 /* Map_v3.7-Prefix.pch */ = {isa = PBXFileReference; path = "Map_v3.7-Prefix.pch"; sourceTree = "<group>"; };
+		7E82DC73152FE57E00583074 /* Map_v3.7-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Map_v3.7-Prefix.pch"; sourceTree = "<group>"; };
 		7E82DC74152FE57E00583074 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7E82DC75152FE57E00583074 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		7E82DC7C152FE5A800583074 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootViewController.h; path = Classes/RootViewController.h; sourceTree = "<group>"; };
@@ -66,6 +69,7 @@
 		7E82DC9E15308B7F00583074 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		7E82DCA0153092ED00583074 /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		7E82DCA1153092ED00583074 /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
+		7E9CC043153F04AC00DEC3A7 /* KML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KML.framework; sourceTree = "<group>"; };
 		7EA70E2115322B1D00DC3D91 /* EditableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableCell.h; sourceTree = "<group>"; };
 		7EA70E2215322B1D00DC3D91 /* EditableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableCell.m; sourceTree = "<group>"; };
 		7EA70E2415322B3100DC3D91 /* DetailedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailedViewController.h; sourceTree = "<group>"; };
@@ -120,6 +124,7 @@
 				7E82DC66152FE57E00583074 /* UIKit.framework in Frameworks */,
 				7E82DC68152FE57E00583074 /* Foundation.framework in Frameworks */,
 				7E82DC6A152FE57E00583074 /* CoreGraphics.framework in Frameworks */,
+				7E9CC044153F04AC00DEC3A7 /* KML.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +158,7 @@
 		7E82DC64152FE57E00583074 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7E9CC043153F04AC00DEC3A7 /* KML.framework */,
 				7E82DC65152FE57E00583074 /* UIKit.framework */,
 				7E82DC67152FE57E00583074 /* Foundation.framework */,
 				7E82DC69152FE57E00583074 /* CoreGraphics.framework */,
@@ -173,6 +179,7 @@
 				7E82DC6C152FE57E00583074 /* Supporting Files */,
 				7E82DC7C152FE5A800583074 /* RootViewController.h */,
 				7E82DC7D152FE5A800583074 /* RootViewController.m */,
+				7E71CD51153CC410003121EA /* UploadedMap.xml */,
 				7E82DC83152FE95D00583074 /* SavedMaps.plist */,
 			);
 			path = Map_v3;
@@ -324,6 +331,7 @@
 			files = (
 				7E82DC70152FE57E00583074 /* InfoPlist.strings in Resources */,
 				7E82DC84152FE95D00583074 /* SavedMaps.plist in Resources */,
+				7E71CD52153CC410003121EA /* UploadedMap.xml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +426,10 @@
 		7E82DC7A152FE57E00583074 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Map_v3/Map_v3.7-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
@@ -430,6 +442,10 @@
 		7E82DC7B152FE57E00583074 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Map_v3/Map_v3.7-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
