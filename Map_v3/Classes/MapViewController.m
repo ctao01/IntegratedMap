@@ -42,7 +42,6 @@
 - (void) dealloc
 {
     [toolBar release];
-    [uploadButton release];
     [mapView release]; mapView = nil;
     [locationManager release]; locationManager = nil;
 
@@ -155,17 +154,27 @@
     toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewPlace)];
     UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    if (!uploaded)
     
-        uploadButton = [[UIBarButtonItem alloc]initWithTitle:@"upload" style:UIBarButtonItemStyleBordered target:self action:@selector(upload)];
+    UIButton * customizedBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    if (!uploaded) {
+        [customizedBtn setTitle:@"upload" forState:UIControlStateNormal];
+        [customizedBtn addTarget:self action:@selector(upload) forControlEvents:UIControlEventTouchUpInside];
+    }
     else
-        uploadButton = [[UIBarButtonItem alloc]initWithTitle:@"update" style:UIBarButtonItemStyleBordered target:self action:@selector(upload)];
+    {
+        [customizedBtn setTitle:@"update" forState:UIControlStateNormal];
+        [customizedBtn addTarget:self action:@selector(update) forControlEvents:UIControlEventTouchUpInside];
 
+    }
+    customizedBtn.frame = CGRectMake(0, 0, 80, 32);
+    customizedBtn.titleLabel.font = [UIFont boldSystemFontOfSize:12];
+    UIBarButtonItem * uploadButton = [[UIBarButtonItem alloc]initWithCustomView:customizedBtn];
    
     [toolBar setItems:[NSArray arrayWithObjects:uploadButton, fixed, addButton , nil] animated:NO];
     [self.view addSubview:toolBar];
     [fixed release];
     [addButton release];
+    [uploadButton release];
     
     // Initialize NavigationBar
     UIBarButtonItem * cancelBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
@@ -325,9 +334,9 @@
 
 - (void) upload
 {
-    [uploadButton setTitle:@"update"];
-    [uploadButton setAction:@selector(update)];
     
+    [(UIButton *)[[toolBar.items objectAtIndex:0] customView] setTitle:@"update" forState:UIControlStateNormal];
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
     

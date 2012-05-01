@@ -18,7 +18,6 @@
     CLLocationDegrees  lng;
     
     MKMapView * mapView;
-    UIBarButtonItem * uploadButton;
     
     BOOL uploaded;
 }

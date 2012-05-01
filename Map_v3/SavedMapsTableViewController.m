@@ -14,8 +14,9 @@
 #import "SettingViewController.h"
 #import "RootViewController.h"
 
-@interface SavedMapsTableViewController() 
-
+@interface SavedMapsTableViewController() {
+    UIToolbar * toolBar;
+}
 @end
 
 @implementation SavedMapsTableViewController
@@ -41,11 +42,13 @@
 - (void) dealloc
 {
     [googleMaps release];
+    [toolBar release];
     [super dealloc];
 }
 
 #pragma mark -
 
+/*
 - (void) refresh
 {
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
@@ -55,6 +58,7 @@
     [self.tableView reloadData];
 
 }
+*/
 
 
 - (void) sync
@@ -74,7 +78,10 @@
     [delegate.savedMaps addObjectsFromArray:googleMaps];
     NSLog(@"%i",[delegate.savedMaps count]);
     
-    [self refresh];
+    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
+    [rvc updateSavedData];
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - View lifecycle
@@ -94,6 +101,29 @@
     UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
     self.navigationItem.rightBarButtonItem = syncBtn;
     [syncBtn release];
+    
+    CGRect frame = self.view.frame;
+    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    
+    // TODO: if and if else
+    
+    UIButton * googleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [googleBtn setTitle:@"G" forState:UIControlStateNormal];
+    [googleBtn addTarget:self action:@selector(connectToGoogle) forControlEvents:UIControlEventTouchUpInside];
+    [googleBtn setFrame:CGRectMake(0, 0, 32, 32)];
+    UIBarButtonItem * gooogleBarBtn = [[UIBarButtonItem alloc]initWithCustomView:googleBtn];
+
+    UIButton * yahooBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [yahooBtn setTitle:@"Y" forState:UIControlStateNormal];
+    [yahooBtn addTarget:self action:@selector(connectToYahoo) forControlEvents:UIControlEventTouchUpInside];
+    [yahooBtn setFrame:CGRectMake(0, 0, 32, 32)];
+    UIBarButtonItem * yahooBarBtn = [[UIBarButtonItem alloc]initWithCustomView:yahooBtn];
+    
+    toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 30)];
+    [toolBar setItems:[NSArray arrayWithObjects:fixed, gooogleBarBtn,yahooBarBtn, nil] animated:NO];
+    self.tableView.tableHeaderView = toolBar;
+    
 }
 
 - (void)viewDidUnload
@@ -114,7 +144,7 @@
 {
     [super viewDidAppear:animated];    
     NSLog(@"viewDidAppear");
-    [self refresh];
+    [self.tableView reloadData];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -151,6 +181,16 @@
     }
     else
         [self sync];
+}
+
+- (void) connectToGoogle 
+{
+    [(UIButton *)[[toolBar.items objectAtIndex:1] customView] setTitle:@"G" forState:UIControlStateSelected];
+}
+
+- (void) connectToYahoo
+{
+    [(UIButton *)[[toolBar.items objectAtIndex:2] customView] setTitle:@"Y" forState:UIControlStateSelected];
 }
 
 #pragma mark - Table view data source
