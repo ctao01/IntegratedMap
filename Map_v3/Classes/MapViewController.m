@@ -14,6 +14,7 @@
 #import "DetailedViewController.h"
 #import "SavedMapsTableViewController.h"
 
+
 @implementation MapViewController
 
 @synthesize placeMarks = _placeMarks;
@@ -147,15 +148,20 @@
 //            double avgLng = [[self.placeMarks valueForKeyPath:@"@avg.longitude"] doubleValue];
 //        } 
     }
-    [self updateMap:mapView];
+    [self updateCurrentMap:mapView];
 
 
     // Initialize ToolBar
     toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewPlace)];
     UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    uploadButton = [[UIBarButtonItem alloc]initWithTitle:@"|" style:UIBarButtonItemStyleBordered target:self action:@selector(upload)];
+    if (!uploaded)
+    
+        uploadButton = [[UIBarButtonItem alloc]initWithTitle:@"upload" style:UIBarButtonItemStyleBordered target:self action:@selector(upload)];
+    else
+        uploadButton = [[UIBarButtonItem alloc]initWithTitle:@"update" style:UIBarButtonItemStyleBordered target:self action:@selector(upload)];
 
+   
     [toolBar setItems:[NSArray arrayWithObjects:uploadButton, fixed, addButton , nil] animated:NO];
     [self.view addSubview:toolBar];
     [fixed release];
@@ -180,7 +186,7 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self updateMap:mapView];
+    [self updateCurrentMap:mapView];
 
 }
 
@@ -204,7 +210,7 @@
 
 #pragma mark - Update
 
-- (void) updateMap: (MKMapView *) theMap
+- (void) updateCurrentMap: (MKMapView *) theMap
 {
     NSMutableArray * dict = [NSMutableArray arrayWithCapacity:[self.placeMarks count]];
     for (id Obj in [self placeMarks])
@@ -242,11 +248,6 @@
     }
     [theMap addAnnotations:annotations];
     [annotations release];
-}
-
-- (void) addAnnotationsToMap:(MKMapView*)theMap
-{
-    
 }
 
 #pragma mark - Button Actions
@@ -324,8 +325,32 @@
 
 - (void) upload
 {
-    [uploadButton setTitle:@"-"];
+    [uploadButton setTitle:@"update"];
     [uploadButton setAction:@selector(update)];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
+    
+    if (!authStr)
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Warning" message:@"You haven't connected to any account" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+    
+    MyMap * aMap = [self completeTheMap];
+    NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
+    for (MyPlace * myPlace in [aMap myPlaces] )
+    {
+        [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
+    }
+    aMap.myPlaces = myPlaces;
+//    
+//    NSString * mapStr = [myMaps description];
+//    NSLog(@"mapStr:%@",mapStr);
+    NSLog(@"MAP%@",[aMap description]);
+    
+    [self uploadMapsWithAuth:authStr andAMap:aMap];
     
     uploaded = YES; 
 }
@@ -424,6 +449,7 @@
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == alertView.cancelButtonIndex) return;
+    
     switch (buttonIndex) 
     {
         case 1:
@@ -439,7 +465,7 @@
             NSLog(@"self.placeMarks:%@",self.placeMarks);
             
             [aPlace release];
-            [self updateMap: mapView];
+            [self updateCurrentMap: mapView];
 
         }
             break;
@@ -462,8 +488,49 @@
             break;
     }
     [locationManager startUpdatingLocation];
-    [self performSelector:@selector(completeTheMap) withObject:nil afterDelay:5.0f];
+    [self performSelector:@selector(completeTheMap) withObject:nil afterDelay:2.0f];
 }
 
 
+#pragma mark - upload / update
+
+- (NSString *) creatingCSVFileWithMap:(MyMap *)theMap
+{
+    NSMutableString * CSVStr = [[NSMutableString alloc]init];
+    [CSVStr appendString:@"name,latitude,longitude,description\n"];
+    for (int index = 0; index < [theMap.myPlaces count]; index++) 
+    {
+        NSDictionary * placesDict = [theMap.myPlaces objectAtIndex:index];
+        NSString * description = [placesDict objectForKey:@"comment"];
+        
+        [CSVStr appendFormat:@"%@,%@,%@,%@\n",
+         [placesDict objectForKey:@"locationName"],
+         [placesDict objectForKey:@"latitude"],
+         [placesDict objectForKey:@"longitude"],
+         [description isKindOfClass:[NSNull class]]? @"no comment": description];
+    }
+    
+    return CSVStr;
+}
+
+- (void) uploadMapsWithAuth:(NSString *)clientAuth andAMap:(MyMap *)theMap
+{
+    
+    NSURL * url =[NSURL URLWithString:@"http://maps.google.com/maps/feeds/maps/default/full"];
+    ASIFormDataRequest * updateRequest = [ASIFormDataRequest requestWithURL:url];
+    NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
+    [updateRequest addRequestHeader:@"Authorization" value:authString];
+    [updateRequest addRequestHeader:@"GData-Version" value:@"2.0"];
+    [updateRequest addRequestHeader:@"Content-type" value:@"text/csv"];
+    [updateRequest addRequestHeader:@"Slug" value:[theMap mapTitle]];
+    
+    NSString * string = [self creatingCSVFileWithMap:theMap];
+    
+    NSMutableData * bodyData = [[NSMutableData alloc]initWithData:[string dataUsingEncoding:NSUTF8StringEncoding]];
+    [updateRequest setPostBody:bodyData];
+    [updateRequest startSynchronous];
+    
+    NSString * updateResponse = [updateRequest responseString];
+    NSLog(@"updateResponse:%@",updateResponse);
+}
 @end

@@ -22,6 +22,7 @@
     
     BOOL uploaded;
 }
+
 @property (nonatomic , assign) CLLocationDegrees lat;
 @property (nonatomic , assign) CLLocationDegrees lng;
 @property (nonatomic , retain) NSMutableArray * placeMarks;
@@ -29,8 +30,13 @@
 
 @property (nonatomic , assign) MyMap * currentMap;
 
-- (void)setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 
-- (void) updateMap: (MKMapView *) theMap;
+- (void) setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 
+- (void) updateCurrentMap: (MKMapView *) theMap;
+
+//upload to server
+- (void) uploadMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
+- (NSString *) creatingCSVFileWithMap:(MyMap *)theMap;
+
 
 
 @end

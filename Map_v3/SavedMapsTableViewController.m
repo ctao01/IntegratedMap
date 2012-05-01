@@ -114,6 +114,7 @@
 {
     [super viewDidAppear:animated];    
     NSLog(@"viewDidAppear");
+    [self refresh];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -244,36 +245,51 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+//    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+//    MyMap * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
+//    
+//    NSMutableArray * myMaps = [[NSMutableArray alloc]initWithCapacity:1];
+//    NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
+//    for (MyPlace * myPlace in [aMap myPlaces] )
+//    {
+//        [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
+//    }
+//    aMap.myPlaces = myPlaces;
+//    [myMaps addObject:[aMap dictionaryWithValuesForKeys:[MyMap keys]]];
+//    
+//    NSString * mapStr = [myMaps description];
+//    NSLog(@"mapStr:%@",mapStr);
+////    NSData * mapData= [mapStr dataUsingEncoding:NSUTF8StringEncoding];    
+//    NSString * uploadedMapFile = [[NSBundle mainBundle]pathForResource:@"UploadedMap" ofType:@"xml"];
+//    [mapStr writeToFile:uploadedMapFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
+//    NSString * uploadedMapStr = [NSString stringWithContentsOfFile:uploadedMapFile encoding:NSUTF8StringEncoding error:nil];
+//    NSLog(@"uploadMapStr:%@",uploadedMapStr);
+//
+//    SettingViewController * vcSetting = [[SettingViewController alloc]init];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
+////    [vcSetting updateMapsWithAuth:authStr andContentString:uploadedMapStr];
+////    [vcSetting updateMapsWithAuth:authStr andFilePath:uploadedMapFile];
+//    [vcSetting updateMapsWithAuth:authStr andAMap:aMap];
+    
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
     MyMap * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
     
-    NSMutableArray * myMaps = [[NSMutableArray alloc]initWithCapacity:1];
-    NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
-    for (MyPlace * myPlace in [aMap myPlaces] )
-    {
-        [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
-    }
-    aMap.myPlaces = myPlaces;
-    [myMaps addObject:[aMap dictionaryWithValuesForKeys:[MyMap keys]]];
+    MapViewController * vcContinuedMap = [[MapViewController alloc]init];
+    [vcContinuedMap setTitle:aMap.mapTitle];
+    [vcContinuedMap setPlaceMarks:aMap.myPlaces];
     
-    NSString * mapStr = [myMaps description];
-    NSLog(@"mapStr:%@",mapStr);
-//    NSData * mapData= [mapStr dataUsingEncoding:NSUTF8StringEncoding];    
-    NSString * uploadedMapFile = [[NSBundle mainBundle]pathForResource:@"UploadedMap" ofType:@"xml"];
-    [mapStr writeToFile:uploadedMapFile atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    NSString * uploadedMapStr = [NSString stringWithContentsOfFile:uploadedMapFile encoding:NSUTF8StringEncoding error:nil];
-    NSLog(@"uploadMapStr:%@",uploadedMapStr);
-
-    SettingViewController * vcSetting = [[SettingViewController alloc]init];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
-//    [vcSetting updateMapsWithAuth:authStr andContentString:uploadedMapStr];
-//    [vcSetting updateMapsWithAuth:authStr andFilePath:uploadedMapFile];
-    [vcSetting updateMapsWithAuth:authStr andAMap:aMap];
+    [self.navigationController pushViewController:vcContinuedMap animated:YES];
+    vcContinuedMap.toolBar.hidden = YES;
+    vcContinuedMap.currentMap = aMap;
+    UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
+    vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;
+    [editBtn release];
+    [vcContinuedMap release];
 
     
  }
-
+/*
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
@@ -295,7 +311,7 @@
     
 //    [delegate.savedMaps removeObjectAtIndex:indexPath.row];
     NSLog(@"tableview:%i",[delegate.savedMaps count]);
-}
+}*/
 
 #pragma mark - UIAlertViewDelegate
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

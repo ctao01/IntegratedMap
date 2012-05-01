@@ -7,27 +7,35 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MyMap.h"
-#import "MyPlace.h"
+
+
+//@class SettingViewController;
+//
+//@protocol SettingViewDelegate <NSObject>
+//
+//- (void) retrieveMapsWithAuth:(NSString*)clientAuth;
+//- (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
+//
+//- (NSString *) creatingCSVFileWithMap:(MyMap *)theMap;
+//
+//- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
+//- (void) updateMapFeaturesWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andContentURL:(NSString*)theContentURL;
+//
+//@end
+
+
 @interface SettingViewController : UIViewController
 {
     UITextField * usernameField;
     UITextField * passwordField;
 }
 
-#pragma mark - Retrieving a List of Maps
 - (void) retrieveMapsWithAuth:(NSString*)clientAuth;
-
-#pragma mark - Retrieving a List of Placemarks
 - (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
 
-#pragma mark - Uploading XML 
-- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
-- (void) updateMapFeaturesWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andContentURL:(NSString*)theContentURL;
+//#pragma mark - Uploading XML 
+//- (void) updateMapsWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap;
+//- (void) updateMapFeaturesWithAuth:(NSString*)clientAuth andAMap:(MyMap*)theMap andContentURL:(NSString*)theContentURL;
+//- (NSString *) creatingCSVFileWithMap:(MyMap *)theMap;
 
-//- (void) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
-//- (NSString *)KMLString:generatingKMLFileWithPlace:(NSDictionary*)thePlace;
-- (NSString *) generatingKMLFileWithPlace:(NSDictionary*)thePlace;
-- (NSString *) creatingKMLFileWithMap:(MyMap *)theMap;
-- (NSString *) creatingCSVFileWithMap:(MyMap *)theMap;
 @end
