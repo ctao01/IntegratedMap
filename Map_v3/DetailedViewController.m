@@ -75,18 +75,18 @@
     return cell;
 }
 // TODO: modify saved data
-/*
-- (void) update
-{
-    NSArray *viewControllers = [[self navigationController] viewControllers];
-    MapViewController * vcMap = [viewControllers objectAtIndex:[viewControllers count]-2];
-    NSLog(@"%@",[vcMap description]);
-    [annotation setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
-    [annotation setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
-    
-    NSDate * timestamp = [NSDate date];
-    [annotation setTimestamp:timestamp];
-}*/
+
+//- (void) update
+//{
+//    NSArray *viewControllers = [[self navigationController] viewControllers];
+//    MapViewController * vcMap = [viewControllers objectAtIndex:[viewControllers count]-2];
+//    NSLog(@"%@",[vcMap description]);
+//    [thePlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
+//    [thePlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
+//    
+//    NSDate * timestamp = [NSDate date];
+//    [thePlace setTimestamp:timestamp];
+//}
 
 #pragma mark - UIButton Action
 
@@ -105,12 +105,22 @@
         [vcMap.placeMarks addObject:thePlace];
         [self.navigationController dismissModalViewControllerAnimated:YES];
     }
-    /*        
+            
     else
     {
-        [self update];
+        NSArray *viewControllers = [[self navigationController] viewControllers];
+        MapViewController * vcMap = [viewControllers objectAtIndex:[viewControllers count]-2];
+        NSLog(@"%@",[vcMap description]);
+        [thePlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
+        [thePlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
+        
+        NSDate * timestamp = [NSDate date];
+        [thePlace setTimestamp:timestamp]; 
+        
+        [vcMap.placeMarks addObject:thePlace];
+
         [[self navigationController] popViewControllerAnimated:YES];
-    }*/
+    }
     
 }
 

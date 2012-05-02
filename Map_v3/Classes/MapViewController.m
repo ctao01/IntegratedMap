@@ -432,19 +432,26 @@
     }
     for (int i = 0; i < [self.placeMarks count]; i++) 
     {
-        NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
-        NSDateFormatter* dateFromatter = [[NSDateFormatter alloc]init];
-        [dateFromatter setDateStyle:NSDateFormatterLongStyle];
-        [dateFromatter setTimeStyle:NSDateFormatterShortStyle];
-        NSString * subtitle = [dateFromatter stringFromDate:timestamp];		        
+//        NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
+//        NSDateFormatter* dateFromatter = [[NSDateFormatter alloc]init];
+//        [dateFromatter setDateStyle:NSDateFormatterLongStyle];
+//        [dateFromatter setTimeStyle:NSDateFormatterShortStyle];
+//        NSString * subtitle = [dateFromatter stringFromDate:timestamp];		        
         
-        if ([subtitle isEqualToString:view.annotation.subtitle]) 
-        {
-            MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
-            [vcDetail setThePlace:thePlace];
-            vcDetail.title = [[[dict objectAtIndex:i]objectForKey:@"locationName"] isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"name"];
-                
-        }
+        MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
+        [vcDetail setThePlace:thePlace];
+        NSString * title = [[dict objectAtIndex:i]objectForKey:@"locationName"];
+        NSLog(@"TITLE:%@",title);
+        vcDetail.title =[title isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
+//        if ([subtitle isEqualToString:view.annotation.subtitle]) 
+//        {
+//            MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
+//            [vcDetail setThePlace:thePlace];
+//            NSString * title = [[dict objectAtIndex:i]objectForKey:@"locationName"];
+//            NSLog(@"TITLE:%@",title);
+//            vcDetail.title =[title isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
+//                
+//        }
     }
     [self.navigationController pushViewController:vcDetail animated:YES];
     

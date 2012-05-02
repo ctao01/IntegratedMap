@@ -109,9 +109,11 @@
     // TODO: if and if else
     
     UIButton * googleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [googleBtn setTitle:@"G" forState:UIControlStateNormal];
+//    [googleBtn setTitle:@"G" forState:UIControlStateNormal];
+    UIImage * inactiveGImg = [UIImage imageNamed:@"google_44x44"];
+    [googleBtn setBackgroundImage:inactiveGImg forState:UIControlStateNormal];
     [googleBtn addTarget:self action:@selector(connectToGoogle) forControlEvents:UIControlEventTouchUpInside];
-    [googleBtn setFrame:CGRectMake(0, 0, 32, 32)];
+    [googleBtn setFrame:CGRectMake(0, 0, 44, 44)];
     UIBarButtonItem * gooogleBarBtn = [[UIBarButtonItem alloc]initWithCustomView:googleBtn];
 
     UIButton * yahooBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -120,7 +122,7 @@
     [yahooBtn setFrame:CGRectMake(0, 0, 32, 32)];
     UIBarButtonItem * yahooBarBtn = [[UIBarButtonItem alloc]initWithCustomView:yahooBtn];
     
-    toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 30)];
+    toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 44)];
     [toolBar setItems:[NSArray arrayWithObjects:fixed, gooogleBarBtn,yahooBarBtn, nil] animated:NO];
     self.tableView.tableHeaderView = toolBar;
     
@@ -185,7 +187,7 @@
 
 - (void) connectToGoogle 
 {
-    [(UIButton *)[[toolBar.items objectAtIndex:1] customView] setTitle:@"G" forState:UIControlStateSelected];
+    [(UIButton *)[[toolBar.items objectAtIndex:1] customView] setBackgroundImage:[UIImage imageNamed:@"google_selected_44x44"] forState:UIControlStateNormal];
 }
 
 - (void) connectToYahoo
@@ -318,10 +320,10 @@
     MapViewController * vcContinuedMap = [[MapViewController alloc]init];
     [vcContinuedMap setTitle:aMap.mapTitle];
     [vcContinuedMap setPlaceMarks:aMap.myPlaces];
+    [vcContinuedMap setCurrentMap:aMap];
     
     [self.navigationController pushViewController:vcContinuedMap animated:YES];
     vcContinuedMap.toolBar.hidden = YES;
-    vcContinuedMap.currentMap = aMap;
     UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
     vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;
     [editBtn release];
