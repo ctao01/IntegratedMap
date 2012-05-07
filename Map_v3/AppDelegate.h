@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "RootViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#define kAPPID @"282603195164997"
+
+@interface AppDelegate : NSObject  <UIApplicationDelegate> 
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic , retain) UINavigationController * navigationController;
@@ -18,4 +20,5 @@
 // store data
 @property (nonatomic , copy) NSString * path;
 @property (nonatomic , retain) NSMutableArray * savedMaps;
+@property (nonatomic , retain) Facebook * facebook;
 @end

@@ -15,6 +15,7 @@
 @synthesize window = _window;
 @synthesize path = _path;
 @synthesize savedMaps = _savedMaps;
+@synthesize facebook;
 
 - (void)dealloc
 {
@@ -70,6 +71,14 @@
         
         self.savedMaps = [[NSMutableArray alloc] initWithCapacity:[mapDicts count]];
     }
+    SettingTableViewController * settingVC = (SettingTableViewController*)self.rootViewController.tvSetting;
+    facebook = [[Facebook alloc] initWithAppId:kAPPID andDelegate:settingVC];
+    
+    if ([defaults objectForKey:@"FBAccessTokenKey"] 
+        && [defaults objectForKey:@"FBExpirationDateKey"]) {
+        facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
+        facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
+    }
     
     return YES;
 }
@@ -111,6 +120,17 @@
      Save data if appropriate.
      See also applicationDidEnterBackground:.
      */
+}
+#pragma mark -
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
+{
+    return [self.facebook handleOpenURL:url];
+}
+
+- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [self.facebook handleOpenURL:url];
+    
 }
 
 @end

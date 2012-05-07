@@ -7,6 +7,7 @@
 //
 
 #import "SettingTableViewController.h"
+#import "AppDelegate.h"
 
 @interface SettingTableViewController () {
     NSMutableDictionary * settingDict;
@@ -15,7 +16,6 @@
 
 @implementation SettingTableViewController
 @synthesize vcParent;
-@synthesize facebook;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -140,8 +140,7 @@
         cell.textLabel.text = [[settingDict objectForKey:@"control_setting"]objectAtIndex:indexPath.row]; 
     else if (indexPath.section == OtherSetting) 
         cell.textLabel.text = [[settingDict objectForKey:@"other_setting"]objectAtIndex:indexPath.row]; 
-    else
-        cell.textLabel.text = nil;
+    else return nil; 
     // Configure the cell...
     
     return cell;
@@ -161,6 +160,7 @@
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
     
     if (indexPath.row == 0) {
         if (! [defaults objectForKey:@"AuthorizationToken"])
@@ -184,6 +184,22 @@
             [gLogoutView release];
         }
         
+    }
+    
+    else if (indexPath.row == 1)
+    {
+        if (![[delegate facebook] isSessionValid]) 
+        {   
+            NSArray *permissions = [[NSArray alloc] initWithObjects:
+                                    @"user_activities", 
+                                    @"read_friendlists",
+                                    @"offline_access",
+                                    nil];
+            [[delegate facebook] authorize:permissions];
+            [permissions release];
+        }
+        else
+            [delegate.facebook logout];
     }
 }
 
@@ -259,11 +275,55 @@
                 [defaults synchronize];
             }
         }
+    } 
+}
+
+#pragma mark - FBSessionDelegate
+- (void)fbDidLogin
+{
+    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[delegate.facebook accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:[delegate.facebook expirationDate] forKey:@"FBExpirationDateKey"];
+    [defaults synchronize];
+}
+- (void)fbDidNotLogin:(BOOL)cancelled
+{
+    
+}
+
+
+- (void)fbDidExtendToken:(NSString*)accessToken
+               expiresAt:(NSDate*)expiresAt
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:accessToken forKey:@"FBAccessTokenKey"];
+    [defaults setObject:expiresAt forKey:@"FBExpirationDateKey"];
+    [defaults synchronize];
+    
+}
+- (void)fbDidLogout
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:@"FBAccessTokenKey"]) {
+        [defaults removeObjectForKey:@"FBAccessTokenKey"];
+        [defaults removeObjectForKey:@"FBExpirationDateKey"];
+        [defaults synchronize];
     }
-    
-    
-    
-    
+}
+
+- (void)fbSessionInvalidated
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"Auth Exception"
+                              message:@"Your session has expired."
+                              delegate:nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil,
+                              nil];
+    [alertView show];
+    [alertView release];
+    [self fbDidLogout];
 }
 
 @end
