@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "MyMap.h"
+#import "SettingTableViewController.h"
 
 @interface RootViewController : UIViewController < UIAlertViewDelegate >
 
 //@property (nonatomic , assign) MyMap * currentMap;
-
+@property (nonatomic , retain) SettingTableViewController * tvSetting;
 - (void) updateSavedData;
 
 @end

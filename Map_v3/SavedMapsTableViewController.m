@@ -102,29 +102,29 @@
     self.navigationItem.rightBarButtonItem = syncBtn;
     [syncBtn release];
     
-    CGRect frame = self.view.frame;
-    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+//    CGRect frame = self.view.frame;
+//    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     
     // TODO: if and if else
     
-    UIButton * googleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [googleBtn setTitle:@"G" forState:UIControlStateNormal];
-    UIImage * inactiveGImg = [UIImage imageNamed:@"google_44x44"];
-    [googleBtn setBackgroundImage:inactiveGImg forState:UIControlStateNormal];
-    [googleBtn addTarget:self action:@selector(connectToGoogle) forControlEvents:UIControlEventTouchUpInside];
-    [googleBtn setFrame:CGRectMake(0, 0, 44, 44)];
-    UIBarButtonItem * gooogleBarBtn = [[UIBarButtonItem alloc]initWithCustomView:googleBtn];
-
-    UIButton * yahooBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [yahooBtn setTitle:@"Y" forState:UIControlStateNormal];
-    [yahooBtn addTarget:self action:@selector(connectToYahoo) forControlEvents:UIControlEventTouchUpInside];
-    [yahooBtn setFrame:CGRectMake(0, 0, 32, 32)];
-    UIBarButtonItem * yahooBarBtn = [[UIBarButtonItem alloc]initWithCustomView:yahooBtn];
-    
-    toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 44)];
-    [toolBar setItems:[NSArray arrayWithObjects:fixed, gooogleBarBtn,yahooBarBtn, nil] animated:NO];
-    self.tableView.tableHeaderView = toolBar;
+//    UIButton * googleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+////    [googleBtn setTitle:@"G" forState:UIControlStateNormal];
+//    UIImage * inactiveGImg = [UIImage imageNamed:@"google_44x44"];
+//    [googleBtn setBackgroundImage:inactiveGImg forState:UIControlStateNormal];
+//    [googleBtn addTarget:self action:@selector(connectToGoogle) forControlEvents:UIControlEventTouchUpInside];
+//    [googleBtn setFrame:CGRectMake(0, 0, 44, 44)];
+//    UIBarButtonItem * gooogleBarBtn = [[UIBarButtonItem alloc]initWithCustomView:googleBtn];
+//
+//    UIButton * yahooBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [yahooBtn setTitle:@"Y" forState:UIControlStateNormal];
+//    [yahooBtn addTarget:self action:@selector(connectToYahoo) forControlEvents:UIControlEventTouchUpInside];
+//    [yahooBtn setFrame:CGRectMake(0, 0, 32, 32)];
+//    UIBarButtonItem * yahooBarBtn = [[UIBarButtonItem alloc]initWithCustomView:yahooBtn];
+//    
+//    toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 44)];
+//    [toolBar setItems:[NSArray arrayWithObjects:fixed, gooogleBarBtn,yahooBarBtn, nil] animated:NO];
+//    self.tableView.tableHeaderView = toolBar;
     
 }
 

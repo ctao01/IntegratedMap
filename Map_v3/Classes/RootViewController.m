@@ -15,7 +15,7 @@
 
 @implementation RootViewController
 //@synthesize currentMap;
-
+@synthesize tvSetting;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -70,6 +70,12 @@
     [savedMapsBtn setTitle:@"Saved Maps" forState:UIControlStateNormal];
     [savedMapsBtn addTarget:self action:@selector(savedMaps) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:savedMapsBtn];
+    
+    UIButton * settingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [settingBtn setFrame:CGRectMake(80, 300, 160, 30)];
+    [settingBtn setTitle:@"Setting" forState:UIControlStateNormal];
+    [settingBtn addTarget:self action:@selector(goToSetting) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:settingBtn];
     
 }
 
@@ -183,6 +189,14 @@
     SavedMapsTableViewController * vcSavedMaps = [[SavedMapsTableViewController alloc]initWithStyle:UITableViewStylePlain];
     [self.navigationController pushViewController:vcSavedMaps animated:YES];
     [vcSavedMaps release];
+}
+
+- (void) goToSetting
+{
+    self.tvSetting = [[SettingTableViewController alloc]initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:self.tvSetting animated:YES];
+    self.tvSetting.vcParent = self;
+    [tvSetting release];
 }
 
 #pragma mark - UIAlertViewDelegate

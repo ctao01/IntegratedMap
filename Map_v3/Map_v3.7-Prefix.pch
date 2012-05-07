@@ -17,4 +17,6 @@
 
     #import <KML/KML.h>
 
+    #import"FBConnect.h"
+
 #endif
