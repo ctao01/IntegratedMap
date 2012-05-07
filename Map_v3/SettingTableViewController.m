@@ -160,7 +160,31 @@
 
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     
+    if (indexPath.row == 0) {
+        if (! [defaults objectForKey:@"AuthorizationToken"])
+        {
+            UIAlertView * gLoginView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Connect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Connect", nil];
+            [gLoginView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
+            [[gLoginView textFieldAtIndex:0]setPlaceholder:@"Username" ];
+            [[gLoginView textFieldAtIndex:0]setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+            [[gLoginView textFieldAtIndex:1]setPlaceholder:@"Password" ];
+            [[gLoginView textFieldAtIndex:1]setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+            
+            [gLoginView setDelegate:self];
+            [gLoginView show];
+            [gLoginView release];
+        }
+        else
+        {
+            UIAlertView * gLogoutView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Disconnect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Disconnect", nil];
+            [gLogoutView setDelegate:self];
+            [gLogoutView show];
+            [gLogoutView release];
+        }
+        
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -173,6 +197,73 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      [detailViewController release];
      */
+}
+
+#pragma mark - UIAlertViewDelegate 
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == alertView.cancelButtonIndex)  return;
+    
+    if ([alertView.title isEqualToString:@"Google"])
+    {
+        NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+        if (buttonIndex == 1)
+        {
+            if ( ![defaults objectForKey:@"AuthorizationToken"])
+            {
+                NSURL * url = [NSURL URLWithString:@"https://www.google.com/accounts/ClientLogin"];
+                ASIFormDataRequest * loginRequest = [ASIFormDataRequest requestWithURL:url];
+                [loginRequest setPostValue:@"GOOGLE" forKey:@"accountType"];
+                [loginRequest setPostValue:@"local" forKey:@"service"];
+                [loginRequest setPostValue:@"scroll" forKey:@"source"];
+                
+                [loginRequest setPostValue:[[alertView textFieldAtIndex:0] text] forKey:@"Email"];
+                [loginRequest setPostValue:[[alertView textFieldAtIndex:1] text] forKey:@"Passwd"];
+                [loginRequest startSynchronous];
+                
+                NSString * loginResponse = [loginRequest responseString];
+                NSLog(@"%@", loginResponse);
+                
+                NSArray* loginResponseVariables = [loginResponse componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                NSString * clientSID = nil;
+                NSString * errorMessage = nil;
+                NSString * clientAuth = nil; //
+                for(NSString* entry in loginResponseVariables) {
+                    NSArray* entryComponents = [entry componentsSeparatedByString:@"="];
+                    if (entryComponents.count == 2) {
+                        NSString* key = [entryComponents objectAtIndex:0];
+                        if ([@"SID" caseInsensitiveCompare:key] == NSOrderedSame) {
+                            clientSID = [entryComponents objectAtIndex:1];
+                        } else if ([@"Auth" caseInsensitiveCompare:key] == NSOrderedSame) {
+                            clientAuth = [entryComponents objectAtIndex:1];
+                        } else if ([@"Error" caseInsensitiveCompare:key] == NSOrderedSame) {
+                            errorMessage = [entryComponents objectAtIndex:1];
+                        }
+                    }
+                }
+                // store the token
+                [defaults setObject:clientAuth forKey:@"AuthorizationToken"];
+                [defaults synchronize];
+                
+                if (!clientSID || !clientAuth) {
+                    // return error
+                    UIAlertView *alertUserError= [[UIAlertView alloc]initWithTitle:@"Error" message:@ "Please re-check your Google ID and password." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alertUserError show];
+                    [alertUserError release];
+                }
+            }
+            
+            else
+            {
+                [defaults removeObjectForKey:@"AuthorizationToken"];
+                [defaults synchronize];
+            }
+        }
+    }
+    
+    
+    
+    
 }
 
 @end

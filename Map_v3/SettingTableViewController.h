@@ -14,7 +14,7 @@ typedef enum  {
     OtherSetting = 2,
 } SettingSection;
 
-@interface SettingTableViewController : UITableViewController
+@interface SettingTableViewController : UITableViewController <UIAlertViewDelegate>
 
 @property (nonatomic, assign) UIViewController * vcParent;
 @property (nonatomic, retain) Facebook * facebook;
