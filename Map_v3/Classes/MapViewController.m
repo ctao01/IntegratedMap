@@ -7,13 +7,14 @@
 //
 
 #import "MapViewController.h"
-#import <CoreLocation/CoreLocation.h>
 #import "MyPlace.h"
 #import "Annotation.h"
 #import "AppDelegate.h"
 #import "DetailedViewController.h"
 #import "SavedMapsTableViewController.h"
 
+#import <CoreLocation/CoreLocation.h>
+#import <QuartzCore/QuartzCore.h>
 
 @implementation MapViewController
 
@@ -68,26 +69,18 @@
     aMap.mapTitle = self.navigationItem.title;
     aMap.myPlaces = self.placeMarks;
     aMap.mapCreatedTime = [NSDate date];
-    aMap.upload = YES;
     if (! self.isNotEditable) 
     {
-        aMap.upload = YES;  // no choose upload action
-
+        aMap.upload = YES;  // view push from rootviewcontroller
     }
     
-    else
+    else 
     {
         if (aMap.upload == YES)
             aMap.upload = YES;
         else
             aMap.upload = NO;
     }
-    
-    
-    if (uploaded) {
-        aMap.upload = NO;
-    }
-    
     return aMap;
 }
 
@@ -272,6 +265,29 @@
     [alertview release];
 }
 
+- (UIImage*) generateMapImage
+{
+    UIGraphicsBeginImageContext(mapView.frame.size);
+	[mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
+	UIImage * mapImage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+    
+    UIImageView * mapImgView = [[UIImageView alloc]initWithFrame:UIEdgeInsetsInsetRect(self.view.frame, UIEdgeInsetsMake(40.0f, 20.0f, 40.0f, 20.0f))];
+    mapImgView.layer.borderWidth = 2.0f;
+    mapImgView.layer.borderColor = [[UIColor whiteColor] CGColor];
+    mapImgView.layer.cornerRadius = 5.0f;
+    mapImgView.layer.shadowColor = [[UIColor redColor] CGColor];
+    mapImgView.image = mapImage;
+    
+    
+    UIGraphicsBeginImageContext(mapImgView.bounds.size);
+    [mapImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+//    UIImageWriteToSavedPhotosAlbum(newImage, nil, nil, nil);
+    return newImage;
+}
+
 - (void) cancel
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -297,12 +313,14 @@
 //    }
     
     MyMap * aMap = [self completeTheMap];
+    if (uploaded)
+        aMap.upload = NO;
+    UIImage * image = [self generateMapImage];
+    aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/%@.png", aMap.mapTitle];
+    [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
+   
     [delegate.savedMaps addObject:aMap];
     [aMap release];
-    
-
-    NSLog(@"delegate.savedMaps:%i",[delegate.savedMaps count]);
-    
     [self.navigationController popViewControllerAnimated:YES];
 
 }
@@ -321,14 +339,14 @@
     self.navigationItem.rightBarButtonItem = doneBtn;
     [doneBtn release];
     
-    if (!locationManager) 
-    {
-        locationManager = [[CLLocationManager alloc]init];
-        locationManager.delegate = self;
-        locationManager.distanceFilter = 50.0f;
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        [locationManager startUpdatingLocation];
-    }
+//    if (!locationManager) 
+//    {
+//        locationManager = [[CLLocationManager alloc]init];
+//        locationManager.delegate = self;
+//        locationManager.distanceFilter = 50.0f;
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//        [locationManager startUpdatingLocation];
+//    }
     
 }
 

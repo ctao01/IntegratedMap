@@ -9,8 +9,7 @@
 #import "SavedMapsTableViewController.h"
 #import "AppDelegate.h"
 #import "MapViewController.h"
-#import "MyMap.h"
-#import "MyPlace.h"
+#import "GDataXMLNode.h"
 #import "SettingViewController.h"
 #import "RootViewController.h"
 
@@ -21,6 +20,7 @@
 
 @implementation SavedMapsTableViewController
 @synthesize googleMaps;
+@synthesize gSavedMaps = _gSavedMaps;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -47,6 +47,162 @@
 }
 
 #pragma mark -
+
+- (void) setGSavedMaps:(NSMutableArray *)gSavedMaps
+{
+    AppDelegate * delegate = (AppDelegate*)[[UIApplication sharedApplication]delegate];
+    
+    if (_gSavedMaps == gSavedMaps) return;
+    [_gSavedMaps release];
+//    _gSavedMaps = [gSavedMaps retain];
+ 
+    
+    for (int i = 0; i < [[delegate savedMaps]count]; i ++) 
+    {        
+        for (int j = 0; j < [gSavedMaps count]; j ++)
+        {
+            if ([[(MyMap*)[gSavedMaps objectAtIndex:j] mapTitle] isEqualToString:[(MyMap*)[[delegate savedMaps] objectAtIndex:i] mapTitle] ]) 
+                [gSavedMaps removeObjectAtIndex:j];
+        }
+    }
+    _gSavedMaps = [gSavedMaps retain];
+    
+    [delegate.savedMaps addObjectsFromArray:_gSavedMaps];
+    
+    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
+    [rvc updateSavedData];
+    
+    [self.tableView reloadData];
+}
+
+- (NSMutableArray * )retrieveMapsWithAuth:(NSString*)clientAuth
+{
+    NSURL * listURL = [NSURL URLWithString:@"http://maps.google.com/maps/feeds/maps/default/full"];
+    NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
+    
+    ASIHTTPRequest * listRequest = [ASIHTTPRequest requestWithURL:listURL];
+    [listRequest addRequestHeader:@"Authorization" value:authString];
+    [listRequest startSynchronous];
+    NSString * listResponse = [listRequest responseString];
+    //        NSLog(@"listResponse:%@", listResponse);
+    
+    GDataXMLDocument * xmlDocument = [[GDataXMLDocument alloc]initWithXMLString:listResponse options:0 error:nil];
+    GDataXMLElement * rootElement = [xmlDocument rootElement];
+    NSArray * mapsEntries = [rootElement elementsForName:@"entry"];
+    NSMutableArray * array = [[NSMutableArray alloc]init];
+    
+    for (GDataXMLElement * mapsEntry in mapsEntries) 
+    {
+        MyMap * aMap = [[MyMap alloc]init];
+        
+        NSArray * mapTitles = [mapsEntry elementsForName:@"title"];
+        if ([mapTitles count] >0)
+        {
+            GDataXMLElement * mapTitle = (GDataXMLElement *) [mapTitles objectAtIndex:0];
+            aMap.mapTitle = [mapTitle stringValue];
+            
+        }
+        
+        NSArray * mapCreatedTimes = [mapsEntry elementsForName:@"published"];
+        if ([mapCreatedTimes count] >0)
+        {
+            GDataXMLElement * mapCreatedTime = (GDataXMLElement *) [mapCreatedTimes objectAtIndex:0];
+            NSLog(@"mapCreatedTime:%@",[mapCreatedTime stringValue]);
+            
+            NSDateFormatter * inputFormatter = [[NSDateFormatter alloc]init];
+            [inputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.S'Z'"];
+            [inputFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+            
+            aMap.mapCreatedTime = [inputFormatter dateFromString:[mapCreatedTime stringValue]];
+            NSLog(@"aMap.mapCreatedTime:%@",aMap.mapCreatedTime);
+        }
+        
+        NSArray * mapContents = [mapsEntry elementsForName:@"content"];
+        
+        for (GDataXMLElement * mapContent in mapContents) 
+        {
+            NSString * src = [[mapContent attributeForName:@"src"] stringValue];
+            aMap.myPlaces = [self retrievePlacemakrsFromContentURL:src andAuthToken:clientAuth];
+        }
+        
+        [array addObject:aMap];
+        NSLog(@"array:%i",[array count]);
+        [aMap release];
+        
+    }
+    
+    return array;
+}
+
+- (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth
+{
+    NSURL * listURL = [NSURL URLWithString:mapContent];
+    NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
+    
+    ASIHTTPRequest * listRequest = [ASIHTTPRequest requestWithURL:listURL];
+    [listRequest addRequestHeader:@"Authorization" value:authString];
+    [listRequest startSynchronous];
+    NSString * listResponse = [listRequest responseString];
+    
+    GDataXMLDocument * xmlDocument = [[GDataXMLDocument alloc]initWithXMLString:listResponse options:0 error:nil];
+    GDataXMLElement * rootElement = [xmlDocument rootElement];
+    
+    NSMutableArray * myPlaces = [[NSMutableArray alloc]init];
+    
+    NSArray * placeEntries = [rootElement elementsForName:@"atom:entry"];
+    NSLog(@"%i" ,[placeEntries count]);
+    for (GDataXMLElement * placeEntry in placeEntries) 
+    {
+        
+        NSArray * placeContents = [placeEntry elementsForName:@"atom:content"];
+        NSLog(@"placeContents:%@" ,placeContents);
+        
+        for (GDataXMLElement * placeMark in placeContents) 
+        {
+            NSArray * placeMarks = [placeMark elementsForName:@"Placemark"];
+            for (GDataXMLElement * placeMark in placeMarks)
+            {
+                MyPlace * aPlace = [[MyPlace alloc]init];
+                
+                NSArray * placeNames = [placeMark elementsForName:@"name"];
+                if ([placeNames count] > 0) 
+                {
+                    GDataXMLElement * placeName = (GDataXMLElement *) [placeNames objectAtIndex:0];
+                    aPlace.locationName = [placeName stringValue];
+                    
+                }
+                
+                /* NSArray * placeDescs = [placeMark elementsForName:@"description"];
+                 if ([placeDescs count] > 0) 
+                 {
+                 GDataXMLElement * placeDesc = (GDataXMLElement *) [placeDescs objectAtIndex:0];
+                 aPlace.comment = [placeDesc stringValue];
+                 }*/
+                
+                NSArray * placePoints = [placeMark elementsForName:@"Point"];
+                for ( GDataXMLElement * placePoint in placePoints) 
+                {
+                    NSArray * placeCoords = [placePoint elementsForName:@"coordinates"];
+                    if ([placeCoords count] > 0) 
+                    {
+                        GDataXMLElement * placeCoord = (GDataXMLElement *) [placeCoords objectAtIndex:0];
+                        
+                        NSArray * array = [[placeCoord stringValue] componentsSeparatedByString:@","];
+                        
+                        NSNumberFormatter * numFormatter = [[NSNumberFormatter alloc] init];
+                        [numFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                        aPlace.longitude =[numFormatter numberFromString:[array objectAtIndex:0]];
+                        aPlace.latitude = [numFormatter numberFromString:[array objectAtIndex:1] ];
+                    }
+                    
+                }
+                [myPlaces addObject:aPlace];
+                [aPlace release];
+            }
+        }
+    }
+    return myPlaces;
+}
 
 /*
 - (void) refresh
@@ -98,9 +254,9 @@
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.title = @"Saved Maps";
     
-    UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
-    self.navigationItem.rightBarButtonItem = syncBtn;
-    [syncBtn release];
+//    UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
+//    self.navigationItem.rightBarButtonItem = syncBtn;
+//    [syncBtn release];
     
 //    CGRect frame = self.view.frame;
 //    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -137,8 +293,10 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewWillAppear:animated];    
     NSLog(@"viewWillAppear");
+    
+    // TODO: ProgressHUD
 
 }
 
@@ -146,7 +304,8 @@
 {
     [super viewDidAppear:animated];    
     NSLog(@"viewDidAppear");
-    [self.tableView reloadData];
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    [self setGSavedMaps:[self retrieveMapsWithAuth:[defaults objectForKey:@"AuthorizationToken"]]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -185,15 +344,15 @@
         [self sync];
 }
 
-- (void) connectToGoogle 
-{
-    [(UIButton *)[[toolBar.items objectAtIndex:1] customView] setBackgroundImage:[UIImage imageNamed:@"google_selected_44x44"] forState:UIControlStateNormal];
-}
-
-- (void) connectToYahoo
-{
-    [(UIButton *)[[toolBar.items objectAtIndex:2] customView] setTitle:@"Y" forState:UIControlStateSelected];
-}
+//- (void) connectToGoogle 
+//{
+//    [(UIButton *)[[toolBar.items objectAtIndex:1] customView] setBackgroundImage:[UIImage imageNamed:@"google_selected_44x44"] forState:UIControlStateNormal];
+//}
+//
+//- (void) connectToYahoo
+//{
+//    [(UIButton *)[[toolBar.items objectAtIndex:2] customView] setTitle:@"Y" forState:UIControlStateSelected];
+//}
 
 #pragma mark - Table view data source
 
@@ -239,6 +398,11 @@
     [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
     [dateFormatter setDateStyle:NSDateFormatterShortStyle];
     cell.detailTextLabel.text = [dateFormatter stringFromDate:aMap.mapCreatedTime];
+    
+    // TODO: customized Cell
+    // upload == NO (means it has been uploaded): google icon / iphone icon
+    // upload == YES : iphone icon
+    
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;

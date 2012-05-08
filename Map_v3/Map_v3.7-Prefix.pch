@@ -16,6 +16,8 @@
     #import "ASIHTTPRequest.h"
 
     #import <KML/KML.h>
+    #import "MyMap.h"
+    #import "MyPlace.h"
 
     #import"FBConnect.h"
 

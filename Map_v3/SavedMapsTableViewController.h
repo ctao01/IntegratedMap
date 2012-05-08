@@ -11,6 +11,9 @@
 @interface SavedMapsTableViewController : UITableViewController <UIAlertViewDelegate>
 
 @property (nonatomic ,retain) NSMutableArray * googleMaps;
+@property (nonatomic ,retain) NSMutableArray * gSavedMaps;
 
+- (NSMutableArray * ) retrieveMapsWithAuth:(NSString*)clientAuth;
+- (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
 
 @end

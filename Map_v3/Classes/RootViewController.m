@@ -186,8 +186,11 @@
 
 - (void) savedMaps
 {
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    
     SavedMapsTableViewController * vcSavedMaps = [[SavedMapsTableViewController alloc]initWithStyle:UITableViewStylePlain];
     [self.navigationController pushViewController:vcSavedMaps animated:YES];
+//    [vcSavedMaps setGSavedMaps:[vcSavedMaps retrieveMapsWithAuth:[defaults objectForKey:@"AuthorizationToken"]]];
     [vcSavedMaps release];
 }
 

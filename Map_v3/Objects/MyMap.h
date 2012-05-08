@@ -15,6 +15,8 @@
     NSDate * _mapCreatedTime;
     NSMutableArray * _myPlaces;
     
+    NSString * _mapImagePath;
+    
     BOOL update;
     BOOL upload;
 }
@@ -23,6 +25,7 @@
 @property (nonatomic , retain) NSString * mapAuthor;
 @property (nonatomic , retain) NSDate * mapCreatedTime;
 @property (nonatomic , retain) NSMutableArray * myPlaces;
+@property (nonatomic , retain) NSString * mapImagePath;
 
 @property (nonatomic , assign) BOOL update;
 @property (nonatomic , assign) BOOL upload;

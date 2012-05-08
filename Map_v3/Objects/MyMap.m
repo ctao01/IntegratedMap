@@ -14,6 +14,7 @@
 @synthesize mapCreatedTime = _mapCreatedTime;
 //@synthesize mapContent = _mapContent;
 @synthesize myPlaces = _myPlaces;
+@synthesize mapImagePath = _mapImagePath;
 @synthesize update, upload;
 
 - (void) dealloc
@@ -22,6 +23,7 @@
     [_mapAuthor release];
     [_mapCreatedTime release];
     [_myPlaces release];
+    [_mapImagePath release];
         
     [super dealloc];
 }
@@ -33,6 +35,7 @@
 			@"mapAuthor",
 			@"mapCreatedTime",
 			@"myPlaces",
+            @"mapImagePath",
             @"upload",
             @"update",
 			nil];
