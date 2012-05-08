@@ -12,6 +12,7 @@
 #import "GDataXMLNode.h"
 #import "SettingViewController.h"
 #import "RootViewController.h"
+#import "iCarouselSavedMapsViewController.h"
 
 @interface SavedMapsTableViewController() {
     UIToolbar * toolBar;
@@ -253,10 +254,12 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.navigationController.navigationBarHidden = NO;
     self.navigationItem.title = @"Saved Maps";
-    
-//    UIBarButtonItem * syncBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(SyncOrNot)];
-//    self.navigationItem.rightBarButtonItem = syncBtn;
-//    [syncBtn release];
+
+    UIBarButtonItem * changeBtn = [[UIBarButtonItem alloc]initWithTitle:@"|||" style:UIBarButtonItemStyleBordered target:self action:@selector(changeToiCarouseView)];
+
+//    UIBarButtonItem * changeBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(changeToiCarouseView)];
+    self.navigationItem.rightBarButtonItem = changeBtn;
+    [changeBtn release];
     
 //    CGRect frame = self.view.frame;
 //    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -328,6 +331,14 @@
 
 #pragma mark - UIButton Actions
 
+- (void) changeToiCarouseView
+{
+    iCarouselSavedMapsViewController * vcSavedMaps = [[iCarouselSavedMapsViewController alloc]init];
+    [UIView transitionFromView:self.view toView:vcSavedMaps.view duration:1.5 options:UIViewAnimationOptionTransitionFlipFromLeft completion:nil];
+    [vcSavedMaps release];
+}
+
+
 - (void) SyncOrNot
 {
     // Check and retrieve authorization information
@@ -343,6 +354,7 @@
     else
         [self sync];
 }
+
 
 //- (void) connectToGoogle 
 //{

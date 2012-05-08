@@ -27,7 +27,6 @@
 @property (nonatomic , retain) NSMutableArray * myPlaces;
 @property (nonatomic , retain) NSString * mapImagePath;
 
-@property (nonatomic , assign) BOOL update;
 @property (nonatomic , assign) BOOL upload;
 
 +(NSArray *)keys;

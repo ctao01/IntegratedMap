@@ -17,6 +17,9 @@
 		7E377A53155097B300B34417 /* whiteArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E377A4A155097B300B34417 /* whiteArrow.png */; };
 		7E377A54155097B300B34417 /* whiteArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E377A4B155097B300B34417 /* whiteArrow@2x.png */; };
 		7E377A601550D2AC00B34417 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E377A5F1550D2AC00B34417 /* QuartzCore.framework */; };
+		7E3C6FB71559B20D0069FAD2 /* iCarouselSavedMapsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C6FB61559B20D0069FAD2 /* iCarouselSavedMapsViewController.m */; };
+		7E3C6FBF1559B8600069FAD2 /* iCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3C6FBE1559B8600069FAD2 /* iCarousel.m */; };
+		7E3C6FC11559C2E30069FAD2 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E3C6FC01559C2E30069FAD2 /* placeholder.png */; };
 		7E71CD52153CC410003121EA /* UploadedMap.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7E71CD51153CC410003121EA /* UploadedMap.xml */; };
 		7E82DC66152FE57E00583074 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC65152FE57E00583074 /* UIKit.framework */; };
 		7E82DC68152FE57E00583074 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC67152FE57E00583074 /* Foundation.framework */; };
@@ -79,6 +82,11 @@
 		7E377A4A155097B300B34417 /* whiteArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteArrow.png; sourceTree = "<group>"; };
 		7E377A4B155097B300B34417 /* whiteArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whiteArrow@2x.png"; sourceTree = "<group>"; };
 		7E377A5F1550D2AC00B34417 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		7E3C6FB51559B20D0069FAD2 /* iCarouselSavedMapsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iCarouselSavedMapsViewController.h; sourceTree = "<group>"; };
+		7E3C6FB61559B20D0069FAD2 /* iCarouselSavedMapsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iCarouselSavedMapsViewController.m; sourceTree = "<group>"; };
+		7E3C6FBD1559B8600069FAD2 /* iCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iCarousel.h; sourceTree = "<group>"; };
+		7E3C6FBE1559B8600069FAD2 /* iCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iCarousel.m; sourceTree = "<group>"; };
+		7E3C6FC01559C2E30069FAD2 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
 		7E71CD51153CC410003121EA /* UploadedMap.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = UploadedMap.xml; sourceTree = "<group>"; };
 		7E82DC61152FE57E00583074 /* Map_v3.7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Map_v3.7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E82DC65152FE57E00583074 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -254,9 +262,30 @@
 		7E377A581550D10900B34417 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7E3C6FC01559C2E30069FAD2 /* placeholder.png */,
 				7EE69AFF1558306D0087D458 /* Black_Arrowhead_right.png */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		7E3C6FB31559B1D80069FAD2 /* Save */ = {
+			isa = PBXGroup;
+			children = (
+				7EA70E2715328EAE00DC3D91 /* SavedMapsTableViewController.h */,
+				7EA70E2815328EAE00DC3D91 /* SavedMapsTableViewController.m */,
+				7E3C6FB51559B20D0069FAD2 /* iCarouselSavedMapsViewController.h */,
+				7E3C6FB61559B20D0069FAD2 /* iCarouselSavedMapsViewController.m */,
+			);
+			name = Save;
+			sourceTree = "<group>";
+		};
+		7E3C6FBC1559B8600069FAD2 /* iCarousel */ = {
+			isa = PBXGroup;
+			children = (
+				7E3C6FBD1559B8600069FAD2 /* iCarousel.h */,
+				7E3C6FBE1559B8600069FAD2 /* iCarousel.m */,
+			);
+			path = iCarousel;
 			sourceTree = "<group>";
 		};
 		7E82DC56152FE57E00583074 = {
@@ -342,8 +371,7 @@
 				7EE69ACF155827C80087D458 /* Setting */,
 				7E82DC7C152FE5A800583074 /* RootViewController.h */,
 				7E82DC7D152FE5A800583074 /* RootViewController.m */,
-				7EA70E2715328EAE00DC3D91 /* SavedMapsTableViewController.h */,
-				7EA70E2815328EAE00DC3D91 /* SavedMapsTableViewController.m */,
+				7E3C6FB31559B1D80069FAD2 /* Save */,
 				7EA70E2415322B3100DC3D91 /* DetailedViewController.h */,
 				7EA70E2515322B3100DC3D91 /* DetailedViewController.m */,
 				7E82DC86152FEB3B00583074 /* MapViewController.h */,
@@ -366,6 +394,7 @@
 		7EA70E2A1533AD0900DC3D91 /* 3rd Party */ = {
 			isa = PBXGroup;
 			children = (
+				7E3C6FBC1559B8600069FAD2 /* iCarousel */,
 				7EE69AD315582A450087D458 /* src */,
 				7EA70E561533DF5B00DC3D91 /* ASIHTTPRequest */,
 				7E377A3E155097B300B34417 /* EGOTableViewPullRefresh */,
@@ -522,6 +551,7 @@
 				7E377A54155097B300B34417 /* whiteArrow@2x.png in Resources */,
 				7EE69AF115582A450087D458 /* FBDialog.bundle in Resources */,
 				7EE69B001558306D0087D458 /* Black_Arrowhead_right.png in Resources */,
+				7E3C6FC11559C2E30069FAD2 /* placeholder.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,6 +595,8 @@
 				7EE69AF815582A450087D458 /* SBJsonBase.m in Sources */,
 				7EE69AF915582A450087D458 /* SBJsonParser.m in Sources */,
 				7EE69AFA15582A450087D458 /* SBJsonWriter.m in Sources */,
+				7E3C6FB71559B20D0069FAD2 /* iCarouselSavedMapsViewController.m in Sources */,
+				7E3C6FBF1559B8600069FAD2 /* iCarousel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

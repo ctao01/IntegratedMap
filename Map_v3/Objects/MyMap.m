@@ -15,7 +15,7 @@
 //@synthesize mapContent = _mapContent;
 @synthesize myPlaces = _myPlaces;
 @synthesize mapImagePath = _mapImagePath;
-@synthesize update, upload;
+@synthesize upload;
 
 - (void) dealloc
 {
@@ -37,7 +37,6 @@
 			@"myPlaces",
             @"mapImagePath",
             @"upload",
-            @"update",
 			nil];
 }
 

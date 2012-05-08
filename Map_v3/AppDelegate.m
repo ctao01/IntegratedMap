@@ -80,6 +80,8 @@
         facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
     }
     
+    self.window.backgroundColor = [UIColor blackColor];
+    
     return YES;
 }
 

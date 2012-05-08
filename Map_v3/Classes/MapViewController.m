@@ -69,18 +69,15 @@
     aMap.mapTitle = self.navigationItem.title;
     aMap.myPlaces = self.placeMarks;
     aMap.mapCreatedTime = [NSDate date];
+   
     if (! self.isNotEditable) 
     {
         aMap.upload = YES;  // view push from rootviewcontroller
+        
+        if (uploaded == YES)  aMap.upload = NO;     // new map has already been uploaded
+        else aMap.upload = YES;                     // new map has not been uploaded
     }
     
-    else 
-    {
-        if (aMap.upload == YES)
-            aMap.upload = YES;
-        else
-            aMap.upload = NO;
-    }
     return aMap;
 }
 
@@ -183,6 +180,8 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    if (locationManager ) 
+        locationManager = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -192,15 +191,12 @@
 
 }
 
-- (void) viewDidDisappear:(BOOL)animated
+- (void) viewWillDisappear:(BOOL)animated
 {
     if (locationManager)
-    {
-        [locationManager stopUpdatingLocation];
-        locationManager = nil;
-        
-    }
-    [super viewDidDisappear:animated];
+        [locationManager stopUpdatingLocation]; 
+    
+    [super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -313,8 +309,7 @@
 //    }
     
     MyMap * aMap = [self completeTheMap];
-    if (uploaded)
-        aMap.upload = NO;
+
     UIImage * image = [self generateMapImage];
     aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/%@.png", aMap.mapTitle];
     [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
@@ -331,6 +326,7 @@
     if (self.isNotEditable) {
         AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
         [delegate.savedMaps removeObject:currentMap];
+        [currentMap release];
     }
     
     self.toolBar.hidden = NO;
@@ -339,14 +335,14 @@
     self.navigationItem.rightBarButtonItem = doneBtn;
     [doneBtn release];
     
-//    if (!locationManager) 
-//    {
-//        locationManager = [[CLLocationManager alloc]init];
-//        locationManager.delegate = self;
-//        locationManager.distanceFilter = 50.0f;
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//        [locationManager startUpdatingLocation];
-//    }
+    if (!locationManager) 
+    {
+        locationManager = [[CLLocationManager alloc]init];
+        locationManager.delegate = self;
+        locationManager.distanceFilter = 50.0f;
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        [locationManager startUpdatingLocation];
+    }
     
 }
 
@@ -363,7 +359,10 @@
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Warning" message:@"You haven't connected to any account" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         [alert release];
+        uploaded = NO;
     }
+    else
+        uploaded = YES;
     
     MyMap * aMap = [self completeTheMap];
     NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
@@ -378,13 +377,14 @@
     NSLog(@"MAP%@",[aMap description]);
     
     [self uploadMapsWithAuth:authStr andAMap:aMap];
-    
-    uploaded = YES; 
 }
 
 - (void) update
 {
     NSLog(@"update!");
+    
+    //TODO:
+    // 
 }
 
 #pragma mark - Core Location Delegate
@@ -459,8 +459,9 @@
         MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
         [vcDetail setThePlace:thePlace];
         NSString * title = [[dict objectAtIndex:i]objectForKey:@"locationName"];
-        NSLog(@"TITLE:%@",title);
-        vcDetail.title =[title isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
+//        vcDetail.title =[title isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
+        vcDetail.title =[title isEqual:[NSNull null]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
+
 //        if ([subtitle isEqualToString:view.annotation.subtitle]) 
 //        {
 //            MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
