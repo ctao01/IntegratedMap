@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SavedMapsCell.h"
 
 @interface SavedMapsTableViewController : UITableViewController <UIAlertViewDelegate>
+{
+    SavedMapsCell * savedMapsCell;
+}
 
 @property (nonatomic ,retain) NSMutableArray * googleMaps;
 @property (nonatomic ,retain) NSMutableArray * gSavedMaps;

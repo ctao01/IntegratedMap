@@ -15,8 +15,8 @@
 //@synthesize mapContent = _mapContent;
 @synthesize myPlaces = _myPlaces;
 @synthesize mapImagePath = _mapImagePath;
-@synthesize upload;
-
+@synthesize uploaded;
+@synthesize googleDownload;
 - (void) dealloc
 {
     [_mapTitle release];
@@ -36,7 +36,8 @@
 			@"mapCreatedTime",
 			@"myPlaces",
             @"mapImagePath",
-            @"upload",
+            @"uploaded",
+            @"googleDownload",
 			nil];
 }
 

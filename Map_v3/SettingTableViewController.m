@@ -53,10 +53,12 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    NSArray * usernameArray = [NSArray arrayWithObjects:@"Username", nil];
     NSArray * accountArray = [NSArray arrayWithObjects:@"Google" , @"Facebook" , @"Twitter", nil];
     NSArray * controlArray = [NSArray arrayWithObjects:@"Sounds" , @"Brightness" , @"Type", @"GeoReverse", nil];
     NSArray * otherArray = [NSArray arrayWithObjects:@"Support" , @"Help" , @"About Us", nil];
     
+    [settingDict setObject:usernameArray forKey:@"username_setting"];
     [settingDict setObject:accountArray forKey:@"account_setting"];
     [settingDict setObject:controlArray forKey:@"control_setting"];
     [settingDict setObject:otherArray forKey:@"other_setting"];
@@ -108,7 +110,9 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == AccountSetting) 
+    if (section == UserNameSetting) 
+        return [[settingDict objectForKey:@"username_setting"]count];
+    else if (section == AccountSetting) 
         return [[settingDict objectForKey:@"account_setting"]count];
     else if (section == ControlSetting) 
         return [[settingDict objectForKey:@"control_setting"]count];
@@ -120,6 +124,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+
+    
     static NSString *CellIdentifier = @"Cell";
     UIButton * arrowBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     UIImage * image = [UIImage imageNamed:@"Black_Arrowhead_right.png"];
@@ -131,7 +138,14 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
-    if (indexPath.section == AccountSetting) 
+    if (indexPath.section == UserNameSetting) 
+    {
+        cell.textLabel.text = [[settingDict objectForKey:@"username_setting"]objectAtIndex:indexPath.row]; 
+        cell.accessoryView = arrowBtn;
+        cell.detailTextLabel.text = [defaults objectForKey:@"IMUsername"]? [defaults objectForKey:@"IMUsername"] : @"(none)";
+    }
+    
+    else if (indexPath.section == AccountSetting) 
     {
         cell.textLabel.text = [[settingDict objectForKey:@"account_setting"]objectAtIndex:indexPath.row]; 
         cell.accessoryView = arrowBtn;
@@ -162,44 +176,59 @@
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
     
-    if (indexPath.row == 0) {
-        if (! [defaults objectForKey:@"AuthorizationToken"])
+    if (indexPath.section == UserNameSetting) {
+        if (![defaults objectForKey:@"IMUsername"])
         {
-            UIAlertView * gLoginView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Connect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Connect", nil];
-            [gLoginView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
-            [[gLoginView textFieldAtIndex:0]setPlaceholder:@"Username" ];
-            [[gLoginView textFieldAtIndex:0]setFont:[UIFont fontWithName:@"Helvetica" size:14]];
-            [[gLoginView textFieldAtIndex:1]setPlaceholder:@"Password" ];
-            [[gLoginView textFieldAtIndex:1]setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+            UIAlertView * usernameSettingView = [[UIAlertView alloc]initWithTitle:@"Username" message:@"please create your username" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"That's it", nil];
+            [usernameSettingView setAlertViewStyle:UIAlertViewStylePlainTextInput];
             
-            [gLoginView setDelegate:self];
-            [gLoginView show];
-            [gLoginView release];
+            [usernameSettingView setDelegate:self];
+            [usernameSettingView show];
+            [usernameSettingView release];
         }
-        else
-        {
-            UIAlertView * gLogoutView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Disconnect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Disconnect", nil];
-            [gLogoutView setDelegate:self];
-            [gLogoutView show];
-            [gLogoutView release];
-        }
-        
     }
     
-    else if (indexPath.row == 1)
+    if (indexPath.section == AccountSetting ) 
     {
-        if (![[delegate facebook] isSessionValid]) 
-        {   
-            NSArray *permissions = [[NSArray alloc] initWithObjects:
-                                    @"user_activities", 
-                                    @"read_friendlists",
-                                    @"offline_access",
-                                    nil];
-            [[delegate facebook] authorize:permissions];
-            [permissions release];
+        if (indexPath.row == 0) {
+            if (! [defaults objectForKey:@"AuthorizationToken"])
+            {
+                UIAlertView * gLoginView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Connect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Connect", nil];
+                [gLoginView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
+                [[gLoginView textFieldAtIndex:0]setPlaceholder:@"Username" ];
+                [[gLoginView textFieldAtIndex:0]setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+                [[gLoginView textFieldAtIndex:1]setPlaceholder:@"Password" ];
+                [[gLoginView textFieldAtIndex:1]setFont:[UIFont fontWithName:@"Helvetica" size:14]];
+                
+                [gLoginView setDelegate:self];
+                [gLoginView show];
+                [gLoginView release];
+            }
+            else
+            {
+                UIAlertView * gLogoutView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Disconnect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Disconnect", nil];
+                [gLogoutView setDelegate:self];
+                [gLogoutView show];
+                [gLogoutView release];
+            }
+            
         }
-        else
-            [delegate.facebook logout];
+        
+        else if (indexPath.row == 1)
+        {
+            if (![[delegate facebook] isSessionValid]) 
+            {   
+                NSArray *permissions = [[NSArray alloc] initWithObjects:
+                                        @"user_activities", 
+                                        @"read_friendlists",
+                                        @"offline_access",
+                                        nil];
+                [[delegate facebook] authorize:permissions];
+                [permissions release];
+            }
+            else
+                [delegate.facebook logout];
+        }
     }
 }
 
@@ -218,11 +247,23 @@
 #pragma mark - UIAlertViewDelegate 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+
     if (buttonIndex == alertView.cancelButtonIndex)  return;
+    
+    if ([alertView.title isEqualToString:@"Username"])
+    {
+        if (buttonIndex == 1) {
+            [defaults setObject:[[alertView textFieldAtIndex:0] text] forKey:@"IMUsername"];
+            [defaults synchronize];
+            [self.tableView reloadData];
+
+        }
+        else return;
+    }
     
     if ([alertView.title isEqualToString:@"Google"])
     {
-        NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
         if (buttonIndex == 1)
         {
             if ( ![defaults objectForKey:@"AuthorizationToken"])

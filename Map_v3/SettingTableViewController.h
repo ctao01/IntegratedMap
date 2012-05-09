@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 
 typedef enum  {
-    AccountSetting = 0, 
-    ControlSetting =1, 
-    OtherSetting = 2,
+    UserNameSetting = 0,
+    AccountSetting = 1, 
+    ControlSetting = 2, 
+    OtherSetting = 3,
 } SettingSection;
 
 @interface SettingTableViewController : UITableViewController <UIAlertViewDelegate , FBSessionDelegate>

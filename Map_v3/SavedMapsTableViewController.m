@@ -57,19 +57,47 @@
     [_gSavedMaps release];
 //    _gSavedMaps = [gSavedMaps retain];
  
-    
-    for (int i = 0; i < [[delegate savedMaps]count]; i ++) 
-    {        
-        for (int j = 0; j < [gSavedMaps count]; j ++)
-        {
-            if ([[(MyMap*)[gSavedMaps objectAtIndex:j] mapTitle] isEqualToString:[(MyMap*)[[delegate savedMaps] objectAtIndex:i] mapTitle] ]) 
-                [gSavedMaps removeObjectAtIndex:j];
+    NSLog(@"count:%i",[gSavedMaps count]);
+
+    if ([[delegate savedMaps]count] > 0) 
+    {
+        NSLog(@"[[delegate savedMaps] count] >0");
+        
+        for (int i = 0; i < [[delegate savedMaps]count]; i ++) 
+        {        
+            for (int j = 0; j < [gSavedMaps count]; j ++)
+            {
+                
+                if ([[(MyMap*)[gSavedMaps objectAtIndex:j] mapTitle] isEqualToString:[(MyMap*)[[delegate savedMaps] objectAtIndex:i] mapTitle] ]) 
+                {
+                    [gSavedMaps removeObjectAtIndex:j];
+                    [(MyMap *)[[delegate savedMaps]objectAtIndex:i] setUploaded:YES];      // has already been upload
+
+                }
+                
+                else
+                    [(MyMap*)[gSavedMaps objectAtIndex:j] setGoogleDownload:YES]; 
+            }
+            
         }
+        
     }
+    
+    else
+    {
+        NSLog(@"[[delegate savedMaps] count]=0");
+
+        for (int q = 0; q < [gSavedMaps count]; q++) 
+            [(MyMap*)[gSavedMaps objectAtIndex:q] setGoogleDownload:YES]; 
+    }
+    
+    
     _gSavedMaps = [gSavedMaps retain];
-    
+
+    NSLog(@"delegate.savedMaps count:%i",[[delegate savedMaps]count]);
     [delegate.savedMaps addObjectsFromArray:_gSavedMaps];
-    
+    NSLog(@"delegate.savedMaps count:%i",[[delegate savedMaps]count]);
+
     RootViewController * rvc = (RootViewController *)delegate.rootViewController;
     [rvc updateSavedData];
     
@@ -102,6 +130,18 @@
             GDataXMLElement * mapTitle = (GDataXMLElement *) [mapTitles objectAtIndex:0];
             aMap.mapTitle = [mapTitle stringValue];
             
+        }
+        
+        NSArray * mapAuthors = [mapsEntry elementsForName:@"author"];
+        for (GDataXMLElement * mapAuthor in mapAuthors)
+        {
+            NSArray * mapAuthorNames= [mapAuthor elementsForName:@"name"];
+            if ([mapAuthorNames count] >0)
+            {
+                GDataXMLElement * mapAuthorName= (GDataXMLElement *) [mapAuthorNames objectAtIndex:0];
+                aMap.mapAuthor = [mapAuthorName stringValue];
+                
+            }
         }
         
         NSArray * mapCreatedTimes = [mapsEntry elementsForName:@"published"];
@@ -137,6 +177,7 @@
 
 - (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth
 {
+    NSLog(@"Content:%@",mapContent);
     NSURL * listURL = [NSURL URLWithString:mapContent];
     NSString * authString = [NSString stringWithFormat:@"GoogleLogin auth=%@", clientAuth];
     
@@ -390,6 +431,20 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+    savedMapsCell = (SavedMapsCell *)[self.tableView dequeueReusableCellWithIdentifier:@"UZTableViewCell"];
+    
+    if (! savedMapsCell) 
+        savedMapsCell = [[[SavedMapsCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UZTableViewCell"] autorelease];
+    
+    NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"mapCreatedTime" ascending:NO];
+    [delegate.savedMaps sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+    MyMap * sortedMap = [delegate.savedMaps objectAtIndex:indexPath.row];
+    savedMapsCell.mapObject = sortedMap;
+    
+    return savedMapsCell;
+    /*
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -416,8 +471,9 @@
     // upload == YES : iphone icon
     
     
+    
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    return cell;
+    return cell;*/
 }
 
 /*

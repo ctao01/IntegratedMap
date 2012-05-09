@@ -61,6 +61,7 @@
 
 - (MyMap *) completeTheMap
 {
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     
     NSLog(@"savedTheCurrentStatus");
     
@@ -69,13 +70,14 @@
     aMap.mapTitle = self.navigationItem.title;
     aMap.myPlaces = self.placeMarks;
     aMap.mapCreatedTime = [NSDate date];
+    aMap.mapAuthor = [defaults objectForKey:@"IMUsername"];
    
     if (! self.isNotEditable) 
     {
-        aMap.upload = YES;  // view push from rootviewcontroller
+        aMap.uploaded = NO;  // view push from rootviewcontroller
         
-        if (uploaded == YES)  aMap.upload = NO;     // new map has already been uploaded
-        else aMap.upload = YES;                     // new map has not been uploaded
+        if (isUploaded == YES)  aMap.uploaded = YES;     // new map has already been uploaded
+        else aMap.uploaded = NO;                     // new map has not been uploaded
     }
     
     return aMap;
@@ -146,7 +148,7 @@
     UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     UIButton * customizedBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    if (!uploaded) {
+    if (!isUploaded) {
         [customizedBtn setTitle:@"upload" forState:UIControlStateNormal];
         [customizedBtn addTarget:self action:@selector(upload) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -206,7 +208,7 @@
 }
 
 
-#pragma mark - Update
+#pragma mark - Update MKMapView (places/ annotations)
 
 - (void) updateCurrentMap: (MKMapView *) theMap
 {
@@ -359,10 +361,10 @@
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Warning" message:@"You haven't connected to any account" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         [alert release];
-        uploaded = NO;
+        isUploaded = NO;
     }
     else
-        uploaded = YES;
+        isUploaded = YES;
     
     MyMap * aMap = [self completeTheMap];
     NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
@@ -371,10 +373,6 @@
         [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
     }
     aMap.myPlaces = myPlaces;
-//    
-//    NSString * mapStr = [myMaps description];
-//    NSLog(@"mapStr:%@",mapStr);
-    NSLog(@"MAP%@",[aMap description]);
     
     [self uploadMapsWithAuth:authStr andAMap:aMap];
 }

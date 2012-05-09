@@ -19,7 +19,7 @@
     
     MKMapView * mapView;
     
-    BOOL uploaded;
+    BOOL isUploaded;
 }
 
 @property (nonatomic , assign) CLLocationDegrees lat;

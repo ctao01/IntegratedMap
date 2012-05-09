@@ -17,8 +17,8 @@
     
     NSString * _mapImagePath;
     
-    BOOL update;
-    BOOL upload;
+    BOOL uploaded;
+    BOOL googleDownload;
 }
 
 @property (nonatomic , retain) NSString * mapTitle;
@@ -27,7 +27,8 @@
 @property (nonatomic , retain) NSMutableArray * myPlaces;
 @property (nonatomic , retain) NSString * mapImagePath;
 
-@property (nonatomic , assign) BOOL upload;
+@property (nonatomic , assign) BOOL uploaded;
+@property (nonatomic , assign) BOOL googleDownload;
 
 +(NSArray *)keys;
 -(id)initWithDictionary: (NSDictionary*)dictionary;
