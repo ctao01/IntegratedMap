@@ -374,9 +374,23 @@
 
 - (void) changeToiCarouseView
 {
-    iCarouselSavedMapsViewController * vcSavedMaps = [[iCarouselSavedMapsViewController alloc]init];
-    [UIView transitionFromView:self.view toView:vcSavedMaps.view duration:1.5 options:UIViewAnimationOptionTransitionFlipFromLeft completion:nil];
-    [vcSavedMaps release];
+//    iCarouselSavedMapsViewController * vcSavedMaps = [[iCarouselSavedMapsViewController alloc]init];
+//    [UIView transitionFromView:self.view toView:vcSavedMaps.view duration:1.5 options:UIViewAnimationOptionTransitionFlipFromLeft completion:nil];
+//    [vcSavedMaps release];
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    
+    MyMap * newMap = [[MyMap alloc]init];
+    NSString * urlStr = @"http://maps.google.com/maps/feeds/features/216899859418627266443/0004a831b27ff08174e3c/full";
+    newMap.myPlaces = [self retrievePlacemakrsFromContentURL:urlStr andAuthToken:[defaults objectForKey:@"AuthorizationToken"]];
+    newMap.mapTitle = @"New Map";
+    
+    [delegate.savedMaps addObject:newMap];
+    
+    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
+    [rvc updateSavedData];
+    
+    [self.tableView reloadData];
 }
 
 
@@ -428,6 +442,8 @@
     }
     return 0;
 }
+
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -516,6 +532,11 @@
 */
 
 #pragma mark - Table view delegate
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 50.0f;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

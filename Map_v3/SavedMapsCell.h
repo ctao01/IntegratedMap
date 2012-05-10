@@ -16,4 +16,6 @@
 @property (nonatomic, readonly) UILabel *subtitleLabel;     // mapAuthor
 @property (nonatomic, readonly) UILabel *dateLabel;         // mapCreatedTime
 
+@property (nonatomic , readonly) UIImageView * gLogoImageview;
+
 @end

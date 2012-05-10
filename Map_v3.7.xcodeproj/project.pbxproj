@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E0D8400155B6A46008B4502 /* Google_Logo_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E0D83FF155B6A46008B4502 /* Google_Logo_black.png */; };
 		7E377A4C155097B300B34417 /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E377A42155097B300B34417 /* EGORefreshTableHeaderView.m */; };
 		7E377A4D155097B300B34417 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E377A44155097B300B34417 /* blackArrow.png */; };
 		7E377A4E155097B300B34417 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E377A45155097B300B34417 /* blackArrow@2x.png */; };
@@ -80,6 +81,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7E0D83FF155B6A46008B4502 /* Google_Logo_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Google_Logo_black.png; sourceTree = "<group>"; };
 		7E377A41155097B300B34417 /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
 		7E377A42155097B300B34417 /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
 		7E377A44155097B300B34417 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
@@ -114,7 +116,7 @@
 		7E4F8C80155ACDF2005D532F /* UIButton+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+WebCache.m"; sourceTree = "<group>"; };
 		7E4F8C81155ACDF2005D532F /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		7E4F8C82155ACDF2005D532F /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
-		7E4F8C8B155ACE32005D532F /* IMLazyLoadTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; path = IMLazyLoadTableViewCell.h; sourceTree = "<group>"; };
+		7E4F8C8B155ACE32005D532F /* IMLazyLoadTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMLazyLoadTableViewCell.h; sourceTree = "<group>"; };
 		7E4F8C8C155ACE32005D532F /* IMLazyLoadTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMLazyLoadTableViewCell.m; sourceTree = "<group>"; };
 		7E4F8C8E155ACFAC005D532F /* SavedMapsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SavedMapsCell.h; sourceTree = "<group>"; };
 		7E4F8C8F155ACFAC005D532F /* SavedMapsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedMapsCell.m; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 		7E377A581550D10900B34417 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7E0D83FF155B6A46008B4502 /* Google_Logo_black.png */,
 				7E3C6FC01559C2E30069FAD2 /* placeholder.png */,
 				7EE69AFF1558306D0087D458 /* Black_Arrowhead_right.png */,
 			);
@@ -613,6 +616,7 @@
 				7EE69AF115582A450087D458 /* FBDialog.bundle in Resources */,
 				7EE69B001558306D0087D458 /* Black_Arrowhead_right.png in Resources */,
 				7E3C6FC11559C2E30069FAD2 /* placeholder.png in Resources */,
+				7E0D8400155B6A46008B4502 /* Google_Logo_black.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

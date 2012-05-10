@@ -12,6 +12,7 @@
 
 @synthesize mapObject = _mapObject;
 @synthesize titleLabel, subtitleLabel, dateLabel;
+@synthesize gLogoImageview;
 
 - (void)dealloc
 {
@@ -20,6 +21,8 @@
     [titleLabel release];
     [subtitleLabel release];
     [dateLabel release];
+    
+    [gLogoImageview release];
     
     [super dealloc];
 }
@@ -33,15 +36,18 @@
         self.frame = CGRectMake(0, 0, self.frame.size.width, 50);
         
         // Initialize title and subtitle and date
-        titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
-        titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
+        titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, 200, 30)];
+        titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
         
         subtitleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 160, 30)];
-        subtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10];
-        subtitleLabel.frame = CGRectOffset(subtitleLabel.frame, 0.0f, 21.0f);
+        subtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
+        subtitleLabel.frame = CGRectOffset(subtitleLabel.frame, 10.0f, 21.0f);
         
         [self addSubview:titleLabel];
         [self addSubview:subtitleLabel];
+        
+        gLogoImageview = [[UIImageView alloc]initWithFrame:CGRectMake(240, 10, 30, 30)];
+        [self addSubview:gLogoImageview];
     }
     
     return self;
@@ -57,6 +63,7 @@
     
     titleLabel.text = _theMap.mapTitle ? _theMap.mapTitle : @"Untitled Map";
     subtitleLabel.text = _theMap.mapAuthor ? _theMap.mapAuthor : @"Unknown Author";
+    gLogoImageview.image = _theMap.googleDownload ? [UIImage imageNamed:@"Google_Logo_black.png"] : nil;
 }
 
 @end
