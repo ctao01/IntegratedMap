@@ -11,7 +11,8 @@
 #import "MapViewController.h"
 #import "AppDelegate.h"
 #import "MyPlace.h"
-#import "SavedMapsTableViewController.h"
+//#import "SavedMapsTableViewController.h"
+#import "SwitchViewsController.h"
 
 @implementation RootViewController
 //@synthesize currentMap;
@@ -35,6 +36,7 @@
 
 - (void) dealloc
 {
+    [tvSetting release];
     [super dealloc];
 }
 
@@ -115,7 +117,6 @@
             [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
         }
         myMap.myPlaces = myPlaces;
-        
         [myMaps addObject:[myMap dictionaryWithValuesForKeys:[MyMap keys]]];
     }
     
@@ -186,9 +187,10 @@
 
 - (void) savedMaps
 {
-    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     
-    SavedMapsTableViewController * vcSavedMaps = [[SavedMapsTableViewController alloc]initWithStyle:UITableViewStylePlain];
+//    SavedMapsTableViewController * vcSavedMaps = [[SavedMapsTableViewController alloc]initWithStyle:UITableViewStylePlain];
+    SwitchViewsController * vcSavedMaps = [[SwitchViewsController alloc]init];
+
     [self.navigationController pushViewController:vcSavedMaps animated:YES];
 //    [vcSavedMaps setGSavedMaps:[vcSavedMaps retrieveMapsWithAuth:[defaults objectForKey:@"AuthorizationToken"]]];
     [vcSavedMaps release];
@@ -196,10 +198,9 @@
 
 - (void) goToSetting
 {
-    self.tvSetting = [[SettingTableViewController alloc]initWithStyle:UITableViewStyleGrouped];
-    [self.navigationController pushViewController:self.tvSetting animated:YES];
-    self.tvSetting.vcParent = self;
-    [tvSetting release];
+    tvSetting = [[SettingTableViewController alloc]initWithStyle:UITableViewStyleGrouped];
+    [self.navigationController pushViewController:tvSetting animated:YES];
+    tvSetting.vcParent = self;
 }
 
 #pragma mark - UIAlertViewDelegate

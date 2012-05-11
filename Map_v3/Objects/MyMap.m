@@ -17,6 +17,7 @@
 @synthesize mapImagePath = _mapImagePath;
 @synthesize uploaded;
 @synthesize googleDownload;
+
 - (void) dealloc
 {
     [_mapTitle release];
@@ -55,7 +56,7 @@
     
     NSMutableDictionary *mutableDict = [dictionary mutableCopy];
     [self setValuesForKeysWithDictionary: mutableDict];
-    
+    [mutableDict release];
     return self;
 }
 

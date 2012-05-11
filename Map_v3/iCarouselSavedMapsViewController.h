@@ -10,6 +10,9 @@
 #import "AppDelegate.h"
 
 #define APPLICATION_DELEGATE (AppDelegate *)[[UIApplication sharedApplication] delegate]
+#define ITEM_SPACING 210
 
 @interface iCarouselSavedMapsViewController : UIViewController 
+
+@property (nonatomic , assign) UIViewController * vcParent;
 @end

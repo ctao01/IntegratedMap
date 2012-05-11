@@ -10,6 +10,14 @@
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 #import "MyMap.h"
+#import "CalloutMapAnnotationView.h"
+
+#define OFFSET 40.0f
+#define TOP_OFFSET 20.0f
+#define BOTTOM_OFFSET 80.0f
+#define LEFT_OFFSET 20.0f
+#define RIGHT_OFFSET 20.0f
+
 
 @interface MapViewController : UIViewController <CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate>
 {
@@ -28,6 +36,7 @@
 @property (nonatomic , retain) UIToolbar * toolBar;
 
 @property (nonatomic , assign) MyMap * currentMap;
+
 
 - (void) setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 
 - (void) updateCurrentMap: (MKMapView *) theMap;

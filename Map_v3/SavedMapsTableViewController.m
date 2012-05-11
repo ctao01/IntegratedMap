@@ -12,10 +12,10 @@
 #import "GDataXMLNode.h"
 #import "SettingViewController.h"
 #import "RootViewController.h"
-#import "iCarouselSavedMapsViewController.h"
 
 @interface SavedMapsTableViewController() {
     UIToolbar * toolBar;
+    
 }
 @end
 
@@ -28,6 +28,7 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
+        self.view.frame = CGRectMake(0.0f, 0.0f, 320.0f, 460.0f);
     }
     return self;
 }
@@ -44,6 +45,8 @@
 {
     [googleMaps release];
     [toolBar release];
+    
+    NSLog(@"savedMapsTableViewController - dealloc");
     [super dealloc];
 }
 
@@ -98,8 +101,8 @@
     [delegate.savedMaps addObjectsFromArray:_gSavedMaps];
     NSLog(@"delegate.savedMaps count:%i",[[delegate savedMaps]count]);
 
-    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
-    [rvc updateSavedData];
+//    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
+//    [rvc updateSavedData];
     
     [self.tableView reloadData];
 }
@@ -258,7 +261,7 @@
 }
 */
 
-
+/*
 - (void) sync
 {
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
@@ -280,27 +283,28 @@
     [rvc updateSavedData];
     
     [self.tableView reloadData];
-}
+}*/
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"%@",NSStringFromCGRect([self.view frame]));
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.navigationController.navigationBarHidden = NO;
-    self.navigationItem.title = @"Saved Maps";
-
-    UIBarButtonItem * changeBtn = [[UIBarButtonItem alloc]initWithTitle:@"|||" style:UIBarButtonItemStyleBordered target:self action:@selector(changeToiCarouseView)];
-
-//    UIBarButtonItem * changeBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(changeToiCarouseView)];
-    self.navigationItem.rightBarButtonItem = changeBtn;
-    [changeBtn release];
+//    self.navigationController.navigationBarHidden = NO;
+//    self.navigationItem.title = @"Saved Maps";
+//
+//    UIBarButtonItem * changeBtn = [[UIBarButtonItem alloc]initWithTitle:@"|||" style:UIBarButtonItemStyleBordered target:self action:@selector(changeToiCarouseView)];
+//
+////    UIBarButtonItem * changeBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(changeToiCarouseView)];
+//    self.navigationItem.rightBarButtonItem = changeBtn;
+//    [changeBtn release];
     
 //    CGRect frame = self.view.frame;
 //    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -372,28 +376,20 @@
 
 #pragma mark - UIButton Actions
 
+
+
 - (void) changeToiCarouseView
 {
-//    iCarouselSavedMapsViewController * vcSavedMaps = [[iCarouselSavedMapsViewController alloc]init];
+//    [UIView beginAnimations:nil context:NULL];
 //    [UIView transitionFromView:self.view toView:vcSavedMaps.view duration:1.5 options:UIViewAnimationOptionTransitionFlipFromLeft completion:nil];
-//    [vcSavedMaps release];
-    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+
+//    NSString * urlStr = @"http://maps.google.com/maps/ms?msid=216899859418627266443.0004bfa64b827ea62fa7c&msa=0";
+//    NSURL * url = [NSURL URLWithString:urlStr];
+//    [[UIApplication sharedApplication]openURL:url];
     
-    MyMap * newMap = [[MyMap alloc]init];
-    NSString * urlStr = @"http://maps.google.com/maps/feeds/features/216899859418627266443/0004a831b27ff08174e3c/full";
-    newMap.myPlaces = [self retrievePlacemakrsFromContentURL:urlStr andAuthToken:[defaults objectForKey:@"AuthorizationToken"]];
-    newMap.mapTitle = @"New Map";
-    
-    [delegate.savedMaps addObject:newMap];
-    
-    RootViewController * rvc = (RootViewController *)delegate.rootViewController;
-    [rvc updateSavedData];
-    
-    [self.tableView reloadData];
 }
 
-
+/*
 - (void) SyncOrNot
 {
     // Check and retrieve authorization information
@@ -402,13 +398,12 @@
     {
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Notice" message:@"You haven't connected to Google account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Connect Now", nil];
         [alert setAlertViewStyle:UIAlertViewStyleDefault];
-        alert.delegate = self;
         [alert show];
         [alert release];    
     }
     else
         [self sync];
-}
+}*/
 
 
 //- (void) connectToGoogle 

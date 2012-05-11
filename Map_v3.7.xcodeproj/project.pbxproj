@@ -45,6 +45,8 @@
 		7E82DC9D15308B7900583074 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC9C15308B7900583074 /* CoreLocation.framework */; };
 		7E82DC9F15308B7F00583074 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC9E15308B7F00583074 /* MapKit.framework */; };
 		7E82DCA2153092ED00583074 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82DCA1153092ED00583074 /* Annotation.m */; };
+		7E935097155DCA880029DC90 /* CalloutMapAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */; };
+		7E93509E155DCF030029DC90 /* SwitchViewsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93509D155DCF020029DC90 /* SwitchViewsController.m */; };
 		7E9CC044153F04AC00DEC3A7 /* KML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9CC043153F04AC00DEC3A7 /* KML.framework */; };
 		7EA70E2315322B1D00DC3D91 /* EditableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2215322B1D00DC3D91 /* EditableCell.m */; };
 		7EA70E2615322B3100DC3D91 /* DetailedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2515322B3100DC3D91 /* DetailedViewController.m */; };
@@ -144,6 +146,10 @@
 		7E82DC9E15308B7F00583074 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		7E82DCA0153092ED00583074 /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		7E82DCA1153092ED00583074 /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
+		7E935095155DCA880029DC90 /* CalloutMapAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalloutMapAnnotationView.h; sourceTree = "<group>"; };
+		7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalloutMapAnnotationView.m; sourceTree = "<group>"; };
+		7E93509C155DCF020029DC90 /* SwitchViewsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchViewsController.h; sourceTree = "<group>"; };
+		7E93509D155DCF020029DC90 /* SwitchViewsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchViewsController.m; sourceTree = "<group>"; };
 		7E9CC043153F04AC00DEC3A7 /* KML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KML.framework; sourceTree = "<group>"; };
 		7EA70E2115322B1D00DC3D91 /* EditableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableCell.h; sourceTree = "<group>"; };
 		7EA70E2215322B1D00DC3D91 /* EditableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableCell.m; sourceTree = "<group>"; };
@@ -309,6 +315,8 @@
 				7EA70E2815328EAE00DC3D91 /* SavedMapsTableViewController.m */,
 				7E3C6FB51559B20D0069FAD2 /* iCarouselSavedMapsViewController.h */,
 				7E3C6FB61559B20D0069FAD2 /* iCarouselSavedMapsViewController.m */,
+				7E93509C155DCF020029DC90 /* SwitchViewsController.h */,
+				7E93509D155DCF020029DC90 /* SwitchViewsController.m */,
 			);
 			name = Save;
 			sourceTree = "<group>";
@@ -386,6 +394,7 @@
 		7E82DC6B152FE57E00583074 /* Map_v3 */ = {
 			isa = PBXGroup;
 			children = (
+				7E935093155DCA750029DC90 /* View */,
 				7E377A571550D0FF00B34417 /* Assets */,
 				7EA70E2A1533AD0900DC3D91 /* 3rd Party */,
 				7E82DC85152FEAF600583074 /* ViewControllers */,
@@ -439,6 +448,15 @@
 				7EA70E351533DCC000DC3D91 /* SettingViewController.m */,
 			);
 			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		7E935093155DCA750029DC90 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7E935095155DCA880029DC90 /* CalloutMapAnnotationView.h */,
+				7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 		7EA70E2015322AEB00DC3D91 /* TableViewCell */ = {
@@ -671,6 +689,8 @@
 				7E4F8C89155ACDF2005D532F /* UIImageView+WebCache.m in Sources */,
 				7E4F8C8D155ACE32005D532F /* IMLazyLoadTableViewCell.m in Sources */,
 				7E4F8C90155ACFAC005D532F /* SavedMapsCell.m in Sources */,
+				7E935097155DCA880029DC90 /* CalloutMapAnnotationView.m in Sources */,
+				7E93509E155DCF030029DC90 /* SwitchViewsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

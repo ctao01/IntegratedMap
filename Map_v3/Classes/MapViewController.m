@@ -263,27 +263,63 @@
     [alertview release];
 }
 
+
+
 - (UIImage*) generateMapImage
 {
     UIGraphicsBeginImageContext(mapView.frame.size);
 	[mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
 	UIImage * mapImage = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
+    UIGraphicsEndImageContext();  
+//    return mapImage;
+
+    CGSize imageSize = mapImage.size;
+    UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f,imageSize.width * 0.8f, imageSize.height * 0.8f)];
+    imageview.image = mapImage;
+    imageview.layer.borderWidth = 10.0f;
+    imageview.contentMode = UIViewContentModeCenter;
+    imageview.layer.borderColor = [[UIColor whiteColor]CGColor];
+    imageview.layer.shadowOffset = CGSizeMake(-3.0f, 3.0f);
+    imageview.layer.shadowRadius = 3.0f;
+    imageview.layer.shadowOpacity = 1.0f;
     
-    UIImageView * mapImgView = [[UIImageView alloc]initWithFrame:UIEdgeInsetsInsetRect(self.view.frame, UIEdgeInsetsMake(40.0f, 20.0f, 40.0f, 20.0f))];
-    mapImgView.layer.borderWidth = 2.0f;
-    mapImgView.layer.borderColor = [[UIColor whiteColor] CGColor];
-    mapImgView.layer.cornerRadius = 5.0f;
-    mapImgView.layer.shadowColor = [[UIColor redColor] CGColor];
+    UIGraphicsBeginImageContext(imageview.frame.size);
+	[imageview.layer renderInContext:UIGraphicsGetCurrentContext()];
+	UIImage * mapImageview = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return mapImageview;
+    
+    /* CGRect viewFrame = self.view.frame;
+    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake( OFFSET , OFFSET, viewFrame.size.width - OFFSET * 2, viewFrame.size.height - OFFSET * 2 )];
+    bgView.clipsToBounds = YES;
+    bgView.layer.cornerRadius = 5.0f;
+    bgView.layer.borderWidth = 5.0f;
+    bgView.layer.borderColor = [[UIColor lightGrayColor]CGColor];
+    
+    CGRect bgViewFrame = bgView.frame;
+    UIImageView * mapImgView = [[UIImageView alloc]initWithFrame:CGRectMake( LEFT_OFFSET , TOP_OFFSET, bgViewFrame.size.width - LEFT_OFFSET - RIGHT_OFFSET, bgViewFrame.size.height - TOP_OFFSET - BOTTOM_OFFSET )];
     mapImgView.image = mapImage;
+    NSLog(@"frame:%@",NSStringFromCGRect([mapImgView frame]));
     
+    CGRect mapImageFrame = mapImgView.frame;
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(mapImageFrame.origin.x, mapImageFrame.origin.y + mapImageFrame.size.height, mapImageFrame.size.width, 24)];
+
+    titleLabel.text = self.navigationItem.title;
     
-    UIGraphicsBeginImageContext(mapImgView.bounds.size);
-    [mapImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    [bgView addSubview:mapImgView];
+    [bgView addSubview:titleLabel];
+    
+    [mapImgView release];
+    [titleLabel release];
+        
+    UIGraphicsBeginImageContext(bgView.bounds.size);
+    [bgView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
     UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-//    UIImageWriteToSavedPhotosAlbum(newImage, nil, nil, nil);
-    return newImage;
+    UIImageWriteToSavedPhotosAlbum(newImage, nil, nil, nil);
+    return newImage;*/
 }
 
 - (void) cancel
@@ -317,7 +353,6 @@
     [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
    
     [delegate.savedMaps addObject:aMap];
-    [aMap release];
     [self.navigationController popViewControllerAnimated:YES];
 
 }
@@ -433,6 +468,7 @@
     annotationView.rightCalloutAccessoryView = detailBtn;
     annotationView.animatesDrop = NO ;
     return annotationView;
+    
     
 }
 
