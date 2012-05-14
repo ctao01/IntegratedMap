@@ -47,6 +47,7 @@
 		7E82DCA2153092ED00583074 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82DCA1153092ED00583074 /* Annotation.m */; };
 		7E935097155DCA880029DC90 /* CalloutMapAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */; };
 		7E93509E155DCF030029DC90 /* SwitchViewsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93509D155DCF020029DC90 /* SwitchViewsController.m */; };
+		7E9350A0155F74C30029DC90 /* yellow_temp_sign.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E93509F155F74C30029DC90 /* yellow_temp_sign.png */; };
 		7E9CC044153F04AC00DEC3A7 /* KML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E9CC043153F04AC00DEC3A7 /* KML.framework */; };
 		7EA70E2315322B1D00DC3D91 /* EditableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2215322B1D00DC3D91 /* EditableCell.m */; };
 		7EA70E2615322B3100DC3D91 /* DetailedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA70E2515322B3100DC3D91 /* DetailedViewController.m */; };
@@ -67,6 +68,9 @@
 		7EA70E5B1533E14C00DC3D91 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA70E5A1533E14C00DC3D91 /* SystemConfiguration.framework */; };
 		7EA70E5D1533E15500DC3D91 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA70E5C1533E15400DC3D91 /* MobileCoreServices.framework */; };
 		7EA70E5F1533E16200DC3D91 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA70E5E1533E16200DC3D91 /* libz.1.2.5.dylib */; };
+		7ED7965815617F7C004D27C4 /* location-icon-orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED7965715617F7C004D27C4 /* location-icon-orange.png */; };
+		7ED7966115618C77004D27C4 /* TabBarGradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED7966015618C77004D27C4 /* TabBarGradient.png */; };
+		7ED7966715619600004D27C4 /* location-icon-yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7ED7966615619600004D27C4 /* location-icon-yellow.png */; };
 		7EE69AD2155827FC0087D458 /* SettingTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE69AD1155827FC0087D458 /* SettingTableViewController.m */; };
 		7EE69AF015582A450087D458 /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE69AD815582A450087D458 /* Facebook.m */; };
 		7EE69AF115582A450087D458 /* FBDialog.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 7EE69ADB15582A450087D458 /* FBDialog.bundle */; };
@@ -150,6 +154,7 @@
 		7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalloutMapAnnotationView.m; sourceTree = "<group>"; };
 		7E93509C155DCF020029DC90 /* SwitchViewsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchViewsController.h; sourceTree = "<group>"; };
 		7E93509D155DCF020029DC90 /* SwitchViewsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchViewsController.m; sourceTree = "<group>"; };
+		7E93509F155F74C30029DC90 /* yellow_temp_sign.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yellow_temp_sign.png; sourceTree = "<group>"; };
 		7E9CC043153F04AC00DEC3A7 /* KML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = KML.framework; sourceTree = "<group>"; };
 		7EA70E2115322B1D00DC3D91 /* EditableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableCell.h; sourceTree = "<group>"; };
 		7EA70E2215322B1D00DC3D91 /* EditableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableCell.m; sourceTree = "<group>"; };
@@ -188,6 +193,9 @@
 		7EA70E5A1533E14C00DC3D91 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		7EA70E5C1533E15400DC3D91 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		7EA70E5E1533E16200DC3D91 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
+		7ED7965715617F7C004D27C4 /* location-icon-orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "location-icon-orange.png"; sourceTree = "<group>"; };
+		7ED7966015618C77004D27C4 /* TabBarGradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TabBarGradient.png; sourceTree = "<group>"; };
+		7ED7966615619600004D27C4 /* location-icon-yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "location-icon-yellow.png"; sourceTree = "<group>"; };
 		7EE69AD0155827FC0087D458 /* SettingTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingTableViewController.h; sourceTree = "<group>"; };
 		7EE69AD1155827FC0087D458 /* SettingTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingTableViewController.m; sourceTree = "<group>"; };
 		7EE69AD715582A450087D458 /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
@@ -301,6 +309,10 @@
 		7E377A581550D10900B34417 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7ED7966615619600004D27C4 /* location-icon-yellow.png */,
+				7ED7966015618C77004D27C4 /* TabBarGradient.png */,
+				7ED7965715617F7C004D27C4 /* location-icon-orange.png */,
+				7E93509F155F74C30029DC90 /* yellow_temp_sign.png */,
 				7E0D83FF155B6A46008B4502 /* Google_Logo_black.png */,
 				7E3C6FC01559C2E30069FAD2 /* placeholder.png */,
 				7EE69AFF1558306D0087D458 /* Black_Arrowhead_right.png */,
@@ -635,6 +647,10 @@
 				7EE69B001558306D0087D458 /* Black_Arrowhead_right.png in Resources */,
 				7E3C6FC11559C2E30069FAD2 /* placeholder.png in Resources */,
 				7E0D8400155B6A46008B4502 /* Google_Logo_black.png in Resources */,
+				7E9350A0155F74C30029DC90 /* yellow_temp_sign.png in Resources */,
+				7ED7965815617F7C004D27C4 /* location-icon-orange.png in Resources */,
+				7ED7966115618C77004D27C4 /* TabBarGradient.png in Resources */,
+				7ED7966715619600004D27C4 /* location-icon-yellow.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

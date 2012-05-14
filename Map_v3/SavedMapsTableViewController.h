@@ -16,6 +16,7 @@
 
 @property (nonatomic ,retain) NSMutableArray * googleMaps;
 @property (nonatomic ,retain) NSMutableArray * gSavedMaps;
+@property (nonatomic ,assign) UIViewController * navController;
 
 - (NSMutableArray * ) retrieveMapsWithAuth:(NSString*)clientAuth;
 - (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;

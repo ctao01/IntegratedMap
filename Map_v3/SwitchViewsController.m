@@ -29,6 +29,8 @@
 
 - (void) dealloc
 {
+    [tvSavedMaps release];
+    [vcSavedMaps release];
     [super dealloc];
 }
 
@@ -49,6 +51,7 @@
     tableviewOnTop = YES;
     
     tvSavedMaps = [[SavedMapsTableViewController alloc]initWithStyle:UITableViewStylePlain];
+    tvSavedMaps.navController = self;
     vcSavedMaps = [[iCarouselSavedMapsViewController alloc]init];
     [self.view addSubview:tvSavedMaps.view];
     

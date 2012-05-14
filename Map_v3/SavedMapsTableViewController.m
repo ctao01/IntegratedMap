@@ -22,6 +22,7 @@
 @implementation SavedMapsTableViewController
 @synthesize googleMaps;
 @synthesize gSavedMaps = _gSavedMaps;
+@synthesize navController;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -570,7 +571,7 @@
     [vcContinuedMap setPlaceMarks:aMap.myPlaces];
     [vcContinuedMap setCurrentMap:aMap];
     
-    [self.navigationController pushViewController:vcContinuedMap animated:YES];
+    [self.navController.navigationController pushViewController:vcContinuedMap animated:YES];
     vcContinuedMap.toolBar.hidden = YES;
     UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
     vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;

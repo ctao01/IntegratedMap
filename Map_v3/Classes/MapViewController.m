@@ -11,7 +11,7 @@
 #import "Annotation.h"
 #import "AppDelegate.h"
 #import "DetailedViewController.h"
-#import "SavedMapsTableViewController.h"
+#import "SwitchViewsController.h"
 
 #import <CoreLocation/CoreLocation.h>
 #import <QuartzCore/QuartzCore.h>
@@ -20,7 +20,8 @@
 
 @synthesize placeMarks = _placeMarks;
 @synthesize lat, lng;
-@synthesize toolBar;
+@synthesize toolBar ;
+@synthesize customTabBar;
 @synthesize currentMap;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -43,6 +44,7 @@
 - (void) dealloc
 {
     [toolBar release];
+    [customTabBar release]; 
     [mapView release]; mapView = nil;
     [locationManager release]; locationManager = nil;
 
@@ -55,8 +57,9 @@
 {
     NSArray *viewControllers = [[self navigationController] viewControllers];
     UIViewController * rootViewController = [viewControllers objectAtIndex:[viewControllers count]-2];
+    NSLog(@"%@",NSStringFromClass([rootViewController class]));
     
-    return [rootViewController class] == [SavedMapsTableViewController class];
+    return [rootViewController class] == [SwitchViewsController class];
 }
 
 - (MyMap *) completeTheMap
@@ -83,7 +86,29 @@
     return aMap;
 }
 
+#pragma mark - Custom Tab bar Button
 
+-(void) addCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage
+{
+    UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
+    [button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+    [button addTarget:self action:@selector(addNewPlace) forControlEvents:UIControlEventTouchUpInside];
+    
+    CGFloat heightDifference = buttonImage.size.height - customTabBar.frame.size.height;
+    if (heightDifference < 0)
+        button.center = customTabBar.center;
+    else
+    {
+        CGPoint center = customTabBar.center;
+        center.y = center.y - heightDifference/2.0;
+        button.center = center;
+    }
+    
+    [self.view addSubview:button];
+}
 
 #pragma mark - View lifecycle
 
@@ -143,7 +168,7 @@
 
 
     // Initialize ToolBar
-    toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
+    /*toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
     UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewPlace)];
     UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
@@ -166,7 +191,21 @@
     [self.view addSubview:toolBar];
     [fixed release];
     [addButton release];
-    [uploadButton release];
+    [uploadButton release]; */
+    
+    customTabBar = [[UITabBar alloc]initWithFrame:CGRectMake(0, 420-49, 320, 49)];
+    customTabBar.delegate = self;   
+
+    
+    UITabBarItem * locationItem = [[UITabBarItem alloc]initWithTitle:@"GPS" image:nil tag:0];
+    UITabBarItem * routeItem = [[UITabBarItem alloc]initWithTitle:@"Route" image:nil tag:1];
+    UITabBarItem * checkinItem = [[UITabBarItem alloc]initWithTitle:@"" image:nil tag:2];
+    UITabBarItem * uploadItem = [[UITabBarItem alloc]initWithTitle:@"Upload" image:nil tag:3];
+    UITabBarItem * shareItem = [[UITabBarItem alloc]initWithTitle:@"GPS" image:nil tag:4];
+
+    [customTabBar setItems:[NSArray arrayWithObjects:locationItem, routeItem, checkinItem , uploadItem , shareItem, nil] animated:NO];
+    [self.view addSubview:customTabBar];
+
     
     // Initialize NavigationBar
     UIBarButtonItem * cancelBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
@@ -176,6 +215,14 @@
     NSLog(@"self.annotations:%@",self.placeMarks);
 
 }
+
+//- (void) setCustomizedToolBar:(IMCustomizedTabBar *)customizedToolBar
+//{
+//    if (_customizedToolBar == customizedToolBar )return;
+//    [_customizedToolBar release];
+//    _customizedToolBar = customizedToolBar;
+//    
+//}
 
 - (void)viewDidUnload
 {
@@ -189,7 +236,15 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     [self updateCurrentMap:mapView];
+    [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
+
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 
 }
 
@@ -512,6 +567,16 @@
     
     
 }
+
+
+#pragma mark - TabBarDelegate
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
+    NSLog(@"Selected Index:%i", [customTabBar.items indexOfObject:item]);
+}
+
+
 
 #pragma mark - Alert View
 

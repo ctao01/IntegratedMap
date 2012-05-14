@@ -19,7 +19,7 @@
 #define RIGHT_OFFSET 20.0f
 
 
-@interface MapViewController : UIViewController <CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate>
+@interface MapViewController : UIViewController <CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate , UITabBarDelegate>
 {
     CLLocationManager * locationManager;
     CLLocationDegrees  lat;
@@ -28,12 +28,14 @@
     MKMapView * mapView;
     
     BOOL isUploaded;
+    
 }
 
 @property (nonatomic , assign) CLLocationDegrees lat;
 @property (nonatomic , assign) CLLocationDegrees lng;
 @property (nonatomic , retain) NSMutableArray * placeMarks;
 @property (nonatomic , retain) UIToolbar * toolBar;
+@property (nonatomic , retain) UITabBar * customTabBar;
 
 @property (nonatomic , assign) MyMap * currentMap;
 
