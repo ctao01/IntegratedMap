@@ -36,6 +36,13 @@
 	[_latitude release];
 	[_longitude release];
     
+    [_streetAddress release];
+    [_subStreetAddress release];
+    [_city release];
+    [_zipCode release];
+    [_state release];
+    [_country release];
+    
     [super dealloc];
 }
 
@@ -66,7 +73,9 @@
     
 	self= [self init];
 	
-	[self setValuesForKeysWithDictionary:dictionary];
+    NSMutableDictionary *mutableDict = [dictionary mutableCopy];
+    [self setValuesForKeysWithDictionary: mutableDict];
+    [mutableDict release];
     
 	return self;
 }

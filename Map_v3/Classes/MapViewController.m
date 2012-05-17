@@ -22,7 +22,7 @@
 @synthesize lat, lng;
 @synthesize toolBar ;
 @synthesize customTabBar;
-@synthesize currentMap;
+@synthesize currentMap = _currentMap;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -51,6 +51,42 @@
     NSLog(@"dealloc");
     [super dealloc];
 }
+
+- (void) setCurrentMap:(MyMap *)currentMap
+{
+    if (_currentMap == currentMap) return;
+    [_currentMap release];
+    _currentMap = [currentMap retain];
+    
+    NSMutableArray * array = [[NSMutableArray alloc]initWithCapacity:[[_currentMap myPlaces]count]];
+    // NSDictionary
+    for (id Obj in [_currentMap myPlaces]) {
+        // [Obj class] is NSDictionary
+        NSLog(@"obj%@",Obj);
+        
+        
+        MyPlace * thePlace = [[MyPlace alloc]init];
+        thePlace.comment = [Obj objectForKey:@"comment"] ;
+        thePlace.locationName = [Obj objectForKey:@"locationName"];
+        thePlace.latitude = [Obj objectForKey:@"latitude"];
+        thePlace.longitude = [Obj objectForKey:@"longitude"];
+        thePlace.timestamp = [Obj objectForKey:@"timestamp"];
+        thePlace.streetAddress = [Obj objectForKey:@"streetAddress"];
+        thePlace.subStreetAddress = [Obj objectForKey:@"subStreetAddress"];
+        thePlace.city = [Obj objectForKey:@"city"];
+        thePlace.zipCode = [Obj objectForKey:@"zipCode"];
+        thePlace.state = [Obj objectForKey:@"state"];
+        thePlace.country = [Obj objectForKey:@"country"];
+
+        [array addObject:thePlace];
+        NSLog(@"%@",array);
+    }
+
+    self.placeMarks = array;
+    self.title = _currentMap.mapTitle;
+    
+    
+}
 #pragma mark -
 
 - (BOOL) isNotEditable
@@ -72,6 +108,7 @@
     
     aMap.mapTitle = self.navigationItem.title;
     aMap.myPlaces = self.placeMarks;
+    NSLog(@"%@",aMap.myPlaces);
     aMap.mapCreatedTime = [NSDate date];
     aMap.mapAuthor = [defaults objectForKey:@"IMUsername"];
    
@@ -201,7 +238,7 @@
     UITabBarItem * routeItem = [[UITabBarItem alloc]initWithTitle:@"Route" image:nil tag:1];
     UITabBarItem * checkinItem = [[UITabBarItem alloc]initWithTitle:@"" image:nil tag:2];
     UITabBarItem * uploadItem = [[UITabBarItem alloc]initWithTitle:@"Upload" image:nil tag:3];
-    UITabBarItem * shareItem = [[UITabBarItem alloc]initWithTitle:@"GPS" image:nil tag:4];
+    UITabBarItem * shareItem = [[UITabBarItem alloc]initWithTitle:@"Share" image:nil tag:4];
 
     [customTabBar setItems:[NSArray arrayWithObjects:locationItem, routeItem, checkinItem , uploadItem , shareItem, nil] animated:NO];
     [self.view addSubview:customTabBar];
@@ -402,7 +439,6 @@
 //    }
     
     MyMap * aMap = [self completeTheMap];
-
     UIImage * image = [self generateMapImage];
     aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/%@.png", aMap.mapTitle];
     [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
@@ -417,8 +453,8 @@
 {
     if (self.isNotEditable) {
         AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-        [delegate.savedMaps removeObject:currentMap];
-        [currentMap release];
+        [delegate.savedMaps removeObject: self.currentMap]; // TODO:
+        NSLog(@"%i",[[delegate savedMaps] count]);
     }
     
     self.toolBar.hidden = NO;
@@ -441,7 +477,7 @@
 - (void) upload
 {
     
-    [(UIButton *)[[toolBar.items objectAtIndex:0] customView] setTitle:@"update" forState:UIControlStateNormal];
+//    [(UIButton *)[[toolBar.items objectAtIndex:0] customView] setTitle:@"update" forState:UIControlStateNormal];
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
@@ -530,37 +566,50 @@
 - (void) mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
     
+    // TODO: self.currentMap exist or not
+    
     DetailedViewController * vcDetail = [[DetailedViewController alloc]initWithStyle:UITableViewStyleGrouped];
     
-    NSMutableArray * dict = [NSMutableArray arrayWithCapacity:[self.placeMarks count]];
-    for (id Obj in [self placeMarks])
-    {
-        [dict addObject:[Obj dictionaryWithValuesForKeys:[MyPlace keys]]];
-    }
-    for (int i = 0; i < [self.placeMarks count]; i++) 
-    {
-//        NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
-//        NSDateFormatter* dateFromatter = [[NSDateFormatter alloc]init];
-//        [dateFromatter setDateStyle:NSDateFormatterLongStyle];
-//        [dateFromatter setTimeStyle:NSDateFormatterShortStyle];
-//        NSString * subtitle = [dateFromatter stringFromDate:timestamp];		        
-        
-        MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
-        [vcDetail setThePlace:thePlace];
-        NSString * title = [[dict objectAtIndex:i]objectForKey:@"locationName"];
-//        vcDetail.title =[title isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
-        vcDetail.title =[title isEqual:[NSNull null]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
 
-//        if ([subtitle isEqualToString:view.annotation.subtitle]) 
-//        {
-//            MyPlace * thePlace = [self.placeMarks objectAtIndex:i];
-//            [vcDetail setThePlace:thePlace];
-//            NSString * title = [[dict objectAtIndex:i]objectForKey:@"locationName"];
-//            NSLog(@"TITLE:%@",title);
-//            vcDetail.title =[title isKindOfClass:[NSNull class]]? @"No Title" : [[dict objectAtIndex:i]objectForKey:@"locationName"];
-//                
-//        }
+    for (id obj in [self placeMarks]) {
+        NSLog(@"%@", NSStringFromClass([obj class]));
+        MyPlace * thePlace = (MyPlace*)obj;
+        vcDetail.thePlace = thePlace;
+        vcDetail.title = [thePlace locationName]? [thePlace locationName]:@"no title";
     }
+    
+    
+//    if (self.isNotEditable)
+//    {
+//        for (int index = 0; index <[[self.currentMap myPlaces]count]; index ++) 
+//        {
+//            MyPlace * currentPlace = [[self.currentMap myPlaces]objectAtIndex:index];
+////            vcDetail.thePlace = currentPlace;
+////            vcDetail.title = [currentPlace locationName];
+//            NSLog(@"%@",[self.currentMap class]);
+//
+//            NSLog(@"%@",[currentPlace class]);
+//            NSLog(@"%@",[currentPlace isKindOfClass:[NSDictionary class]]? @"YES" : @"NO");
+//            NSLog(@"%@",[self.currentMap isKindOfClass:[NSMutableArray class]]? @"YES" : @"NO");
+//
+//
+//        }
+//        
+//    }
+//    else
+//    {
+//        for (id Obj in [[self completeTheMap] myPlaces])
+//        {
+//            MyPlace * currentPlace = (MyPlace*)Obj;
+//            vcDetail.thePlace = currentPlace;
+//            vcDetail.title = [currentPlace locationName];
+//            NSLog(@"%@",[currentPlace class]);
+//            NSLog(@"%@",[[self completeTheMap] class]);
+//
+//            NSLog(@"editingMap");
+//        }
+//    }
+    
     [self.navigationController pushViewController:vcDetail animated:YES];
     
     [vcDetail release];
@@ -569,12 +618,7 @@
 }
 
 
-#pragma mark - TabBarDelegate
 
-- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
-{
-    NSLog(@"Selected Index:%i", [customTabBar.items indexOfObject:item]);
-}
 
 
 
@@ -589,6 +633,8 @@
         case 1:
         {
              MyPlace * aPlace = [[MyPlace alloc]init];
+            [aPlace setLocationName:@"(no title)"];
+
             
             [aPlace setLatitude:[NSNumber numberWithDouble:lat]];
             [aPlace setLongitude:[NSNumber numberWithDouble:lng]];
@@ -637,11 +683,13 @@
         NSDictionary * placesDict = [theMap.myPlaces objectAtIndex:index];
         NSString * description = [placesDict objectForKey:@"comment"];
         
-        [CSVStr appendFormat:@"%@,%@,%@,%@\n",
+        [CSVStr appendFormat:@"%@,%@,%@,%@,%@\n",
          [placesDict objectForKey:@"locationName"],
          [placesDict objectForKey:@"latitude"],
          [placesDict objectForKey:@"longitude"],
-         [description isKindOfClass:[NSNull class]]? @"no comment": description];
+         [description isKindOfClass:[NSNull class]]? @"no comment" :description,
+         [placesDict objectForKey:@"timestamp"]];
+
     }
     
     return CSVStr;
@@ -666,5 +714,13 @@
     
     NSString * updateResponse = [updateRequest responseString];
     NSLog(@"updateResponse:%@",updateResponse);
+}
+
+#pragma mark - TabBarDelegate
+
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
+    NSLog(@"Selected Index:%i", [customTabBar.items indexOfObject:item]);
+    if ([customTabBar.items objectAtIndex:3]) [self upload];
 }
 @end

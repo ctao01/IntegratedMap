@@ -564,11 +564,11 @@
 //    [vcSetting updateMapsWithAuth:authStr andAMap:aMap];
     
     AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
-    MyMap * aMap = [delegate.savedMaps objectAtIndex:indexPath.row];
+    MyMap * aMap = (MyMap *)[delegate.savedMaps objectAtIndex:indexPath.row];
     
-    MapViewController * vcContinuedMap = [[MapViewController alloc]init];
-    [vcContinuedMap setTitle:aMap.mapTitle];
-    [vcContinuedMap setPlaceMarks:aMap.myPlaces];
+    MapViewController * vcContinuedMap = [[[MapViewController alloc]init] autorelease];
+//    [vcContinuedMap setTitle:aMap.mapTitle];
+//    [vcContinuedMap setPlaceMarks:aMap.myPlaces];
     [vcContinuedMap setCurrentMap:aMap];
     
     [self.navController.navigationController pushViewController:vcContinuedMap animated:YES];
@@ -576,7 +576,7 @@
     UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
     vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;
     [editBtn release];
-    [vcContinuedMap release];
+//    [vcContinuedMap release];
 
     
  }

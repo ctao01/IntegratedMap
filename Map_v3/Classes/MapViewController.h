@@ -37,7 +37,7 @@
 @property (nonatomic , retain) UIToolbar * toolBar;
 @property (nonatomic , retain) UITabBar * customTabBar;
 
-@property (nonatomic , assign) MyMap * currentMap;
+@property (nonatomic , retain) MyMap * currentMap;
 
 
 - (void) setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 

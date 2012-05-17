@@ -16,7 +16,6 @@
 
 - (void)dealloc
 {
-    [_mapObject release]; self.mapObject = nil;
     
     [titleLabel release];
     [subtitleLabel release];
