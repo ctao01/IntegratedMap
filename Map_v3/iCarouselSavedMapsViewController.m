@@ -78,7 +78,7 @@
     //create carousel
 	carousel = [[iCarousel alloc] initWithFrame:self.view.bounds];
 	carousel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    carousel.type = iCarouselTypeRotary;
+    carousel.type = iCarouselTypeCoverFlow2;
 	carousel.delegate = self;
 	carousel.dataSource = self;
     
@@ -127,30 +127,55 @@
     UIButton *button = (UIButton *)view;
     if (button == nil)
 	{        
-        MyMap * theMap = [[APPLICATION_DELEGATE savedMaps]objectAtIndex:index];
+       
             //no button available to recycle, so create new one
         
         //if statement for checking NSString is NULL or NOT NULL
 
 //            NSString * imagePath = [[NSString stringWithFormat:@"%@",theMap.mapImagePath] isEqual:[NSNull null]]? @"placeholder.png":[NSString stringWithFormat:@"%@",theMap.mapImagePath] ;
 //            UIImage * image = [UIImage imageNamed:@"placeholder.png" ];
-        UIImage * image = theMap.mapImagePath ? [[UIImage alloc]initWithContentsOfFile:theMap.mapImagePath] : [UIImage imageNamed:@"placeholder.png"];
-    
+
+        // set buttonImage background
+        UIImage * bgImg = [UIImage imageNamed:@"websbook_960x720.png"];
+        UIImageView * bgImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, bgImg.size.width * 0.7f , bgImg.size.height *0.7f)];
+        bgImageView.image = bgImg;
         
         button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0.0f, 0.0f, image.size.width , image.size.height);
-        
-        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [button setBackgroundImage:image forState:UIControlStateNormal];
+        button.frame = CGRectMake(0.0f, 0.0f, bgImageView.frame.size.width , bgImageView.frame.size.height);
+//        button.frame = CGRectMake(0.0f, 0.0f, image.size.width , image.size.height);
+        [button setBackgroundImage:bgImg forState:UIControlStateNormal];
 //            button.titleLabel.font = [button.titleLabel.font fontWithSize:50];
+        
         [button addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
         
-        UILabel * label = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 120.0f, 24.0f)] autorelease];
-        label.backgroundColor = [UIColor clearColor];
-        label.frame = CGRectOffset(label.frame, button.center.x - (label.frame.size.width / 2) , (button.frame.origin.y + button.frame.size.height)- label.frame.size.height);
-        label.text = theMap.mapTitle ? theMap.mapTitle : @"Unknown map";
-        [button addSubview:label];
+        MyMap * theMap = [[APPLICATION_DELEGATE savedMaps]objectAtIndex:index];
+
+        // If it has imagePath
+        if (theMap.mapImagePath) {
+            UIImage * mapImg = [[[UIImage alloc]initWithContentsOfFile:theMap.mapImagePath] autorelease];
+            CGSize mapRect = mapImg.size;
+            UIImageView * mapImageVIew = [[[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, mapRect.width * 0.6f , mapRect.height * 0.6f)] autorelease];
+            mapImageVIew.image = mapImg;
+            mapImageVIew.layer.shadowColor = [[UIColor blackColor]CGColor];
+            mapImageVIew.layer.shadowOpacity = 1.0f;
+            mapImageVIew.layer.shadowOffset = CGSizeMake(-3.0f, 3.0f);
+            mapImageVIew.layer.shadowRadius =3.0f;
+            mapImageVIew.clipsToBounds = YES;
+            mapImageVIew.layer.cornerRadius = 8.0f;
+            
+            mapImageVIew.center = button.center;
+            [button addSubview:mapImageVIew];
+        }
         
+        else
+        {
+            NSLog(@"no Image");
+            UILabel * label = [[[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 200.0f, 24.0f)] autorelease];
+            label.backgroundColor = [UIColor clearColor];
+            label.center = button.center;
+            label.text = theMap.mapTitle ? theMap.mapTitle : @"Unknown map";
+            [button addSubview:label];
+        }
 	}
 	
 	//set button label

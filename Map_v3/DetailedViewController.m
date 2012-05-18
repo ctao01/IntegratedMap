@@ -110,14 +110,17 @@
     {
         NSArray *viewControllers = [[self navigationController] viewControllers];
         MapViewController * vcMap = [viewControllers objectAtIndex:[viewControllers count]-2];
-        NSLog(@"%@",[vcMap description]);
-        [thePlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
-        [thePlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
+        
+        [vcMap.placeMarks removeObject:thePlace];
+        
+        MyPlace * theModifiedPlace = [[MyPlace alloc]init];
+        [theModifiedPlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
+        [theModifiedPlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
         
         NSDate * timestamp = [NSDate date];
-        [thePlace setTimestamp:timestamp]; 
-        
-        [vcMap.placeMarks addObject:thePlace];
+        [theModifiedPlace setTimestamp:timestamp]; 
+        [vcMap.placeMarks addObject:theModifiedPlace];
+//        [vcMap.placeMarks addObject:thePlace];
 
         [[self navigationController] popViewControllerAnimated:YES];
     }

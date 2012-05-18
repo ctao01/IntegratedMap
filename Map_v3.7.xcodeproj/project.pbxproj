@@ -30,6 +30,7 @@
 		7E4F8C89155ACDF2005D532F /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F8C82155ACDF2005D532F /* UIImageView+WebCache.m */; };
 		7E4F8C8D155ACE32005D532F /* IMLazyLoadTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F8C8C155ACE32005D532F /* IMLazyLoadTableViewCell.m */; };
 		7E4F8C90155ACFAC005D532F /* SavedMapsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F8C8F155ACFAC005D532F /* SavedMapsCell.m */; };
+		7E5D72E91565FE5100AF2781 /* FBSingleton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5D72E81565FE5100AF2781 /* FBSingleton.m */; };
 		7E71CD52153CC410003121EA /* UploadedMap.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7E71CD51153CC410003121EA /* UploadedMap.xml */; };
 		7E82DC66152FE57E00583074 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC65152FE57E00583074 /* UIKit.framework */; };
 		7E82DC68152FE57E00583074 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC67152FE57E00583074 /* Foundation.framework */; };
@@ -84,6 +85,7 @@
 		7EE69AF915582A450087D458 /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE69AED15582A450087D458 /* SBJsonParser.m */; };
 		7EE69AFA15582A450087D458 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE69AEF15582A450087D458 /* SBJsonWriter.m */; };
 		7EE69B001558306D0087D458 /* Black_Arrowhead_right.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EE69AFF1558306D0087D458 /* Black_Arrowhead_right.png */; };
+		7EF6302A1566DD69008A9DD7 /* websbook_960x720.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EF630291566DD69008A9DD7 /* websbook_960x720.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,6 +128,8 @@
 		7E4F8C8C155ACE32005D532F /* IMLazyLoadTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMLazyLoadTableViewCell.m; sourceTree = "<group>"; };
 		7E4F8C8E155ACFAC005D532F /* SavedMapsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SavedMapsCell.h; sourceTree = "<group>"; };
 		7E4F8C8F155ACFAC005D532F /* SavedMapsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedMapsCell.m; sourceTree = "<group>"; };
+		7E5D72E71565FE5100AF2781 /* FBSingleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBSingleton.h; sourceTree = "<group>"; };
+		7E5D72E81565FE5100AF2781 /* FBSingleton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBSingleton.m; sourceTree = "<group>"; };
 		7E71CD51153CC410003121EA /* UploadedMap.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = UploadedMap.xml; sourceTree = "<group>"; };
 		7E82DC61152FE57E00583074 /* Map_v3.7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Map_v3.7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E82DC65152FE57E00583074 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -223,6 +227,7 @@
 		7EE69AEE15582A450087D458 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		7EE69AEF15582A450087D458 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		7EE69AFF1558306D0087D458 /* Black_Arrowhead_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Black_Arrowhead_right.png; sourceTree = "<group>"; };
+		7EF630291566DD69008A9DD7 /* websbook_960x720.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = websbook_960x720.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +314,7 @@
 		7E377A581550D10900B34417 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7EF630291566DD69008A9DD7 /* websbook_960x720.png */,
 				7ED7966615619600004D27C4 /* location-icon-yellow.png */,
 				7ED7966015618C77004D27C4 /* TabBarGradient.png */,
 				7ED7965715617F7C004D27C4 /* location-icon-orange.png */,
@@ -493,6 +499,8 @@
 				7EA70E561533DF5B00DC3D91 /* ASIHTTPRequest */,
 				7E377A3E155097B300B34417 /* EGOTableViewPullRefresh */,
 				7E377A561550D08600B34417 /* GoogleData */,
+				7E5D72E71565FE5100AF2781 /* FBSingleton.h */,
+				7E5D72E81565FE5100AF2781 /* FBSingleton.m */,
 			);
 			name = "3rd Party";
 			sourceTree = "<group>";
@@ -651,6 +659,7 @@
 				7ED7965815617F7C004D27C4 /* location-icon-orange.png in Resources */,
 				7ED7966115618C77004D27C4 /* TabBarGradient.png in Resources */,
 				7ED7966715619600004D27C4 /* location-icon-yellow.png in Resources */,
+				7EF6302A1566DD69008A9DD7 /* websbook_960x720.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -707,6 +716,7 @@
 				7E4F8C90155ACFAC005D532F /* SavedMapsCell.m in Sources */,
 				7E935097155DCA880029DC90 /* CalloutMapAnnotationView.m in Sources */,
 				7E93509E155DCF030029DC90 /* SwitchViewsController.m in Sources */,
+				7E5D72E91565FE5100AF2781 /* FBSingleton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

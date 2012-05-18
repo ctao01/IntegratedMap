@@ -58,31 +58,31 @@
     [_currentMap release];
     _currentMap = [currentMap retain];
     
-    NSMutableArray * array = [[NSMutableArray alloc]initWithCapacity:[[_currentMap myPlaces]count]];
-    // NSDictionary
-    for (id Obj in [_currentMap myPlaces]) {
-        // [Obj class] is NSDictionary
-        NSLog(@"obj%@",Obj);
-        
-        
-        MyPlace * thePlace = [[MyPlace alloc]init];
-        thePlace.comment = [Obj objectForKey:@"comment"] ;
-        thePlace.locationName = [Obj objectForKey:@"locationName"];
-        thePlace.latitude = [Obj objectForKey:@"latitude"];
-        thePlace.longitude = [Obj objectForKey:@"longitude"];
-        thePlace.timestamp = [Obj objectForKey:@"timestamp"];
-        thePlace.streetAddress = [Obj objectForKey:@"streetAddress"];
-        thePlace.subStreetAddress = [Obj objectForKey:@"subStreetAddress"];
-        thePlace.city = [Obj objectForKey:@"city"];
-        thePlace.zipCode = [Obj objectForKey:@"zipCode"];
-        thePlace.state = [Obj objectForKey:@"state"];
-        thePlace.country = [Obj objectForKey:@"country"];
+//    NSMutableArray * array = [[NSMutableArray alloc]initWithCapacity:[[_currentMap myPlaces]count]];
+//    // NSDictionary
+//    for (id Obj in [_currentMap myPlaces]) {
+//        // [Obj class] is NSDictionary
+//        NSLog(@"obj%@",Obj);
+//        
+//        
+//        MyPlace * thePlace = [[MyPlace alloc]init];
+//        thePlace.comment = [Obj objectForKey:@"comment"] ;
+//        thePlace.locationName = [Obj objectForKey:@"locationName"];
+//        thePlace.latitude = [Obj objectForKey:@"latitude"];
+//        thePlace.longitude = [Obj objectForKey:@"longitude"];
+//        thePlace.timestamp = [Obj objectForKey:@"timestamp"];
+//        thePlace.streetAddress = [Obj objectForKey:@"streetAddress"];
+//        thePlace.subStreetAddress = [Obj objectForKey:@"subStreetAddress"];
+//        thePlace.city = [Obj objectForKey:@"city"];
+//        thePlace.zipCode = [Obj objectForKey:@"zipCode"];
+//        thePlace.state = [Obj objectForKey:@"state"];
+//        thePlace.country = [Obj objectForKey:@"country"];
+//
+//        [array addObject:thePlace];
+//        NSLog(@"%@",array);
+//    }
 
-        [array addObject:thePlace];
-        NSLog(@"%@",array);
-    }
-
-    self.placeMarks = array;
+    self.placeMarks = _currentMap.myPlaces;
     self.title = _currentMap.mapTitle;
     
     
@@ -325,10 +325,13 @@
         NSLog(@"title:%@",title);
         
         NSDate * timestamp = [[dict objectAtIndex:i] objectForKey:@"timestamp"];
-        NSDateFormatter* dateFromatter = [[NSDateFormatter alloc]init];
+        NSLog(@"timestamp:%@",timestamp);
+
+        
+        NSDateFormatter* dateFromatter = [[[NSDateFormatter alloc]init] autorelease];
         [dateFromatter setDateStyle:NSDateFormatterLongStyle];
         [dateFromatter setTimeStyle:NSDateFormatterShortStyle];
-        NSString * subtitle = [dateFromatter stringFromDate:timestamp];		
+        NSString * subtitle = [dateFromatter stringFromDate:[NSDate date]];		
         NSLog(@"%@",subtitle);
 
         Annotation * annotation = [[Annotation alloc]initWithCoordinate:pinCenter];
@@ -363,24 +366,34 @@
 	[mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
 	UIImage * mapImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();  
-//    return mapImage;
+    return mapImage;
 
-    CGSize imageSize = mapImage.size;
-    UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f,imageSize.width * 0.8f, imageSize.height * 0.8f)];
-    imageview.image = mapImage;
-    imageview.layer.borderWidth = 10.0f;
-    imageview.contentMode = UIViewContentModeCenter;
-    imageview.layer.borderColor = [[UIColor whiteColor]CGColor];
-    imageview.layer.shadowOffset = CGSizeMake(-3.0f, 3.0f);
-    imageview.layer.shadowRadius = 3.0f;
-    imageview.layer.shadowOpacity = 1.0f;
+    //
+//    UIImage * bgImg = [UIImage imageNamed:@"websbook_960x720.png"];
+//    NSLog(@"SIZE:%@",NSStringFromCGSize([bgImg size]));
+//    UIImageView * bgImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, bgImg.size.width * 0.7f , bgImg.size.height *0.7f)];
+//    bgImageView.image = bgImg;
     
-    UIGraphicsBeginImageContext(imageview.frame.size);
-	[imageview.layer renderInContext:UIGraphicsGetCurrentContext()];
-	UIImage * mapImageview = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+//    CGSize imageSize = mapImage.size;
+//    UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f,imageSize.width * 0.6f, imageSize.height * 0.6f)];
+//    imageview.image = mapImage;
+//    imageview.layer.borderWidth = 10.0f;
+//    imageview.contentMode = UIViewContentModeCenter;
+//    imageview.layer.borderColor = [[UIColor whiteColor]CGColor];
+//    imageview.layer.shadowOffset = CGSizeMake(-3.0f, 3.0f);
+//    imageview.layer.shadowRadius = 3.0f;
+//    imageview.layer.shadowOpacity = 1.0f;
+//    imageview.layer.shadowColor = [[UIColor blackColor]CGColor];
+//    
+//    imageview.center = bgImageView.center;
+//    [bgImageView addSubview:imageview];
+//    
+//    UIGraphicsBeginImageContext(bgImageView.frame.size);
+//	[bgImageView.layer renderInContext:UIGraphicsGetCurrentContext()];
+//	UIImage * mapImageview = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
     
-    return mapImageview;
+//    return mapImageview;
     
     /* CGRect viewFrame = self.view.frame;
     UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake( OFFSET , OFFSET, viewFrame.size.width - OFFSET * 2, viewFrame.size.height - OFFSET * 2 )];
@@ -677,7 +690,7 @@
 - (NSString *) creatingCSVFileWithMap:(MyMap *)theMap
 {
     NSMutableString * CSVStr = [[NSMutableString alloc]init];
-    [CSVStr appendString:@"name,latitude,longitude,description\n"];
+    [CSVStr appendString:@"name,latitude,longitude,description,timestamp\n"];
     for (int index = 0; index < [theMap.myPlaces count]; index++) 
     {
         NSDictionary * placesDict = [theMap.myPlaces objectAtIndex:index];

@@ -82,6 +82,8 @@
     
     self.window.backgroundColor = [UIColor blackColor];
     
+    NSLog(@"NSDATE%@",[NSDate date]);
+    
     return YES;
 }
 

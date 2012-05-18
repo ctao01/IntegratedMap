@@ -111,12 +111,12 @@
    
     for (MyMap * myMap in [delegate savedMaps])
     {   
-        NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
-        for (MyPlace * myPlace in [myMap myPlaces] )
-        {
-            [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
-        }
-        myMap.myPlaces = myPlaces;
+//        NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
+//        for (MyPlace * myPlace in [myMap myPlaces] )
+//        {
+//            [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
+//        }
+//        myMap.myPlaces = myPlaces;
         [myMaps addObject:[myMap dictionaryWithValuesForKeys:[MyMap keys]]];
     }
     
@@ -215,8 +215,8 @@
         [vcNewMap setPlaceMarks:array];
         [array release];
         
-        NSString * username = [[alertView textFieldAtIndex:0] text];
-        [vcNewMap setTitle:username];
+        NSString * title = [[alertView textFieldAtIndex:0] text];
+        [vcNewMap setTitle: title? title: @"no title"];
 
         [self.navigationController pushViewController:vcNewMap animated:YES];
         

@@ -15,7 +15,14 @@
     iCarouselSavedMapsViewController * vcSavedMaps;
     SavedMapsTableViewController * tvSavedMaps;
     
+    
     BOOL tableviewOnTop;
 }
+
+@property (nonatomic ,retain) NSMutableArray * gSavedMaps;
+
+
+- (NSMutableArray * ) retrieveMapsWithAuth:(NSString*)clientAuth;
+- (NSMutableArray *)retrievePlacemakrsFromContentURL:(NSString*)mapContent andAuthToken:(NSString*)clientAuth;
 
 @end
