@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "RootViewController.h"
 
-#define kAPPID @"282603195164997"
 
 @interface AppDelegate : NSObject  <UIApplicationDelegate> 
 
@@ -20,5 +19,4 @@
 // store data
 @property (nonatomic , copy) NSString * path;
 @property (nonatomic , retain) NSMutableArray * savedMaps;
-@property (nonatomic , retain) Facebook * facebook;
 @end

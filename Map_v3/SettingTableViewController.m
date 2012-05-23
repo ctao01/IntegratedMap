@@ -23,6 +23,9 @@
     if (self) {
         // Custom initialization
         settingDict = [[NSMutableDictionary alloc]init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(apiGraphMe) name:@"FBDidLogin" object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fbLogout) name:@"FBDidLogout" object:nil];
+
     }
     return self;
 }
@@ -40,6 +43,22 @@
     [settingDict release]; 
     [super dealloc];
 }
+
+#pragma mark - Facebook Graph API
+
+- (void)apiGraphMe {
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   @"name,picture",  @"fields",
+                                   nil];
+    [[Facebook shared]requestWithGraphPath:@"me" andParams:params andDelegate:self];
+    NSLog(@"apiGraphMe");
+}
+
+//- (void) fbLogout
+//{
+//    [[Facebook shared]logout];
+//}
 
 #pragma mark - View lifecycle
 
@@ -72,6 +91,8 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FBDidLogin" object:nil];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -148,6 +169,11 @@
     else if (indexPath.section == AccountSetting) 
     {
         cell.textLabel.text = [[settingDict objectForKey:@"account_setting"]objectAtIndex:indexPath.row]; 
+        if (indexPath.row == 0) 
+            cell.detailTextLabel.text = [defaults objectForKey:@"GL_USERNAME"]? [defaults objectForKey:@"GL_USERNAME"] : @"no config";
+        
+        if (indexPath.row == 1) 
+            cell.detailTextLabel.text = [defaults objectForKey:@"FB_USERNAME"]? [defaults objectForKey:@"FB_USERNAME"] : @"no config";
         cell.accessoryView = arrowBtn;
     }
     else if (indexPath.section == ControlSetting) 
@@ -174,7 +200,7 @@
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
+//    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
     
     if (indexPath.section == UserNameSetting) {
         if (![defaults objectForKey:@"IMUsername"])
@@ -212,23 +238,39 @@
                 [gLogoutView release];
             }
             
+            [self.tableView reloadData];
+
+            
         }
         
         else if (indexPath.row == 1)
         {
-            if (![[delegate facebook] isSessionValid]) 
-            {   
-                NSArray *permissions = [[NSArray alloc] initWithObjects:
-                                        @"user_activities", 
-                                        @"read_friendlists",
-                                        @"offline_access",
-                                        nil];
-                [[delegate facebook] authorize:permissions];
-                [permissions release];
+            if ( ![defaults objectForKey:@"FB_USERNAME"])
+            {
+                [[Facebook shared]authorize];
+                [self apiGraphMe];
             }
-            else
-                [delegate.facebook logout];
+            else {
+                [[Facebook shared]logout];
+                [defaults removeObjectForKey:@"FB_USERNAME"];
+                [defaults synchronize];
+                
+            }
+//            if (![[delegate facebook] isSessionValid]) 
+//            {   
+//                NSArray *permissions = [[NSArray alloc] initWithObjects:
+//                                        @"user_activities", 
+//                                        @"read_friendlists",
+//                                        @"offline_access",
+//                                        nil];
+//                [[delegate facebook] authorize:permissions];
+//                [permissions release];
+//            }
+//            else
+//                [delegate.facebook logout];
         }
+        
+        [self.tableView reloadData];
     }
 }
 
@@ -300,6 +342,7 @@
                 }
                 // store the token
                 [defaults setObject:clientAuth forKey:@"AuthorizationToken"];
+                [defaults setObject:[[alertView textFieldAtIndex:0] text] forKey:@"GL_USERNAME"];
                 [defaults synchronize];
                 
                 if (!clientSID || !clientAuth) {
@@ -313,12 +356,14 @@
             else
             {
                 [defaults removeObjectForKey:@"AuthorizationToken"];
+                [defaults removeObjectForKey:@"GL_USERNAME"];
                 [defaults synchronize];
             }
         }
     } 
 }
 
+/*
 #pragma mark - FBSessionDelegate
 - (void)fbDidLogin
 {
@@ -365,6 +410,60 @@
     [alertView show];
     [alertView release];
     [self fbDidLogout];
+}
+*/
+
+#pragma mark - FBRequestDelegate Method
+
+/**
+ * Called just before the request is sent to the server.
+ */
+- (void)requestLoading:(FBRequest *)request{
+    
+}
+
+/**
+ * Called when the server responds and begins to send back data.
+ */
+- (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response{
+    NSLog(@"received response!");
+}
+
+/**
+ * Called when an error prevents the request from completing successfully.
+ */
+- (void)request:(FBRequest *)request didFailWithError:(NSError *)error{
+   
+    NSLog(@"Error message: %@", [[error userInfo] objectForKey:@"error_msg"]);
+
+}
+
+/**
+ * Called when a request returns and its response has been parsed into
+ * an object.
+ *
+ * The resulting object may be a dictionary, an array, a string, or a number,
+ * depending on thee format of the API response.
+ */
+- (void)request:(FBRequest *)request didLoad:(id)result
+{
+    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+    if ([result isKindOfClass:[NSDictionary class]])
+    {
+        NSString * fbUsername = [result objectForKey:@"name"];
+        [defaults setObject:fbUsername forKey:@"FB_USERNAME"];
+        [defaults synchronize];
+    } 
+    [self.tableView reloadData];
+}
+
+/**
+ * Called when a request returns a response.
+ *
+ * The result object is the raw response from the server of type NSData
+ */
+- (void)request:(FBRequest *)request didLoadRawResponse:(NSData *)data{
+    
 }
 
 @end

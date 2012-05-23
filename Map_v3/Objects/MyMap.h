@@ -28,7 +28,7 @@
 @property (nonatomic , retain) NSString * mapImagePath;
 
 @property (nonatomic , assign) BOOL uploaded;
-@property (nonatomic , assign) BOOL googleDownload;
+@property (nonatomic , assign) BOOL googleDownload;     //google icon
 
 +(NSArray *)keys;
 -(id)initWithDictionary: (NSDictionary*)dictionary;

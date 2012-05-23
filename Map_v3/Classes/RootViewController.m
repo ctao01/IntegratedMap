@@ -61,20 +61,22 @@
     [newMapBtn addTarget:self action:@selector(createNewMap) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:newMapBtn];
     
-    UIButton * continuedBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    /*UIButton * continuedBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [continuedBtn setFrame:CGRectMake(80, 180, 160, 30)];
     [continuedBtn setTitle:@"Continue" forState:UIControlStateNormal];
     [continuedBtn addTarget:self action:@selector(continuedMap) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:continuedBtn];
+    [self.view addSubview:continuedBtn];*/
     
     UIButton * savedMapsBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [savedMapsBtn setFrame:CGRectMake(80, 240, 160, 30)];
+//    [savedMapsBtn setFrame:CGRectMake(80, 240, 160, 30)];
+    [savedMapsBtn setFrame:CGRectMake(80, 180, 160, 30)];
     [savedMapsBtn setTitle:@"Saved Maps" forState:UIControlStateNormal];
     [savedMapsBtn addTarget:self action:@selector(savedMaps) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:savedMapsBtn];
     
     UIButton * settingBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [settingBtn setFrame:CGRectMake(80, 300, 160, 30)];
+//    [settingBtn setFrame:CGRectMake(80, 300, 160, 30)];
+    [settingBtn setFrame:CGRectMake(80, 240, 160, 30)];
     [settingBtn setTitle:@"Setting" forState:UIControlStateNormal];
     [settingBtn addTarget:self action:@selector(goToSetting) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:settingBtn];

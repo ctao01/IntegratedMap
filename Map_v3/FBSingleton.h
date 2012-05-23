@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "FBConnect.h"
 
-#define kAppID @""
-#define APPLICATION_USERDEFAULTS  [NSUserDefaults standardDefaults]
+#define kAppID @"282603195164997"
+#define APPLICATION_DEFAULTS [NSUserDefaults standardUserDefaults]
 
 @interface FBSingleton : NSObject <FBSessionDelegate , FBDialogDelegate , FBRequestDelegate >
 {
@@ -19,5 +19,10 @@
 }
 
 @property (readonly) Facebook * facebook;
+
++(FBSingleton*) sharedManager;
+
+- (void)apiGraphMe;
+
 
 @end

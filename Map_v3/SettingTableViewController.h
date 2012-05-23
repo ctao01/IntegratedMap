@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Facebook+Singleton.h"
+
+#define kAppId @"282603195164997"
 
 typedef enum  {
     UserNameSetting = 0,
@@ -15,7 +18,7 @@ typedef enum  {
     OtherSetting = 3,
 } SettingSection;
 
-@interface SettingTableViewController : UITableViewController <UIAlertViewDelegate , FBSessionDelegate>
+@interface SettingTableViewController : UITableViewController <UIAlertViewDelegate , FBRequestDelegate>
 
 @property (nonatomic, assign) UIViewController * vcParent;
 @end

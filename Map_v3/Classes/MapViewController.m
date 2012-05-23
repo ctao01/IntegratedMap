@@ -24,6 +24,37 @@
 @synthesize customTabBar;
 @synthesize currentMap = _currentMap;
 
+#pragma mark - UIGesture
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    return YES;
+}
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+
+{
+    return  YES;
+}
+
+-(BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+
+{
+    return  YES;
+}
+
+#pragma mark -
+
+//- (void)applicationWillResign
+//{
+//    NSLog(@"applicationWillResign");
+//    if (locationManager) 
+//        [locationManager stopUpdatingLocation];
+//}
+
+
+#pragma mark-
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -108,7 +139,6 @@
     
     aMap.mapTitle = self.navigationItem.title;
     aMap.myPlaces = self.placeMarks;
-    NSLog(@"%@",aMap.myPlaces);
     aMap.mapCreatedTime = [NSDate date];
     aMap.mapAuthor = [defaults objectForKey:@"IMUsername"];
    
@@ -122,6 +152,17 @@
     
     return aMap;
 }
+
+//- (void) tap:(id)sender
+//{
+//    UITapGestureRecognizer *tapGesture = (UITapGestureRecognizer*)sender;
+//    CGPoint tapPoint = [tapGesture locationInView:mapView];
+//    NSLog(@"Point:%@",NSStringFromCGPoint(tapPoint));
+//    toolBar.center = tapPoint;
+//    toolBar.hidden = NO;
+//    
+//}
+
 
 #pragma mark - Custom Tab bar Button
 
@@ -205,44 +246,55 @@
 
 
     // Initialize ToolBar
-    /*toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 420 - 44, 320, 44)];
-    UIBarButtonItem * addButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewPlace)];
-    UIBarButtonItem * fixed = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    
-    UIButton * customizedBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    if (!isUploaded) {
-        [customizedBtn setTitle:@"upload" forState:UIControlStateNormal];
-        [customizedBtn addTarget:self action:@selector(upload) forControlEvents:UIControlEventTouchUpInside];
-    }
-    else
-    {
-        [customizedBtn setTitle:@"update" forState:UIControlStateNormal];
-        [customizedBtn addTarget:self action:@selector(update) forControlEvents:UIControlEventTouchUpInside];
-
-    }
-    customizedBtn.frame = CGRectMake(0, 0, 80, 32);
-    customizedBtn.titleLabel.font = [UIFont boldSystemFontOfSize:12];
-    UIBarButtonItem * uploadButton = [[UIBarButtonItem alloc]initWithCustomView:customizedBtn];
+    /*toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 200, 44)];
+    UIBarButtonItem * locationItem = [[UIBarButtonItem alloc]initWithTitle:@"GPS" style:UIBarButtonItemStyleBordered target:self action:nil];
+    UIBarButtonItem * routeItem = [[UIBarButtonItem alloc]initWithTitle:@"Route" style:UIBarButtonItemStyleBordered target:self action:nil];
+    UIBarButtonItem * checkinItem = [[UIBarButtonItem alloc]initWithTitle:@"CheckIn" style:UIBarButtonItemStyleBordered target:self action:nil];
+    UIBarButtonItem * uploadItem = [[UIBarButtonItem alloc]initWithTitle:@"Upload" style:UIBarButtonItemStyleBordered target:self action:nil];
+    UIBarButtonItem * shareItem = [[UIBarButtonItem alloc]initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:nil];
+//    UIButton * customizedBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    if (!isUploaded) {
+//        [customizedBtn setTitle:@"upload" forState:UIControlStateNormal];
+//        [customizedBtn addTarget:self action:@selector(upload) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    else
+//    {
+//        [customizedBtn setTitle:@"update" forState:UIControlStateNormal];
+//        [customizedBtn addTarget:self action:@selector(update) forControlEvents:UIControlEventTouchUpInside];
+//
+//    }
    
-    [toolBar setItems:[NSArray arrayWithObjects:uploadButton, fixed, addButton , nil] animated:NO];
+    [toolBar setItems:[NSArray arrayWithObjects:locationItem, routeItem, checkinItem, uploadItem, shareItem, nil] animated:NO];
     [self.view addSubview:toolBar];
-    [fixed release];
-    [addButton release];
-    [uploadButton release]; */
+    toolBar.hidden = YES;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
+    [tap setDelegate:self];
+    [mapView addGestureRecognizer:tap];
+    [tap release];*/
+    
     
     customTabBar = [[UITabBar alloc]initWithFrame:CGRectMake(0, 420-49, 320, 49)];
     customTabBar.delegate = self;   
 
     
     UITabBarItem * locationItem = [[UITabBarItem alloc]initWithTitle:@"GPS" image:nil tag:0];
+   
     UITabBarItem * routeItem = [[UITabBarItem alloc]initWithTitle:@"Route" image:nil tag:1];
+    routeItem.badgeValue = [APPLICATION_DEFAULTS boolForKey:@"Map_Show_Route"]? @"ON":@"OFF";
+    
+    
     UITabBarItem * checkinItem = [[UITabBarItem alloc]initWithTitle:@"" image:nil tag:2];
     UITabBarItem * uploadItem = [[UITabBarItem alloc]initWithTitle:@"Upload" image:nil tag:3];
+    uploadItem.badgeValue = isUploaded ? @"Update" : @"Upload";
+    
     UITabBarItem * shareItem = [[UITabBarItem alloc]initWithTitle:@"Share" image:nil tag:4];
 
+    [APPLICATION_DEFAULTS synchronize];
+    
     [customTabBar setItems:[NSArray arrayWithObjects:locationItem, routeItem, checkinItem , uploadItem , shareItem, nil] animated:NO];
     [self.view addSubview:customTabBar];
-
+    
     
     // Initialize NavigationBar
     UIBarButtonItem * cancelBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
@@ -251,6 +303,9 @@
     
     NSLog(@"self.annotations:%@",self.placeMarks);
 
+    
+    // Initialize application observer
+//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(applicationWillResign) name:UIApplicationWillResignActiveNotification object:NULL ];
 }
 
 //- (void) setCustomizedToolBar:(IMCustomizedTabBar *)customizedToolBar
@@ -275,7 +330,8 @@
     [super viewWillAppear:animated];
     
     [self updateCurrentMap:mapView];
-    [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
+    if (![self isNotEditable]) 
+        [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
 
 }
 
@@ -287,10 +343,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
+
+    
     if (locationManager)
         [locationManager stopUpdatingLocation]; 
-    
-    [super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -451,14 +508,20 @@
 //            aMap.upload = NO;
 //    }
     
+//    if ([self.placeMarks count] > 0)
+//    {
+//        double avgLat = [[self.placeMarks valueForKeyPath:@"@avg.latitude"] doubleValue];
+//        double avgLng = [[self.placeMarks valueForKeyPath:@"@avg.longitude"] doubleValue];
+//        [self setMapRegionLongitude:avgLng andLatitude:avgLat withLongitudeSpan:0.5 andLatitudeSpan:0.5];
+//    }    
+
     MyMap * aMap = [self completeTheMap];
     UIImage * image = [self generateMapImage];
-    aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/%@.png", aMap.mapTitle];
+    aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@.png", aMap.mapTitle];
     [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
    
     [delegate.savedMaps addObject:aMap];
     [self.navigationController popViewControllerAnimated:YES];
-
 }
 
 
@@ -470,7 +533,9 @@
         NSLog(@"%i",[[delegate savedMaps] count]);
     }
     
-    self.toolBar.hidden = NO;
+    self.customTabBar.hidden = NO;
+    [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
+
     
     UIBarButtonItem * doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
     self.navigationItem.rightBarButtonItem = doneBtn;
@@ -536,7 +601,7 @@
     double X = lng;
     double Y = lat;
     
-    [self setMapRegionLongitude:X andLatitude:Y withLongitudeSpan:0.08 andLatitudeSpan:0.08];
+    [self setMapRegionLongitude:X andLatitude:Y withLongitudeSpan:0.1 andLatitudeSpan:0.1];
     
 }
 #pragma mark - MKMapViewDelegate
@@ -733,7 +798,59 @@
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    NSLog(@"Selected Index:%i", [customTabBar.items indexOfObject:item]);
-    if ([customTabBar.items objectAtIndex:3]) [self upload];
+    
+    NSUInteger index = [tabBar.items indexOfObject:item];
+    NSLog(@"index:%i",index);
+    
+    switch (index) {
+        case 0:
+        {
+            
+        }
+            
+            break;
+        case 1:
+        {
+            if ([APPLICATION_DEFAULTS boolForKey:@"Map_Show_Route"] == NO) 
+            {
+                NSLog(@"map show route");
+                [APPLICATION_DEFAULTS setBool:YES forKey:@"Map_Show_Route"];
+                [APPLICATION_DEFAULTS synchronize];
+
+                item.badgeValue = @"ON";
+            }
+            else
+            {
+                NSLog(@"map does not show route");
+                item.badgeValue = @"OFF";
+                [APPLICATION_DEFAULTS setBool:NO forKey:@"Map_Show_Route"];
+                [APPLICATION_DEFAULTS synchronize];
+            }
+            
+        }
+            break;
+        case 3:
+        {
+            if (isUploaded == NO) 
+            {
+                NSLog(@"upload map!");
+                item.badgeValue = @"Update";
+                isUploaded = YES;
+            }
+            else
+            {
+                NSLog(@"update map!");
+                item.badgeValue = @"Update";
+            }
+        }
+            
+        default:
+            break;
+    }
+
+//    if ([customTabBar.items objectAtIndex:3])
+//        [self upload];
+//    else
+//        return;
 }
 @end

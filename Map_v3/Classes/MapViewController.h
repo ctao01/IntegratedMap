@@ -11,15 +11,16 @@
 #import <MapKit/MapKit.h>
 #import "MyMap.h"
 #import "CalloutMapAnnotationView.h"
-
+/*
 #define OFFSET 40.0f
 #define TOP_OFFSET 20.0f
 #define BOTTOM_OFFSET 80.0f
 #define LEFT_OFFSET 20.0f
 #define RIGHT_OFFSET 20.0f
+*/
+#define APPLICATION_DEFAULTS [NSUserDefaults standardUserDefaults]
 
-
-@interface MapViewController : UIViewController <CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate , UITabBarDelegate>
+@interface MapViewController : UIViewController < CLLocationManagerDelegate , MKMapViewDelegate , UIAlertViewDelegate , UITabBarDelegate ,UIGestureRecognizerDelegate >
 {
     CLLocationManager * locationManager;
     CLLocationDegrees  lat;

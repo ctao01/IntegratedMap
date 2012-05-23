@@ -572,7 +572,7 @@
     [vcContinuedMap setCurrentMap:aMap];
     
     [self.navController.navigationController pushViewController:vcContinuedMap animated:YES];
-    vcContinuedMap.toolBar.hidden = YES;
+    vcContinuedMap.customTabBar.hidden = YES;
     UIBarButtonItem * editBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:vcContinuedMap action:@selector(edit)];
     vcContinuedMap.navigationItem.rightBarButtonItem = editBtn;
     [editBtn release];

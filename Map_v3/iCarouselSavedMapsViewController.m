@@ -8,6 +8,7 @@
 
 #import "iCarouselSavedMapsViewController.h"
 #import "iCarousel.h"
+#import "UIImage+FiltrrCompositions.h"
 
 @interface iCarouselSavedMapsViewController () <iCarouselDataSource , iCarouselDelegate >
 
@@ -152,7 +153,7 @@
 
         // If it has imagePath
         if (theMap.mapImagePath) {
-            UIImage * mapImg = [[[UIImage alloc]initWithContentsOfFile:theMap.mapImagePath] autorelease];
+            UIImage * mapImg = [[[UIImage alloc]initWithContentsOfFile:theMap.mapImagePath] e11];
             CGSize mapRect = mapImg.size;
             UIImageView * mapImageVIew = [[[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, mapRect.width * 0.6f , mapRect.height * 0.6f)] autorelease];
             mapImageVIew.image = mapImg;
