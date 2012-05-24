@@ -219,6 +219,10 @@
         
         NSString * title = [[alertView textFieldAtIndex:0] text];
         [vcNewMap setTitle: title? title: @"no title"];
+        
+        [APPLICATION_DEFAULTS setBool:YES forKey:@"GPS"];
+        [APPLICATION_DEFAULTS setBool:NO forKey:@"Map_Show_Route"];
+        [APPLICATION_DEFAULTS synchronize];
 
         [self.navigationController pushViewController:vcNewMap animated:YES];
         

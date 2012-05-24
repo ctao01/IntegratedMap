@@ -613,6 +613,10 @@
         SettingViewController * vcSetting = [[SettingViewController alloc]init];
         UINavigationController * ncSetting = [[UINavigationController alloc]initWithRootViewController:vcSetting];
         [vcSetting release];
+        
+        [APPLICATION_DEFAULTS setBool:NO forKey:@"GPS"];
+        [APPLICATION_DEFAULTS synchronize];
+        
         [self.navigationController presentModalViewController:ncSetting animated:YES];
         [ncSetting release];
     }

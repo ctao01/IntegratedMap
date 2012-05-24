@@ -12,15 +12,13 @@
 #import "AppDelegate.h"
 #import "DetailedViewController.h"
 #import "SwitchViewsController.h"
-
-#import <CoreLocation/CoreLocation.h>
 #import <QuartzCore/QuartzCore.h>
+#import <CoreLocation/CoreLocation.h>
 
 @implementation MapViewController
 
 @synthesize placeMarks = _placeMarks;
 @synthesize lat, lng;
-@synthesize toolBar ;
 @synthesize customTabBar;
 @synthesize currentMap = _currentMap;
 
@@ -43,15 +41,7 @@
     return  YES;
 }
 
-#pragma mark -
-
-//- (void)applicationWillResign
-//{
-//    NSLog(@"applicationWillResign");
-//    if (locationManager) 
-//        [locationManager stopUpdatingLocation];
-//}
-
+ 
 
 #pragma mark-
 
@@ -74,7 +64,6 @@
 
 - (void) dealloc
 {
-    [toolBar release];
     [customTabBar release]; 
     [mapView release]; mapView = nil;
     [locationManager release]; locationManager = nil;
@@ -153,16 +142,14 @@
     return aMap;
 }
 
-//- (void) tap:(id)sender
-//{
-//    UITapGestureRecognizer *tapGesture = (UITapGestureRecognizer*)sender;
-//    CGPoint tapPoint = [tapGesture locationInView:mapView];
-//    NSLog(@"Point:%@",NSStringFromCGPoint(tapPoint));
-//    toolBar.center = tapPoint;
-//    toolBar.hidden = NO;
-//    
-//}
-
+- (void) checkGPSCondition
+{
+    if ([APPLICATION_DEFAULTS boolForKey:@"GPS"] == YES) 
+        [locationManager startUpdatingLocation];
+        
+    else 
+        [locationManager stopUpdatingLocation];
+}
 
 #pragma mark - Custom Tab bar Button
 
@@ -209,8 +196,8 @@
     locationManager.delegate = self;
     locationManager.distanceFilter = 50.0f;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    [locationManager startUpdatingLocation];
     
+    [self checkGPSCondition];
     
     // Initialize MapView
     mapView = [[MKMapView alloc]initWithFrame:[[UIScreen mainScreen]bounds]];
@@ -222,80 +209,36 @@
     [self.view addSubview:mapView];
 
     
-    if ([self isNotEditable])
-    {
-        mapView.showsUserLocation = NO;
-        if (locationManager)
-        {
-            [locationManager release]; locationManager = nil;
-        } 
-//        
-//        if ([self.placeMarks count] > 0)
-//        {
-//            double maxLat = [[self.placeMarks valueForKeyPath:@"@max.latitude"] doubleValue];
-//            double minLat = [[self.placeMarks valueForKeyPath:@"@min.latitude"] doubleValue];
-//            double avgLat = [[self.placeMarks valueForKeyPath:@"@avg.latitude"] doubleValue];
-//
-//
-//            double maxLng = [[self.placeMarks valueForKeyPath:@"@max.longitude"] doubleValue];
-//            double minLng = [[self.placeMarks valueForKeyPath:@"@min.longitude"] doubleValue];
-//            double avgLng = [[self.placeMarks valueForKeyPath:@"@avg.longitude"] doubleValue];
-//        } 
-    }
-    [self updateCurrentMap:mapView];
-
-
-    // Initialize ToolBar
-    /*toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 200, 44)];
-    UIBarButtonItem * locationItem = [[UIBarButtonItem alloc]initWithTitle:@"GPS" style:UIBarButtonItemStyleBordered target:self action:nil];
-    UIBarButtonItem * routeItem = [[UIBarButtonItem alloc]initWithTitle:@"Route" style:UIBarButtonItemStyleBordered target:self action:nil];
-    UIBarButtonItem * checkinItem = [[UIBarButtonItem alloc]initWithTitle:@"CheckIn" style:UIBarButtonItemStyleBordered target:self action:nil];
-    UIBarButtonItem * uploadItem = [[UIBarButtonItem alloc]initWithTitle:@"Upload" style:UIBarButtonItemStyleBordered target:self action:nil];
-    UIBarButtonItem * shareItem = [[UIBarButtonItem alloc]initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:nil];
-//    UIButton * customizedBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//    if (!isUploaded) {
-//        [customizedBtn setTitle:@"upload" forState:UIControlStateNormal];
-//        [customizedBtn addTarget:self action:@selector(upload) forControlEvents:UIControlEventTouchUpInside];
-//    }
-//    else
+//    if ([self isNotEditable])
 //    {
-//        [customizedBtn setTitle:@"update" forState:UIControlStateNormal];
-//        [customizedBtn addTarget:self action:@selector(update) forControlEvents:UIControlEventTouchUpInside];
-//
+//        mapView.showsUserLocation = NO;
+//        if (locationManager)
+//        {
+//            [locationManager release]; locationManager = nil;
+//        }
 //    }
-   
-    [toolBar setItems:[NSArray arrayWithObjects:locationItem, routeItem, checkinItem, uploadItem, shareItem, nil] animated:NO];
-    [self.view addSubview:toolBar];
-    toolBar.hidden = YES;
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tap:)];
-    [tap setDelegate:self];
-    [mapView addGestureRecognizer:tap];
-    [tap release];*/
-    
+    [self updateCurrentMap:mapView];    
     
     customTabBar = [[UITabBar alloc]initWithFrame:CGRectMake(0, 420-49, 320, 49)];
     customTabBar.delegate = self;   
-
+    
     
     UITabBarItem * locationItem = [[UITabBarItem alloc]initWithTitle:@"GPS" image:nil tag:0];
-   
+    locationItem.badgeValue = [APPLICATION_DEFAULTS boolForKey:@"GPS"]? @"ON": @"OFF";
+    
     UITabBarItem * routeItem = [[UITabBarItem alloc]initWithTitle:@"Route" image:nil tag:1];
     routeItem.badgeValue = [APPLICATION_DEFAULTS boolForKey:@"Map_Show_Route"]? @"ON":@"OFF";
-    
     
     UITabBarItem * checkinItem = [[UITabBarItem alloc]initWithTitle:@"" image:nil tag:2];
     UITabBarItem * uploadItem = [[UITabBarItem alloc]initWithTitle:@"Upload" image:nil tag:3];
     uploadItem.badgeValue = isUploaded ? @"Update" : @"Upload";
     
     UITabBarItem * shareItem = [[UITabBarItem alloc]initWithTitle:@"Share" image:nil tag:4];
-
-    [APPLICATION_DEFAULTS synchronize];
     
     [customTabBar setItems:[NSArray arrayWithObjects:locationItem, routeItem, checkinItem , uploadItem , shareItem, nil] animated:NO];
     [self.view addSubview:customTabBar];
-    
-    
+
+
     // Initialize NavigationBar
     UIBarButtonItem * cancelBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
     self.navigationItem.leftBarButtonItem = cancelBtn;
@@ -303,26 +246,20 @@
     
     NSLog(@"self.annotations:%@",self.placeMarks);
 
-    
     // Initialize application observer
 //    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(applicationWillResign) name:UIApplicationWillResignActiveNotification object:NULL ];
+    
+    
+
 }
 
-//- (void) setCustomizedToolBar:(IMCustomizedTabBar *)customizedToolBar
-//{
-//    if (_customizedToolBar == customizedToolBar )return;
-//    [_customizedToolBar release];
-//    _customizedToolBar = customizedToolBar;
-//    
-//}
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-    if (locationManager ) 
-        locationManager = nil;
+    if (locationManager )  locationManager = nil;
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -332,7 +269,7 @@
     [self updateCurrentMap:mapView];
     if (![self isNotEditable]) 
         [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
-
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated
@@ -344,7 +281,6 @@
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-
     
     if (locationManager)
         [locationManager stopUpdatingLocation]; 
@@ -425,63 +361,6 @@
     UIGraphicsEndImageContext();  
     return mapImage;
 
-    //
-//    UIImage * bgImg = [UIImage imageNamed:@"websbook_960x720.png"];
-//    NSLog(@"SIZE:%@",NSStringFromCGSize([bgImg size]));
-//    UIImageView * bgImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f, bgImg.size.width * 0.7f , bgImg.size.height *0.7f)];
-//    bgImageView.image = bgImg;
-    
-//    CGSize imageSize = mapImage.size;
-//    UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(0.0f, 0.0f,imageSize.width * 0.6f, imageSize.height * 0.6f)];
-//    imageview.image = mapImage;
-//    imageview.layer.borderWidth = 10.0f;
-//    imageview.contentMode = UIViewContentModeCenter;
-//    imageview.layer.borderColor = [[UIColor whiteColor]CGColor];
-//    imageview.layer.shadowOffset = CGSizeMake(-3.0f, 3.0f);
-//    imageview.layer.shadowRadius = 3.0f;
-//    imageview.layer.shadowOpacity = 1.0f;
-//    imageview.layer.shadowColor = [[UIColor blackColor]CGColor];
-//    
-//    imageview.center = bgImageView.center;
-//    [bgImageView addSubview:imageview];
-//    
-//    UIGraphicsBeginImageContext(bgImageView.frame.size);
-//	[bgImageView.layer renderInContext:UIGraphicsGetCurrentContext()];
-//	UIImage * mapImageview = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-    
-//    return mapImageview;
-    
-    /* CGRect viewFrame = self.view.frame;
-    UIView * bgView = [[UIView alloc]initWithFrame:CGRectMake( OFFSET , OFFSET, viewFrame.size.width - OFFSET * 2, viewFrame.size.height - OFFSET * 2 )];
-    bgView.clipsToBounds = YES;
-    bgView.layer.cornerRadius = 5.0f;
-    bgView.layer.borderWidth = 5.0f;
-    bgView.layer.borderColor = [[UIColor lightGrayColor]CGColor];
-    
-    CGRect bgViewFrame = bgView.frame;
-    UIImageView * mapImgView = [[UIImageView alloc]initWithFrame:CGRectMake( LEFT_OFFSET , TOP_OFFSET, bgViewFrame.size.width - LEFT_OFFSET - RIGHT_OFFSET, bgViewFrame.size.height - TOP_OFFSET - BOTTOM_OFFSET )];
-    mapImgView.image = mapImage;
-    NSLog(@"frame:%@",NSStringFromCGRect([mapImgView frame]));
-    
-    CGRect mapImageFrame = mapImgView.frame;
-    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(mapImageFrame.origin.x, mapImageFrame.origin.y + mapImageFrame.size.height, mapImageFrame.size.width, 24)];
-
-    titleLabel.text = self.navigationItem.title;
-    
-    [bgView addSubview:mapImgView];
-    [bgView addSubview:titleLabel];
-    
-    [mapImgView release];
-    [titleLabel release];
-        
-    UIGraphicsBeginImageContext(bgView.bounds.size);
-    [bgView.layer renderInContext:UIGraphicsGetCurrentContext()];
-    
-    UIImage * newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    UIImageWriteToSavedPhotosAlbum(newImage, nil, nil, nil);
-    return newImage;*/
 }
 
 - (void) cancel
@@ -529,26 +408,30 @@
 {
     if (self.isNotEditable) {
         AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-        [delegate.savedMaps removeObject: self.currentMap]; // TODO:
+        [delegate.savedMaps removeObject: self.currentMap]; 
         NSLog(@"%i",[[delegate savedMaps] count]);
     }
     
     self.customTabBar.hidden = NO;
     [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
 
+    [APPLICATION_DEFAULTS setBool:YES forKey:@"GPS"];
+    [APPLICATION_DEFAULTS synchronize];
+    
     
     UIBarButtonItem * doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
     self.navigationItem.rightBarButtonItem = doneBtn;
     [doneBtn release];
+    [self checkGPSCondition];
     
-    if (!locationManager) 
-    {
-        locationManager = [[CLLocationManager alloc]init];
-        locationManager.delegate = self;
-        locationManager.distanceFilter = 50.0f;
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        [locationManager startUpdatingLocation];
-    }
+//    if (!locationManager) 
+//    {
+//        locationManager = [[CLLocationManager alloc]init];
+//        locationManager.delegate = self;
+//        locationManager.distanceFilter = 50.0f;
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//        [locationManager startUpdatingLocation];
+//    }
     
 }
 
@@ -696,10 +579,6 @@
 }
 
 
-
-
-
-
 #pragma mark - Alert View
 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -805,6 +684,20 @@
     switch (index) {
         case 0:
         {
+            if ([APPLICATION_DEFAULTS boolForKey:@"GPS"] == NO) {
+                item.badgeValue = @"ON";
+                [APPLICATION_DEFAULTS setBool:YES forKey:@"GPS"];
+                [APPLICATION_DEFAULTS synchronize];
+                [self checkGPSCondition];
+
+            }
+            else {
+                item.badgeValue = @"OFF";
+                [APPLICATION_DEFAULTS setBool:NO forKey:@"GPS"];
+                [APPLICATION_DEFAULTS synchronize];
+                [self checkGPSCondition];
+
+            }
             
         }
             
@@ -853,4 +746,6 @@
 //    else
 //        return;
 }
+
+
 @end

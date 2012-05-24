@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 #import "MyPlace.h"
 
 @class EditableCell;
-
+@class Reachability;
 //  Constants representing the book's fields.
 //
 enum {
@@ -34,7 +35,7 @@ enum {
 
 typedef NSUInteger AnnotationAttribute;
 
-@interface DetailedViewController : UITableViewController < UITextFieldDelegate >
+@interface DetailedViewController : UITableViewController < UITextFieldDelegate , MKReverseGeocoderDelegate , UIAlertViewDelegate>
 {
     MyPlace * thePlace;
     
@@ -46,6 +47,11 @@ typedef NSUInteger AnnotationAttribute;
     EditableCell * zipCodeCell;
     EditableCell * countryCell;
     EditableCell * noteCell;
+    
+    // Check for network connection
+    Reachability * internetReachable;
+    Reachability * hostReachable;
+    BOOL isConnected;
     
 }
 

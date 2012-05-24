@@ -46,6 +46,9 @@
 		7E82DC9D15308B7900583074 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC9C15308B7900583074 /* CoreLocation.framework */; };
 		7E82DC9F15308B7F00583074 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC9E15308B7F00583074 /* MapKit.framework */; };
 		7E82DCA2153092ED00583074 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E82DCA1153092ED00583074 /* Annotation.m */; };
+		7E8C780F156D709700C4FCDB /* IMNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8C780E156D709700C4FCDB /* IMNotificationView.m */; };
+		7E8C7813156D719D00C4FCDB /* notificationToast.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E8C7811156D719D00C4FCDB /* notificationToast.png */; };
+		7E8C7814156D719D00C4FCDB /* notificationToast@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E8C7812156D719D00C4FCDB /* notificationToast@2x.png */; };
 		7E935097155DCA880029DC90 /* CalloutMapAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */; };
 		7E93509E155DCF030029DC90 /* SwitchViewsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E93509D155DCF020029DC90 /* SwitchViewsController.m */; };
 		7E9350A0155F74C30029DC90 /* yellow_temp_sign.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E93509F155F74C30029DC90 /* yellow_temp_sign.png */; };
@@ -158,6 +161,10 @@
 		7E82DC9E15308B7F00583074 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		7E82DCA0153092ED00583074 /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		7E82DCA1153092ED00583074 /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
+		7E8C780D156D709700C4FCDB /* IMNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMNotificationView.h; path = Classes/IMNotificationView.h; sourceTree = "<group>"; };
+		7E8C780E156D709700C4FCDB /* IMNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IMNotificationView.m; path = Classes/IMNotificationView.m; sourceTree = "<group>"; };
+		7E8C7811156D719D00C4FCDB /* notificationToast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notificationToast.png; sourceTree = "<group>"; };
+		7E8C7812156D719D00C4FCDB /* notificationToast@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notificationToast@2x.png"; sourceTree = "<group>"; };
 		7E935095155DCA880029DC90 /* CalloutMapAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalloutMapAnnotationView.h; sourceTree = "<group>"; };
 		7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalloutMapAnnotationView.m; sourceTree = "<group>"; };
 		7E93509C155DCF020029DC90 /* SwitchViewsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchViewsController.h; sourceTree = "<group>"; };
@@ -324,6 +331,8 @@
 		7E377A581550D10900B34417 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7E8C7812156D719D00C4FCDB /* notificationToast@2x.png */,
+				7E8C7811156D719D00C4FCDB /* notificationToast.png */,
 				7EF630291566DD69008A9DD7 /* websbook_960x720.png */,
 				7ED7966615619600004D27C4 /* location-icon-yellow.png */,
 				7ED7966015618C77004D27C4 /* TabBarGradient.png */,
@@ -494,6 +503,8 @@
 			children = (
 				7E935095155DCA880029DC90 /* CalloutMapAnnotationView.h */,
 				7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */,
+				7E8C780D156D709700C4FCDB /* IMNotificationView.h */,
+				7E8C780E156D709700C4FCDB /* IMNotificationView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -694,6 +705,8 @@
 				7ED7966115618C77004D27C4 /* TabBarGradient.png in Resources */,
 				7ED7966715619600004D27C4 /* location-icon-yellow.png in Resources */,
 				7EF6302A1566DD69008A9DD7 /* websbook_960x720.png in Resources */,
+				7E8C7813156D719D00C4FCDB /* notificationToast.png in Resources */,
+				7E8C7814156D719D00C4FCDB /* notificationToast@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,6 +767,7 @@
 				7EA08349156BD65A0092F78B /* UIImage+Filtrr.m in Sources */,
 				7EA0834A156BD65A0092F78B /* UIImage+FiltrrCompositions.m in Sources */,
 				7EA0834B156BD65A0092F78B /* UIImage+Scale.m in Sources */,
+				7E8C780F156D709700C4FCDB /* IMNotificationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,8 @@
 #import "MyPlace.h"
 #import "MapViewController.h"
 
+#import "Reachability.h"
+
 @implementation DetailedViewController
 @synthesize thePlace ;
 @synthesize nameCell , noteCell;
@@ -108,18 +110,17 @@
             
     else
     {
-        NSArray *viewControllers = [[self navigationController] viewControllers];
-        MapViewController * vcMap = [viewControllers objectAtIndex:[viewControllers count]-2];
+//        NSArray *viewControllers = [[self navigationController] viewControllers];
         
-        [vcMap.placeMarks removeObject:thePlace];
+//        [vcMap.placeMarks removeObject:thePlace];
         
-        MyPlace * theModifiedPlace = [[MyPlace alloc]init];
-        [theModifiedPlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
-        [theModifiedPlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
+//        MyPlace * theModifiedPlace = [[MyPlace alloc]init];
+//        [theModifiedPlace setLatitude:[NSNumber numberWithDouble:vcMap.lat]];
+//        [theModifiedPlace setLongitude:[NSNumber numberWithDouble:vcMap.lng]];
         
-        NSDate * timestamp = [NSDate date];
-        [theModifiedPlace setTimestamp:timestamp]; 
-        [vcMap.placeMarks addObject:theModifiedPlace];
+//        NSDate * timestamp = [NSDate date];
+//        [theModifiedPlace setTimestamp:timestamp]; 
+//        [vcMap.placeMarks addObject:theModifiedPlace];
 //        [vcMap.placeMarks addObject:thePlace];
 
         [[self navigationController] popViewControllerAnimated:YES];
@@ -132,6 +133,61 @@
     [self.navigationController dismissModalViewControllerAnimated:YES];
 
 }
+
+#pragma mark - Check for networking connection
+
+-(void) checkNetworkStatus:(NSNotification *)notice
+{
+    // called after network status changes
+    NetworkStatus internetStatus = [internetReachable currentReachabilityStatus];
+    switch (internetStatus)
+    {
+        case NotReachable:
+        {
+            NSLog(@"The internet is down.");
+            isConnected = NO;
+            
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"The internet is working via WIFI.");
+            isConnected = YES;
+            
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"The internet is working via WWAN.");
+            isConnected = YES;
+            break;
+        }
+    }
+    
+    NetworkStatus hostStatus = [hostReachable currentReachabilityStatus];
+    switch (hostStatus)
+    {
+        case NotReachable:
+        {
+            NSLog(@"A gateway to the host server is down.");
+            isConnected = NO;
+            break;
+        }
+        case ReachableViaWiFi:
+        {
+            NSLog(@"A gateway to the host server is working via WIFI.");
+            isConnected = YES;
+            break;
+        }
+        case ReachableViaWWAN:
+        {
+            NSLog(@"A gateway to the host server is working via WWAN.");
+            isConnected = YES;
+            break;
+        }
+    }
+}
+
 
 #pragma mark - View lifecycle
 
@@ -192,6 +248,20 @@
     EditableCell *cell = (EditableCell *)[[self tableView] cellForRowAtIndexPath:indexPath];    
     [[cell textField] becomeFirstResponder];
     
+    // check for internet connection
+    if (! [self isModal]) 
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkNetworkStatus:) name:kReachabilityChangedNotification object:nil];
+        
+        internetReachable = [[Reachability reachabilityForInternetConnection] retain];
+        [internetReachable startNotifier];
+        
+        // check if a pathway to a random host exists
+        hostReachable = [[Reachability reachabilityWithHostName: @"www.apple.com"] retain];
+        [hostReachable startNotifier];
+    }
+    
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -215,12 +285,67 @@
             
         }
     }
+    
+    if (isConnected == YES) {
+        UIAlertView * reverseGeocoderAlert = [[UIAlertView alloc]initWithTitle:@"Notice" message:@"Would you like to get the place information?" delegate:self cancelButtonTitle:@"No, thanks." otherButtonTitles:@"Sure, do it", nil];
+        [reverseGeocoderAlert show];
+        [reverseGeocoderAlert release];
+    }
+    else return;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - UIAlertView Delegate Method
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) return;
+    if (buttonIndex == 1) 
+    {
+        CLLocationCoordinate2D pinCenter;
+        pinCenter.latitude = [thePlace.latitude doubleValue];
+        pinCenter.longitude = [thePlace.longitude doubleValue];
+        
+        MKReverseGeocoder * myReverse = [[MKReverseGeocoder alloc] initWithCoordinate:pinCenter];
+        myReverse.delegate = self;
+        [myReverse start];
+    }
+}
+
+#pragma mark - MKReverseGeocoderDelegate Method
+
+- (void) reverseGeocoder:(MKReverseGeocoder *)geocoder didFailWithError:(NSError *)error
+{
+    geocoder.delegate = nil;
+    [geocoder autorelease];
+}
+
+- (void) reverseGeocoder:(MKReverseGeocoder *)geocoder didFindPlacemark:(MKPlacemark *)placemark
+{
+    NSLog(@"Reverse Geocoder completed");
+    
+//    nameCell.textField.text = [placemark name];
+//    address1Cell.textField.text = [placemark thoroughfare];
+//    address2Cell.textField.text = [placemark subThoroughfare];
+//    cityCell.textField.text = [placemark locality];
+//    stateCell.textField.text = [placemark administrativeArea];
+//    zipCodeCell.textField.text = [placemark postalCode];
+//    countryCell.textField.text = [placemark country];
+
+    [thePlace setLocationName:[placemark name]];
+    [thePlace setStreetAddress:[placemark thoroughfare]];
+    [thePlace setSubStreetAddress:[placemark subThoroughfare]];
+    [thePlace setCity:[placemark locality]];
+    [thePlace setState:[placemark administrativeArea]];
+    [thePlace setZipCode:[placemark postalCode]];
+    [thePlace setCountry:[placemark country]];
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark -

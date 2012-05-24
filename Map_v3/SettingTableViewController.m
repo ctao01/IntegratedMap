@@ -177,7 +177,17 @@
         cell.accessoryView = arrowBtn;
     }
     else if (indexPath.section == ControlSetting) 
+    {
         cell.textLabel.text = [[settingDict objectForKey:@"control_setting"]objectAtIndex:indexPath.row]; 
+        if (indexPath.row == 3) 
+        {
+            UISwitch * geoReversedSwitch = [[UISwitch alloc]initWithFrame:CGRectZero];
+            [geoReversedSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+            cell.accessoryView = geoReversedSwitch;
+            
+            //TODO: checkButtonTapped:(id)sender event:(id)event
+        }
+    }
     else if (indexPath.section == OtherSetting) 
         cell.textLabel.text = [[settingDict objectForKey:@"other_setting"]objectAtIndex:indexPath.row]; 
     else return nil; 
@@ -193,6 +203,13 @@
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint: currentTouchPosition];
     if (indexPath != nil)
         [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:indexPath];
+}
+
+- (void) switchChanged:(id)sender
+{
+    UISwitch * switchControl = sender;
+    NSLog( @"The switch is %@", switchControl.on ? @"ON" : @"OFF" );
+
 }
 
 #pragma mark - Table view delegate
