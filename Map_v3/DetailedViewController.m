@@ -110,8 +110,8 @@
             
     else
     {
-//        NSArray *viewControllers = [[self navigationController] viewControllers];
-        
+        NSArray *viewControllers = [[self navigationController] viewControllers];
+        MapViewController * vcMap = (MapViewController *)[viewControllers objectAtIndex:[viewControllers count] -2];
 //        [vcMap.placeMarks removeObject:thePlace];
         
 //        MyPlace * theModifiedPlace = [[MyPlace alloc]init];
@@ -122,6 +122,10 @@
 //        [theModifiedPlace setTimestamp:timestamp]; 
 //        [vcMap.placeMarks addObject:theModifiedPlace];
 //        [vcMap.placeMarks addObject:thePlace];
+        NSDate * timestamp = [NSDate date];
+        [thePlace setTimestamp:timestamp];
+        [vcMap.placeMarks addObject:thePlace];
+
 
         [[self navigationController] popViewControllerAnimated:YES];
     }
@@ -286,12 +290,20 @@
         }
     }
     
-    if (isConnected == YES) {
-        UIAlertView * reverseGeocoderAlert = [[UIAlertView alloc]initWithTitle:@"Notice" message:@"Would you like to get the place information?" delegate:self cancelButtonTitle:@"No, thanks." otherButtonTitles:@"Sure, do it", nil];
-        [reverseGeocoderAlert show];
-        [reverseGeocoderAlert release];
+    if ([APPLICATION_DEFAULTS boolForKey:@"Reverse_Geocoder"] == YES) {
+        if (isConnected == YES) {
+            UIAlertView * reverseGeocoderAlert = [[UIAlertView alloc]initWithTitle:@"Notice" message:@"Would you like to get the place information?" delegate:self cancelButtonTitle:@"No, thanks." otherButtonTitles:@"Sure, do it", nil];
+            [reverseGeocoderAlert show];
+            [reverseGeocoderAlert release];
+        }
+        else {
+            UIAlertView * alertView = [[UIAlertView alloc]initWithTitle:@"Notice" message:@"Please check the internet connection" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+            [alertView show];
+            [alertView release];
+        }
     }
-    else return;
+    
+    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -376,6 +388,7 @@
 //
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+    // TODO: DONE vs SAVE
     static NSNumberFormatter *_formatter;
     
     if (_formatter == nil)

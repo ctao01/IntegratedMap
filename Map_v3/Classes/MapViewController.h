@@ -40,6 +40,8 @@
 
 @property (nonatomic , retain) MyMap * currentMap;
 
+
+
 - (void) setMapRegionLongitude:(double)Y andLatitude:(double)X withLongitudeSpan:(double)SY andLatitudeSpan:(double)SX ; 
 - (void) updateCurrentMap: (MKMapView *) theMap;
 

@@ -19,4 +19,6 @@
 // store data
 @property (nonatomic , copy) NSString * path;
 @property (nonatomic , retain) NSMutableArray * savedMaps;
+
+@property (nonatomic , retain) NSMutableDictionary * data;
 @end

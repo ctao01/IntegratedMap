@@ -11,6 +11,8 @@
 
 #define kAppId @"282603195164997"
 
+#define APPLICATION_DEFAULTS [NSUserDefaults standardUserDefaults]
+
 typedef enum  {
     UserNameSetting = 0,
     AccountSetting = 1, 

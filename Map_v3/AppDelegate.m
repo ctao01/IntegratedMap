@@ -17,6 +17,23 @@
 @synthesize window = _window;
 @synthesize path = _path;
 @synthesize savedMaps = _savedMaps;
+@synthesize data = _data;
+#pragma mark - 
+
+//- (void) saveDataToDisk
+//{
+//    NSMutableDictionary * rootObject = [NSMutableDictionary dictionary];
+//    [rootObject setValue:[self savedMaps] forKey:@"SavedMaps"];
+//    [NSKeyedArchiver archiveRootObject:rootObject toFile:[APPLICATION_DEFAULTS objectForKey:@"path"]];
+//    
+//}
+//
+//- (void) loadDataFromDisk
+//{
+//    NSDictionary * rootObject = [NSKeyedUnarchiver unarchiveObjectWithData:[APPLICATION_DEFAULTS objectForKey:@"path"]];
+//    [self setSavedMaps:[rootObject valueForKey:@"savedMaps"]];
+//}
+//
 
 - (void)dealloc
 {
@@ -25,6 +42,7 @@
     [_window release];
     
     [_savedMaps release];
+    [_data release];
     [super dealloc];
 }
 
@@ -42,13 +60,31 @@
     [self.window addSubview:self.navigationController.view];
 
     // Initialize plist data
-    NSError * error;
+    // TODO : create a new path to save data
+    // TODO : get data from path
+    
+//    NSError * error;
     NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [paths objectAtIndex:0];
-    self.path = [documentDirectory stringByAppendingPathComponent:@"SavedData.plist"];
+    self.path = [documentDirectory stringByAppendingString:@"/SavedData.plist"];
     NSFileManager * fileManager = [NSFileManager defaultManager];
     
-    if (![fileManager fileExistsAtPath:self.path])
+    NSLog(@"self.path:%@",self.path);
+//    NSMutableDictionary * data;
+    
+    if ([fileManager fileExistsAtPath:self.path])
+    {
+        
+        NSLog(@"plist file exist!");
+        self.data  = [[NSMutableDictionary alloc]initWithContentsOfFile:self.path];
+    
+
+        self.savedMaps = [self.data objectForKey:@"my_saved_maps"];
+        if (! self.savedMaps ) {
+            self.savedMaps = [[NSMutableArray alloc]init];
+        }
+    }
+    /*if (![fileManager fileExistsAtPath:self.path])
     {
         NSString * bundle = [[NSBundle mainBundle]pathForResource:@"SavedMaps" ofType:@"plist"];
         [fileManager copyItemAtPath:bundle toPath:self.path error:&error];
@@ -59,11 +95,10 @@
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:self.path forKey:@"path"];
     [defaults synchronize];
-    NSLog(@"%@", defaults);
     
     if (self.savedMaps == nil) 
     {
-        NSArray * mapDicts = [NSMutableArray arrayWithContentsOfFile:self.path];
+       NSArray * mapDicts = [NSMutableArray arrayWithContentsOfFile:self.path];
         if (mapDicts == nil)
         {
             NSLog(@"Unable to read plist file at path: %@", self.path);
@@ -73,7 +108,7 @@
         }
         
         self.savedMaps = [[NSMutableArray alloc] initWithCapacity:[mapDicts count]];
-    }
+    }*/
     
     self.window.backgroundColor = [UIColor blackColor];
     
@@ -122,13 +157,14 @@
     NSLog(@"applicationDidBecomeActive");
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application
+- (void)applicationWillTerminate:(NSNotification *)note
 {
     /*
      Called when the application is about to terminate.
      Save data if appropriate.
      See also applicationDidEnterBackground:.
      */
+    
 }
 #pragma mark -
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 

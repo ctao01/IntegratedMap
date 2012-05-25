@@ -182,6 +182,7 @@
         if (indexPath.row == 3) 
         {
             UISwitch * geoReversedSwitch = [[UISwitch alloc]initWithFrame:CGRectZero];
+            [geoReversedSwitch setOn:NO];
             [geoReversedSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
             cell.accessoryView = geoReversedSwitch;
             
@@ -209,6 +210,12 @@
 {
     UISwitch * switchControl = sender;
     NSLog( @"The switch is %@", switchControl.on ? @"ON" : @"OFF" );
+    if (switchControl.on)
+        [APPLICATION_DEFAULTS setBool:YES forKey:@"Reverse_Geocoder"];  
+    else 
+        [APPLICATION_DEFAULTS setBool:NO forKey:@"Reverse_Geocoder"];
+    
+    [APPLICATION_DEFAULTS synchronize];
 
 }
 
@@ -216,11 +223,10 @@
 
 - (void) tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 //    AppDelegate * delegate = (AppDelegate *) [[UIApplication sharedApplication]delegate];
     
     if (indexPath.section == UserNameSetting) {
-        if (![defaults objectForKey:@"IMUsername"])
+        if (![APPLICATION_DEFAULTS objectForKey:@"IMUsername"])
         {
             UIAlertView * usernameSettingView = [[UIAlertView alloc]initWithTitle:@"Username" message:@"please create your username" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"That's it", nil];
             [usernameSettingView setAlertViewStyle:UIAlertViewStylePlainTextInput];
@@ -234,7 +240,7 @@
     if (indexPath.section == AccountSetting ) 
     {
         if (indexPath.row == 0) {
-            if (! [defaults objectForKey:@"AuthorizationToken"])
+            if (! [APPLICATION_DEFAULTS objectForKey:@"AuthorizationToken"])
             {
                 UIAlertView * gLoginView = [[UIAlertView alloc]initWithTitle:@"Google" message:@"Connect to Google Account" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Connect", nil];
                 [gLoginView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
@@ -262,15 +268,15 @@
         
         else if (indexPath.row == 1)
         {
-            if ( ![defaults objectForKey:@"FB_USERNAME"])
+            if ( ![APPLICATION_DEFAULTS objectForKey:@"FB_USERNAME"])
             {
                 [[Facebook shared]authorize];
                 [self apiGraphMe];
             }
             else {
                 [[Facebook shared]logout];
-                [defaults removeObjectForKey:@"FB_USERNAME"];
-                [defaults synchronize];
+                [APPLICATION_DEFAULTS removeObjectForKey:@"FB_USERNAME"];
+                [APPLICATION_DEFAULTS synchronize];
                 
             }
 //            if (![[delegate facebook] isSessionValid]) 
@@ -306,15 +312,15 @@
 #pragma mark - UIAlertViewDelegate 
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+//    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
 
     if (buttonIndex == alertView.cancelButtonIndex)  return;
     
     if ([alertView.title isEqualToString:@"Username"])
     {
         if (buttonIndex == 1) {
-            [defaults setObject:[[alertView textFieldAtIndex:0] text] forKey:@"IMUsername"];
-            [defaults synchronize];
+            [APPLICATION_DEFAULTS setObject:[[alertView textFieldAtIndex:0] text] forKey:@"IMUsername"];
+            [APPLICATION_DEFAULTS synchronize];
             [self.tableView reloadData];
 
         }
@@ -325,7 +331,7 @@
     {
         if (buttonIndex == 1)
         {
-            if ( ![defaults objectForKey:@"AuthorizationToken"])
+            if ( ![APPLICATION_DEFAULTS objectForKey:@"AuthorizationToken"])
             {
                 NSURL * url = [NSURL URLWithString:@"https://www.google.com/accounts/ClientLogin"];
                 ASIFormDataRequest * loginRequest = [ASIFormDataRequest requestWithURL:url];
@@ -358,9 +364,9 @@
                     }
                 }
                 // store the token
-                [defaults setObject:clientAuth forKey:@"AuthorizationToken"];
-                [defaults setObject:[[alertView textFieldAtIndex:0] text] forKey:@"GL_USERNAME"];
-                [defaults synchronize];
+                [APPLICATION_DEFAULTS setObject:clientAuth forKey:@"AuthorizationToken"];
+                [APPLICATION_DEFAULTS setObject:[[alertView textFieldAtIndex:0] text] forKey:@"GL_USERNAME"];
+                [APPLICATION_DEFAULTS synchronize];
                 
                 if (!clientSID || !clientAuth) {
                     // return error
@@ -372,9 +378,9 @@
             
             else
             {
-                [defaults removeObjectForKey:@"AuthorizationToken"];
-                [defaults removeObjectForKey:@"GL_USERNAME"];
-                [defaults synchronize];
+                [APPLICATION_DEFAULTS removeObjectForKey:@"AuthorizationToken"];
+                [APPLICATION_DEFAULTS removeObjectForKey:@"GL_USERNAME"];
+                [APPLICATION_DEFAULTS synchronize];
             }
         }
     } 
@@ -464,12 +470,12 @@
  */
 - (void)request:(FBRequest *)request didLoad:(id)result
 {
-    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+//    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     if ([result isKindOfClass:[NSDictionary class]])
     {
         NSString * fbUsername = [result objectForKey:@"name"];
-        [defaults setObject:fbUsername forKey:@"FB_USERNAME"];
-        [defaults synchronize];
+        [APPLICATION_DEFAULTS setObject:fbUsername forKey:@"FB_USERNAME"];
+        [APPLICATION_DEFAULTS synchronize];
     } 
     [self.tableView reloadData];
 }

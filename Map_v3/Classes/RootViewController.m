@@ -54,7 +54,12 @@
 {
     [super viewDidLoad];
         
+    UIImage *bkgImage = [UIImage imageNamed:@"Default.png"];
+    self.view.backgroundColor = [UIColor colorWithPatternImage:bkgImage];
+    self.view.contentMode = UIViewContentModeScaleAspectFill;   
+    
     // set up  the button
+    
     UIButton * newMapBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [newMapBtn setFrame:CGRectMake(80, 120, 160, 30)];
     [newMapBtn setTitle:@"Create A New Map" forState:UIControlStateNormal];
@@ -98,6 +103,12 @@
     [self updateSavedData];
 }
 
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    NSLog(@"viewDidAppear");
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -122,6 +133,11 @@
         [myMaps addObject:[myMap dictionaryWithValuesForKeys:[MyMap keys]]];
     }
     
+    [[APPLICATION_DELEGATE data] setObject:myMaps forKey:@"my_saved_maps"];
+    [[APPLICATION_DELEGATE data] setObject:APPLICATION_DEFAULTS forKey:@"my_user_defaults"];
+    [[APPLICATION_DELEGATE data] writeToFile:[APPLICATION_DELEGATE path] atomically:YES];
+    
+    /*
     NSString * plist = [myMaps description];
     NSLog(@"Plist:%@",plist);
     
@@ -135,7 +151,7 @@
     
     if (error) {
         NSLog(@"Error writing file to path:%@, error was %@", path, error);
-    }
+    }*/
 
 }
 #pragma mark - Button Actions

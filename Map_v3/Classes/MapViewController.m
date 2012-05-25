@@ -22,6 +22,7 @@
 @synthesize customTabBar;
 @synthesize currentMap = _currentMap;
 
+
 #pragma mark - UIGesture
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
@@ -43,7 +44,16 @@
 
  
 
-#pragma mark-
+#pragma mark - Initializer
+
+- (BOOL) isNotEditable
+{
+    NSArray *viewControllers = [[self navigationController] viewControllers];
+    UIViewController * rootViewController = [viewControllers objectAtIndex:[viewControllers count]-2];
+    NSLog(@"%@",NSStringFromClass([rootViewController class]));
+    
+    return [rootViewController class] == [SwitchViewsController class];
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -66,11 +76,16 @@
 {
     [customTabBar release]; 
     [mapView release]; mapView = nil;
+    
+    [locationManager stopUpdatingLocation];
     [locationManager release]; locationManager = nil;
+
 
     NSLog(@"dealloc");
     [super dealloc];
 }
+
+#pragma mark - Setter
 
 - (void) setCurrentMap:(MyMap *)currentMap
 {
@@ -107,16 +122,7 @@
     
     
 }
-#pragma mark -
-
-- (BOOL) isNotEditable
-{
-    NSArray *viewControllers = [[self navigationController] viewControllers];
-    UIViewController * rootViewController = [viewControllers objectAtIndex:[viewControllers count]-2];
-    NSLog(@"%@",NSStringFromClass([rootViewController class]));
-    
-    return [rootViewController class] == [SwitchViewsController class];
-}
+#pragma mark - Navigation UIBarButton  Method
 
 - (MyMap *) completeTheMap
 {
@@ -142,6 +148,95 @@
     return aMap;
 }
 
+- (UIImage*) generateMapImage
+{
+    UIGraphicsBeginImageContext(mapView.frame.size);
+	[mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
+	UIImage * mapImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();  
+    return mapImage;
+    
+}
+
+- (void) cancel
+{
+    [self.navigationController popViewControllerAnimated:YES];
+    
+}
+
+- (void) done
+{
+    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+    //    MyMap * aMap = [[MyMap alloc]init];
+    //    aMap.mapTitle = self.navigationItem.title;
+    //    aMap.myPlaces = self.placeMarks;
+    //    aMap.mapCreatedTime = [NSDate date];
+    //    
+    //    if (! self.isNotEditable) 
+    //        aMap.upload = YES;
+    //    else
+    //    {
+    //        if (aMap.upload == YES)
+    //            aMap.upload = YES;
+    //        else
+    //            aMap.upload = NO;
+    //    }
+    
+//    if ([self.placeMarks count] > 0)
+//    {
+//        double avgLat = [[self.placeMarks valueForKeyPath:@"@avg.latitude"] doubleValue];
+//        double avgLng = [[self.placeMarks valueForKeyPath:@"@avg.longitude"] doubleValue];
+//        CLLocationCoordinate2D mapCenter;
+//        mapCenter.latitude = avgLat;
+//        mapCenter.longitude = avgLng;
+//        
+//        [mapView setCenterCoordinate:mapCenter];
+//    }    
+    
+    MyMap * aMap = [self completeTheMap];
+    UIImage * image = [self generateMapImage];
+    aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@.png", aMap.mapTitle];
+    [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
+    
+    [delegate.savedMaps addObject:aMap];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+- (void) edit
+{
+    if (self.isNotEditable) {
+        AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
+        [delegate.savedMaps removeObject: self.currentMap]; 
+        NSLog(@"%i",[[delegate savedMaps] count]);
+    }
+    
+    self.customTabBar.hidden = NO;
+    [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
+    
+    [APPLICATION_DEFAULTS setBool:YES forKey:@"GPS"];
+    [APPLICATION_DEFAULTS synchronize];
+    
+    
+    UIBarButtonItem * doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    self.navigationItem.rightBarButtonItem = doneBtn;
+    [doneBtn release];
+    [self checkGPSCondition];
+    
+    //    if (!locationManager) 
+    //    {
+    //        locationManager = [[CLLocationManager alloc]init];
+    //        locationManager.delegate = self;
+    //        locationManager.distanceFilter = 50.0f;
+    //        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    //        [locationManager startUpdatingLocation];
+    //    }
+    
+}
+
+
+#pragma mark - GPS
+
 - (void) checkGPSCondition
 {
     if ([APPLICATION_DEFAULTS boolForKey:@"GPS"] == YES) 
@@ -151,7 +246,69 @@
         [locationManager stopUpdatingLocation];
 }
 
-#pragma mark - Custom Tab bar Button
+
+#pragma mark - ShowRoute Method
+
+- (NSMutableArray *) routeOverlay
+{
+    NSMutableArray * dict = [NSMutableArray arrayWithCapacity:[self.placeMarks count]];
+    for (id Obj in [self placeMarks])
+    {
+        [dict addObject:[Obj dictionaryWithValuesForKeys:[MyPlace keys]]];
+    }
+    
+    NSMutableArray * overlays = [[[NSMutableArray alloc]init] autorelease];
+    MKMapPoint bPoint; 
+    MKMapPoint aPoint; 
+    
+    MKMapPoint* pointArr = malloc(sizeof(CLLocationCoordinate2D) * [self.placeMarks count]);
+    for(int idx = 0; idx < [self.placeMarks count]; idx++)
+    {
+        // break the string down even further to latitude and longitude fields. 
+        
+        
+        //        NSString* currentPointString = [locations objectAtIndex:idx];
+        //        NSArray* latLonArr = [currentPointString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]];
+        
+        CLLocationDegrees latitude = [[[dict objectAtIndex:idx] objectForKey:@"latitude"] doubleValue];
+        CLLocationDegrees longitude = [[[dict objectAtIndex:idx] objectForKey:@"longitude"] doubleValue];
+        
+        CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(latitude, longitude);
+        
+        MKMapPoint point = MKMapPointForCoordinate(coordinate);
+        
+        
+        if (idx == 0) {
+            bPoint = point;
+            aPoint = point;
+        }
+        else 
+        {
+            if (point.x > bPoint.x) 
+                bPoint.x = point.x;
+            if(point.y > bPoint.y)
+                bPoint.y = point.y;
+            if (point.x < aPoint.x) 
+                aPoint.x = point.x;
+            if (point.y < aPoint.y) 
+                aPoint.y = point.y;
+        }
+        
+        pointArr[idx] = point;
+        
+    }
+    
+    MKPolyline *routeLine = [MKPolyline polylineWithPoints:pointArr count:[self.placeMarks count]];
+    
+    //    _routeRect = MKMapRectMake(aPoint.x, aPoint.y, bPoint.x - aPoint.x, bPoint.y - aPoint.y);
+    [overlays addObject:routeLine];
+    
+    free(pointArr);
+    
+    return overlays;
+}
+
+#pragma mark - Custom UITabBarButton
 
 -(void) addCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage
 {
@@ -173,6 +330,56 @@
     }
     
     [self.view addSubview:button];
+}
+
+#pragma mark - UITabBarItem Action
+
+- (void) addNewPlace
+{
+    [locationManager stopUpdatingLocation];
+    
+    NSString * message = [NSString stringWithFormat:@"You are now at\n(%f , %f)", lat, lng];
+    UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"Check In !? " message:message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Quick Check In", @"Detailed Check In", nil];
+    alertview.delegate = self;
+    [alertview show];
+    [alertview release];
+}
+
+- (void) upload
+{
+    
+    //    [(UIButton *)[[toolBar.items objectAtIndex:0] customView] setTitle:@"update" forState:UIControlStateNormal];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
+    
+    if (!authStr)
+    {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Warning" message:@"You haven't connected to any account" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        isUploaded = NO;
+    }
+    else
+        isUploaded = YES;
+    
+    MyMap * aMap = [self completeTheMap];
+    NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
+    for (MyPlace * myPlace in [aMap myPlaces] )
+    {
+        [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
+    }
+    aMap.myPlaces = myPlaces;
+    
+    [self uploadMapsWithAuth:authStr andAMap:aMap];
+}
+
+- (void) update
+{
+    NSLog(@"update!");
+    
+    //TODO:
+    // 
 }
 
 #pragma mark - View lifecycle
@@ -336,141 +543,19 @@
     }
     [theMap addAnnotations:annotations];
     [annotations release];
-}
-
-#pragma mark - Button Actions
-
-- (void) addNewPlace
-{
-    [locationManager stopUpdatingLocation];
-    
-    NSString * message = [NSString stringWithFormat:@"You are now at\n(%f , %f)", lat, lng];
-    UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"Check In !? " message:message delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Quick Check In", @"Detailed Check In", nil];
-    alertview.delegate = self;
-    [alertview show];
-    [alertview release];
-}
-
-
-
-- (UIImage*) generateMapImage
-{
-    UIGraphicsBeginImageContext(mapView.frame.size);
-	[mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
-	UIImage * mapImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();  
-    return mapImage;
-
-}
-
-- (void) cancel
-{
-    [self.navigationController popViewControllerAnimated:YES];
-    
-}
-
-- (void) done
-{
-    AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-//    MyMap * aMap = [[MyMap alloc]init];
-//    aMap.mapTitle = self.navigationItem.title;
-//    aMap.myPlaces = self.placeMarks;
-//    aMap.mapCreatedTime = [NSDate date];
-//    
-//    if (! self.isNotEditable) 
-//        aMap.upload = YES;
-//    else
-//    {
-//        if (aMap.upload == YES)
-//            aMap.upload = YES;
-//        else
-//            aMap.upload = NO;
-//    }
-    
-//    if ([self.placeMarks count] > 0)
-//    {
-//        double avgLat = [[self.placeMarks valueForKeyPath:@"@avg.latitude"] doubleValue];
-//        double avgLng = [[self.placeMarks valueForKeyPath:@"@avg.longitude"] doubleValue];
-//        [self setMapRegionLongitude:avgLng andLatitude:avgLat withLongitudeSpan:0.5 andLatitudeSpan:0.5];
-//    }    
-
-    MyMap * aMap = [self completeTheMap];
-    UIImage * image = [self generateMapImage];
-    aMap.mapImagePath = [NSHomeDirectory() stringByAppendingFormat:@"/Documents/%@.png", aMap.mapTitle];
-    [UIImagePNGRepresentation(image) writeToFile:aMap.mapImagePath atomically:YES];
    
-    [delegate.savedMaps addObject:aMap];
-    [self.navigationController popViewControllerAnimated:YES];
-}
+    NSMutableArray * overlays = [self routeOverlay];
 
-
-- (void) edit
-{
-    if (self.isNotEditable) {
-        AppDelegate * delegate = (AppDelegate *)[[UIApplication sharedApplication]delegate];
-        [delegate.savedMaps removeObject: self.currentMap]; 
-        NSLog(@"%i",[[delegate savedMaps] count]);
+    if ([APPLICATION_DEFAULTS boolForKey:@"Map_Show_Route"] == YES)
+        [theMap addOverlays:overlays];
+    else {
+        if (overlays) 
+            [theMap removeOverlays:overlays];
+        else return;
     }
-    
-    self.customTabBar.hidden = NO;
-    [self addCenterButtonWithImage:[UIImage imageNamed:@"location-icon-yellow.png"] highlightImage:nil];
-
-    [APPLICATION_DEFAULTS setBool:YES forKey:@"GPS"];
-    [APPLICATION_DEFAULTS synchronize];
-    
-    
-    UIBarButtonItem * doneBtn = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
-    self.navigationItem.rightBarButtonItem = doneBtn;
-    [doneBtn release];
-    [self checkGPSCondition];
-    
-//    if (!locationManager) 
-//    {
-//        locationManager = [[CLLocationManager alloc]init];
-//        locationManager.delegate = self;
-//        locationManager.distanceFilter = 50.0f;
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//        [locationManager startUpdatingLocation];
-//    }
-    
 }
 
-- (void) upload
-{
-    
-//    [(UIButton *)[[toolBar.items objectAtIndex:0] customView] setTitle:@"update" forState:UIControlStateNormal];
 
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString * authStr = [defaults objectForKey:@"AuthorizationToken"];
-    
-    if (!authStr)
-    {
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"Warning" message:@"You haven't connected to any account" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-        isUploaded = NO;
-    }
-    else
-        isUploaded = YES;
-    
-    MyMap * aMap = [self completeTheMap];
-    NSMutableArray * myPlaces =[[NSMutableArray alloc]init];
-    for (MyPlace * myPlace in [aMap myPlaces] )
-    {
-        [myPlaces addObject:[myPlace dictionaryWithValuesForKeys:[MyPlace keys]]];
-    }
-    aMap.myPlaces = myPlaces;
-    
-    [self uploadMapsWithAuth:authStr andAMap:aMap];
-}
-
-- (void) update
-{
-    NSLog(@"update!");
-    
-    //TODO:
-    // 
-}
 
 #pragma mark - Core Location Delegate
 
@@ -536,7 +621,10 @@
         NSLog(@"%@", NSStringFromClass([obj class]));
         MyPlace * thePlace = (MyPlace*)obj;
         vcDetail.thePlace = thePlace;
+        [vcDetail.thePlace setLatitude:[thePlace latitude]];
+        [vcDetail.thePlace setLongitude:[thePlace longitude]];
         vcDetail.title = [thePlace locationName]? [thePlace locationName]:@"no title";
+        [self.placeMarks removeObject:thePlace];
     }
     
     
@@ -720,6 +808,7 @@
                 [APPLICATION_DEFAULTS synchronize];
             }
             
+            [self updateCurrentMap:mapView];
         }
             break;
         case 3:
@@ -746,6 +835,8 @@
 //    else
 //        return;
 }
+
+
 
 
 @end

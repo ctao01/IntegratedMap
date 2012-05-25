@@ -31,6 +31,8 @@
 		7E4F8C89155ACDF2005D532F /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F8C82155ACDF2005D532F /* UIImageView+WebCache.m */; };
 		7E4F8C8D155ACE32005D532F /* IMLazyLoadTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F8C8C155ACE32005D532F /* IMLazyLoadTableViewCell.m */; };
 		7E4F8C90155ACFAC005D532F /* SavedMapsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E4F8C8F155ACFAC005D532F /* SavedMapsCell.m */; };
+		7E69B373156EAF1800DA2DD9 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E69B371156EAF1800DA2DD9 /* Default.png */; };
+		7E69B374156EAF1800DA2DD9 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E69B372156EAF1800DA2DD9 /* Default@2x.png */; };
 		7E71CD52153CC410003121EA /* UploadedMap.xml in Resources */ = {isa = PBXBuildFile; fileRef = 7E71CD51153CC410003121EA /* UploadedMap.xml */; };
 		7E82DC66152FE57E00583074 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC65152FE57E00583074 /* UIKit.framework */; };
 		7E82DC68152FE57E00583074 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E82DC67152FE57E00583074 /* Foundation.framework */; };
@@ -137,6 +139,12 @@
 		7E4F8C8C155ACE32005D532F /* IMLazyLoadTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMLazyLoadTableViewCell.m; sourceTree = "<group>"; };
 		7E4F8C8E155ACFAC005D532F /* SavedMapsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SavedMapsCell.h; sourceTree = "<group>"; };
 		7E4F8C8F155ACFAC005D532F /* SavedMapsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SavedMapsCell.m; sourceTree = "<group>"; };
+		7E69B364156E956C00DA2DD9 /* CSRouteView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSRouteView.h; sourceTree = "<group>"; };
+		7E69B365156E956C00DA2DD9 /* CSRouteView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSRouteView.m; sourceTree = "<group>"; };
+		7E69B366156E956C00DA2DD9 /* CSRouteAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CSRouteAnnotation.h; sourceTree = "<group>"; };
+		7E69B367156E956C00DA2DD9 /* CSRouteAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CSRouteAnnotation.m; sourceTree = "<group>"; };
+		7E69B371156EAF1800DA2DD9 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		7E69B372156EAF1800DA2DD9 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		7E71CD51153CC410003121EA /* UploadedMap.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = UploadedMap.xml; sourceTree = "<group>"; };
 		7E82DC61152FE57E00583074 /* Map_v3.7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Map_v3.7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E82DC65152FE57E00583074 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -331,6 +339,8 @@
 		7E377A581550D10900B34417 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				7E69B371156EAF1800DA2DD9 /* Default.png */,
+				7E69B372156EAF1800DA2DD9 /* Default@2x.png */,
 				7E8C7812156D719D00C4FCDB /* notificationToast@2x.png */,
 				7E8C7811156D719D00C4FCDB /* notificationToast.png */,
 				7EF630291566DD69008A9DD7 /* websbook_960x720.png */,
@@ -501,6 +511,10 @@
 		7E935093155DCA750029DC90 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				7E69B364156E956C00DA2DD9 /* CSRouteView.h */,
+				7E69B365156E956C00DA2DD9 /* CSRouteView.m */,
+				7E69B366156E956C00DA2DD9 /* CSRouteAnnotation.h */,
+				7E69B367156E956C00DA2DD9 /* CSRouteAnnotation.m */,
 				7E935095155DCA880029DC90 /* CalloutMapAnnotationView.h */,
 				7E935096155DCA880029DC90 /* CalloutMapAnnotationView.m */,
 				7E8C780D156D709700C4FCDB /* IMNotificationView.h */,
@@ -707,6 +721,8 @@
 				7EF6302A1566DD69008A9DD7 /* websbook_960x720.png in Resources */,
 				7E8C7813156D719D00C4FCDB /* notificationToast.png in Resources */,
 				7E8C7814156D719D00C4FCDB /* notificationToast@2x.png in Resources */,
+				7E69B373156EAF1800DA2DD9 /* Default.png in Resources */,
+				7E69B374156EAF1800DA2DD9 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
