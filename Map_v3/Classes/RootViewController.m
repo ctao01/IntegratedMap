@@ -132,12 +132,20 @@
 //        myMap.myPlaces = myPlaces;
         [myMaps addObject:[myMap dictionaryWithValuesForKeys:[MyMap keys]]];
     }
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    NSString *filePath = [documentsDirectory stringByAppendingString:@"/SavedMaps.plist"];
+//    
+//    
+//    NSString * plist = [myMaps description];
+//    [plist writeToFile:filePath atomically:YES];
+//    
+//    if ([myMaps writeToFile:filePath atomically:YES]) 
+//        NSLog(@"successful!");
+//    else
+//        NSLog(@"Failed");
     
-    [[APPLICATION_DELEGATE data] setObject:myMaps forKey:@"my_saved_maps"];
-    [[APPLICATION_DELEGATE data] setObject:APPLICATION_DEFAULTS forKey:@"my_user_defaults"];
-    [[APPLICATION_DELEGATE data] writeToFile:[APPLICATION_DELEGATE path] atomically:YES];
     
-    /*
     NSString * plist = [myMaps description];
     NSLog(@"Plist:%@",plist);
     
@@ -151,7 +159,7 @@
     
     if (error) {
         NSLog(@"Error writing file to path:%@, error was %@", path, error);
-    }*/
+    }
 
 }
 #pragma mark - Button Actions

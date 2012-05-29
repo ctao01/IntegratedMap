@@ -30,10 +30,26 @@
 //
 //- (void) loadDataFromDisk
 //{
-//    NSDictionary * rootObject = [NSKeyedUnarchiver unarchiveObjectWithData:[APPLICATION_DEFAULTS objectForKey:@"path"]];
-//    [self setSavedMaps:[rootObject valueForKey:@"savedMaps"]];
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    NSString *filePath = [documentsDirectory stringByAppendingString:@"/SavedMaps.plist"];
+//    
+//    NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
+//    [defaults setValue:filePath forKey:@"path"];
+//    [defaults synchronize];
+//    
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    
+//    if ([fileManager fileExistsAtPath: filePath]) 
+//    {
+//        self.savedMaps = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+//    } 
+//    else
+//    {
+//        self.savedMaps = [[NSMutableArray alloc]init];
+//    }
 //}
-//
+
 
 - (void)dealloc
 {
@@ -63,12 +79,14 @@
     // TODO : create a new path to save data
     // TODO : get data from path
     
-//    NSError * error;
+    NSError * error;
+ 
     NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString * documentDirectory = [paths objectAtIndex:0];
     self.path = [documentDirectory stringByAppendingString:@"/SavedData.plist"];
     NSFileManager * fileManager = [NSFileManager defaultManager];
     
+    /*
     NSLog(@"self.path:%@",self.path);
 //    NSMutableDictionary * data;
     
@@ -83,8 +101,8 @@
         if (! self.savedMaps ) {
             self.savedMaps = [[NSMutableArray alloc]init];
         }
-    }
-    /*if (![fileManager fileExistsAtPath:self.path])
+    }*/
+    if (![fileManager fileExistsAtPath:self.path])
     {
         NSString * bundle = [[NSBundle mainBundle]pathForResource:@"SavedMaps" ofType:@"plist"];
         [fileManager copyItemAtPath:bundle toPath:self.path error:&error];
@@ -108,7 +126,7 @@
         }
         
         self.savedMaps = [[NSMutableArray alloc] initWithCapacity:[mapDicts count]];
-    }*/
+    }   
     
     self.window.backgroundColor = [UIColor blackColor];
     
